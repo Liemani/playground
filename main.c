@@ -1,7 +1,6 @@
-#include <stdio.h>
+#include "libft.h"
 
-int main(int argc, char **argv)
+int main()
 {
-	printf("argc: %d \n", argc);
-	printf("argv[1]: %u \n", argv[1]);
+	hello();
 }
