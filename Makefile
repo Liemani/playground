@@ -1,20 +1,28 @@
-CFLAG = -Wall -Wextra -Werror
-SRC = main.c 04_hello.c
-OBJ = $(SRC:.c=.o)
-NAME = main
+SRCS	= main.c display_char.c display_str.c
 
-all: $(NAME)
+OBJS	= ${SRCS:.c=.o}
 
-$(NAME): $(OBJ)
-	gcc $(CFLAG) -o $@ $^
+NAME	= hello
 
-%.o: %.c
-	gcc $(CFLAG) -o $@ -c $<
+CC		= gcc
+RM		= rm -f
+
+CFLAGS	= -Wall -Wextra -Werror
+
+.c.o:
+			${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
+
+${NAME}:	${OBJS}
+			${CC} -o ${NAME} ${OBJS}
+
+all:		${NAME}
 
 clean:
-	rm -f $(OBJ)
+			${RM} ${OBJS}
 
-fclean: clean
-	rm -f $(NAME)
+fclean:		clean
+			${RM} ${NAME}
 
-re: fclean all
+re:			fclean all
+
+.PHONY:		all clean fclean re
