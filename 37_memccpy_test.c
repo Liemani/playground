@@ -9,13 +9,13 @@ int main()
 	char *str2 = malloc(50);
 	char *result;
 
-	result = memcpy(str1, "Hello, world!", 14);
+	result = memccpy(str1, "Hello, world!", 14);
 
 	printf("str1: %s \n", str1);
 	printf("str1: %p \n", str1);
 	printf("result: %p \n", result);
 
-	result = memcpy(str1, p_null, 0);
+	result = memccpy(str1, p_null, 0);
 
 	printf("str1: %s \n", str1);
 	printf("str1: %p \n", str1);
