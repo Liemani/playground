@@ -34,14 +34,14 @@ int main(void)
 	ptr = src;
 	for (int i = 0; i < SRC_SIZE + 1; ++i)
 		*ptr++ = (unsigned char) i + 11;
-	*(src + ((size_t) DST_SIZE + (size_t) SRC_SIZE) / 2) = 0;
+	*(src + (size_t) SRC_SIZE / 2) = 0;
 
 	dstsize = DSTSIZE;
 	c = C;
 	n = N;
 
 	// result = strlcat((char *) dst, (char *) src, dstsize);
-	result = strlcat(NULL, (char *) src, dstsize);
+	result = strlcat((char *) dst, (char *) src, dstsize);
 
 	PRINT(result, lu);
 	putchar('\n');

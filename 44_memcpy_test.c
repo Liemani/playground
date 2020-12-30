@@ -2,7 +2,7 @@
 #include <string.h>
 #include "lmt.h"
 
-#define SIZE 20
+#define SIZE 10
 #define N 10
 
 int main(void)
@@ -25,7 +25,7 @@ int main(void)
 	for (int i = 0; i < SIZE; ++i)
 		*ptr++ = (unsigned char) i + 21;
 
-	result = memcpy(dst, src, n);
+	result = memcpy(NULL, src, n);
 
 	PRINT(dst, p);
 	PRINT(src, p);

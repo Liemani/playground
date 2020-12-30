@@ -14,7 +14,9 @@ int main(void)
 	ptr = s;
 	for (int i = 0; i < SIZE_S; ++i)
 		*ptr++ = (unsigned char) i + 1;
-	result = memchr(s, 10, SIZE_S);
+
+	result = memchr(NULL, 10, SIZE_S);
+
 	PRINT(s, p);
 	PRINT(result, p);
 	PRINT(*(unsigned char *) result, d);

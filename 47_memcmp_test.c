@@ -7,7 +7,7 @@
 # define C 40
 #endif
 #ifndef N
-# define N 0
+# define N 1
 #endif
 
 int main(void)
@@ -28,16 +28,16 @@ int main(void)
 	ptr = s1;
 	for (int i = 0; i < SIZE; ++i)
 		*ptr++ = (unsigned char) i + 1;
+	*s1 = 110;
 	ptr = s2;
 	for (int i = 0; i < SIZE + 1; ++i)
 		*ptr++ = (unsigned char) i + 1;
+	*s2 = 100;
 
-	result = memcmp(s1, s2, n);
-
-	putchar('\n');
+	result = memcmp("a", "c", n);
 
 	PRINT(result, d);
-
+	putchar('\n');
 	for (int i = 0; i < SIZE; ++i)
 	{
 		PRINT(i, 2d);

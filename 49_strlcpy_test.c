@@ -2,13 +2,14 @@
 #include <string.h>
 #include "lmt.h"
 
-#define DST_SIZE 0
+#define DST_SIZE 10
 #define SRC_SIZE 10
+#define DSTSIZE 10
 #ifndef C
 # define C 40
 #endif
 #ifndef N
-# define N 0
+# define N 1
 #endif
 
 int main(void)
@@ -33,13 +34,13 @@ int main(void)
 	ptr = src;
 	for (int i = 0; i < SRC_SIZE + 1; ++i)
 		*ptr++ = (unsigned char) i + 1;
-	*(src + ((size_t) DST_SIZE + (size_t) SRC_SIZE) / 2) = 0;
+	*(src + (size_t) SRC_SIZE / 2) = 0;
 
-	dstsize = DST_SIZE;
+	dstsize = DSTSIZE;
 	c = C;
 	n = N;
 
-	result = strlcpy((char *) dst, (char *) src, dstsize);
+	result = strlcpy((char *) dst, NULL, n);
 
 	PRINT(result, lu);
 	putchar('\n');

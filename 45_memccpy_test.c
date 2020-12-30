@@ -2,11 +2,11 @@
 #include <string.h>
 #include "lmt.h"
 
-#define SIZE 20
+#define SIZE 10
 #ifndef C
 # define C 40
 #endif
-#define N 0
+#define N 5
 
 int main(void)
 {
@@ -30,7 +30,7 @@ int main(void)
 	for (int i = 0; i < SIZE + 1; ++i)
 		*ptr++ = (unsigned char) i + 21;
 
-	result = memccpy(dst, src, c, n);
+	result = memccpy(NULL, src, c, n);
 
 	PRINT(dst, p);
 	PRINT(src, p);

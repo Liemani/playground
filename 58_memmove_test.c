@@ -22,27 +22,31 @@ int main(void)
 	size_t			len;
 
 	unsigned char	*ptr;
-	int				result;
+	void			*result;
 
 	haystack = malloc(HAYSTACK_SIZE);
 	ptr = haystack;
 	for (int i = 0; i < HAYSTACK_SIZE; ++i)
 		*ptr++ = (unsigned char) i + 1;
-	*haystack = 100;
+	*(haystack + (size_t) HAYSTACK_SIZE - 1) = 0;
 
 	needle = malloc(NEEDLE_SIZE);
 	ptr = needle;
 	for (int i = 0; i < NEEDLE_SIZE + 1; ++i)
 		*ptr++ = (unsigned char) i + 6;
-	*needle = 110;
+	*(needle + 3) = 0;
 
 	haystacksize = HAYSTACKSIZE;
 	c = C;
 	len = LEN;
 
-	result = strncmp("z", "ab", 1);
+	result = memmove(NULL, needle, len);
 
-	PRINT(result, d);
+	PRINT(haystack, p);
+	PRINT(needle, p);
+	PRINT(result, p);
+	if (result)
+		PRINT(*(unsigned char *) result, d);
 	putchar('\n');
 	for (size_t i = 0; i < HAYSTACK_SIZE; ++i)
 		if (haystack)

@@ -9,7 +9,7 @@
 # define C 40
 #endif
 #ifndef LEN
-# define LEN 7
+# define LEN 0
 #endif
 
 int main(void)
@@ -34,13 +34,13 @@ int main(void)
 	ptr = needle;
 	for (int i = 0; i < NEEDLE_SIZE + 1; ++i)
 		*ptr++ = (unsigned char) i + 6;
-	*(needle + 3) = 0;
+	*(needle) = 0;
 
 	haystacksize = HAYSTACKSIZE;
 	c = C;
 	len = LEN;
 
-	result = strnstr(NULL, (const char *) needle, len);
+	result = strnstr((const char *) haystack, (const char *) needle, len);
 
 	PRINT(result, p);
 	if (result)

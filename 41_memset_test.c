@@ -19,7 +19,7 @@ int main(void)
 	for (int i = 0; i < SIZE_B; ++i)
 		*ptr++ = i + 1;
 
-	result = memset(NULL, c, len - 2);
+	result = memset(b, c, 0);
 
 	PRINT(b, p);
 	PRINT(result, p);
