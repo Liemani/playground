@@ -6,7 +6,7 @@
 #ifndef C
 # define C 40
 #endif
-#define N 5
+#define N 0
 
 int main(void)
 {
@@ -30,7 +30,7 @@ int main(void)
 	for (int i = 0; i < SIZE + 1; ++i)
 		*ptr++ = (unsigned char) i + 21;
 
-	result = memccpy(NULL, src, c, n);
+	result = memccpy(dst, src, c, n);
 
 	PRINT(dst, p);
 	PRINT(src, p);
