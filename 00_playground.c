@@ -2,6 +2,46 @@
 #include <errno.h>
 #include "lmt.h"
 
+#define MAIN_EXPRESSION a006();
+
+size_t	a007(void)
+{
+	return (5);
+}
+
+void	a006(void)
+{
+	int i = 2;
+	int j = 3;
+	int k[i + j];
+	int l = 4;
+	int m[a007()];
+
+	PRINT(&i, p);
+	PRINT(&j, p);
+	PRINT(k, p);
+	PRINT(&l, p);
+	PRINT(m, p);
+	PRINT(sizeof(k), lu);
+	PRINT(sizeof(m), lu);
+}
+
+void	a005(void)
+{
+	char	string[10];
+
+	PRINT(string, p);
+	PRINT(1 + string, p);
+}
+
+void	a004(void)
+{
+	int	test;
+
+	test = -15 % 10;
+	PRINT(test, d);
+}
+
 void	a003(void)
 {
 	char	*p_c;
@@ -44,7 +84,7 @@ void	a000(void)
 
 int main(void)
 {
-	a003();
+	MAIN_EXPRESSION
 
 	return (0);
 }
