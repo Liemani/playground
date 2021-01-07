@@ -7,18 +7,19 @@
 int main(void)
 {
 	unsigned char	*s;
-	unsigned char	*ptr;
+	unsigned char	*p_s;
 	void	*result;
 
-	s = malloc(SIZE_S);
-	ptr = s;
+	s = malloc(sizeof(*s) * SIZE_S);
+	p_s = s;
 	for (int i = 0; i < SIZE_S; ++i)
-		*ptr++ = (unsigned char) i + 1;
+		*p_s++ = (unsigned char) i + 48;
 
-	result = memchr(NULL, 10, SIZE_S);
+	result = memchr(s, 305, SIZE_S);
 
 	PRINT(s, p);
 	PRINT(result, p);
-	PRINT(*(unsigned char *) result, d);
+	if (result)
+		PRINT(*(unsigned char *) result, d);
 	return (0);
 }

@@ -1,10 +1,11 @@
 #include <stdlib.h> // NULL, malloc
 #include <string.h>
 #include "lmt.h"
+#include "libft.h"
 
 #define DST_SIZE 10
 #define SRC_SIZE 10
-#define DSTSIZE 0
+#define DSTSIZE 10
 #ifndef C
 # define C 40
 #endif
@@ -45,6 +46,12 @@ int main(void)
 
 	PRINT(result, lu);
 	putchar('\n');
+
+	result = ft_strlcat((char *) dst, (char *)src, dstsize);
+
+	PRINT(result, lu);
+	putchar('\n');
+
 	for (size_t i = 0; i < DST_SIZE; ++i)
 		if (dst)
 		{

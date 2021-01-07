@@ -1,8 +1,87 @@
 #include <stdlib.h>
 #include <errno.h>
+#include "libft.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a006();
+#define MAIN_EXPRESSION a012();
+
+static int  word_count(char const *str, char c)
+{
+    int count;
+
+    if (!str)
+        return (0);
+    if (!c)
+        return (*str ? 1 : 0); 
+    count = (*str == c ? -1 : 0); 
+    while (*str)
+    {   
+        ++count;
+        while (*str != c)
+            ++str;
+        while (*str == c)
+            ++str;
+    }   
+    return (count);
+}
+
+void	a012()
+{
+	char	**result;
+	int		count = word_count("lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse", ' ');
+
+	PRINT(count, d);
+	putchar('\n');
+
+	result = ft_split("lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse", ' ');
+	PRINT(result, p);
+	if (result)
+	{
+		while (*result)
+		{
+			PRINT(*result, p);
+			PRINT(*result++, s);
+		}
+		PRINT(*result, p);
+	}
+}
+
+void	a011()
+{
+	char	s[1] = {0};
+	char	**result = ft_split(s, 65);
+	if (result)
+	{
+		PRINT(result, p);
+		PRINT(*result, p);
+	}
+	else
+		printf("result is empty \n");
+}
+
+void	a010()
+{
+	PRINT('\t', d);
+	PRINT('\n', d);
+	PRINT('\v', d);
+	PRINT('\f', d);
+	PRINT('\r', d);
+	printf("\' \': %d \n", ' ');
+}
+
+void	a009(void (*f)(void))
+{
+	if (f)
+		printf("f is not NULL \n");
+	else
+		printf("f is NULL \n");
+	f();
+}
+
+void	a008(void)
+{
+	a009(NULL);
+}
 
 size_t	a007(void)
 {
