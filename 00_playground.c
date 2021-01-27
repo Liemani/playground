@@ -3,8 +3,32 @@
 #include "libft.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a012();
+#define MAIN_EXPRESSION a013();
 
+int		ft_wordcount(char const *s, char c)
+{
+	int		i;
+	int		count;
+
+	i = 0;
+	count = 0;
+	while (s[i])
+	{
+		if ((s[i] == c || i == 0) && s[i + 1] != c && s[i + 1] != 0)
+			count++;
+		i++;
+	}
+	return (count);
+}
+
+void	a013()
+{
+	int count = ft_wordcount("a", 'c');
+
+	PRINT(count, d);
+}
+
+/*
 static int  word_count(char const *str, char c)
 {
     int count;
@@ -58,6 +82,7 @@ void	a011()
 	else
 		printf("result is empty \n");
 }
+*/
 
 void	a010()
 {

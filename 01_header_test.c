@@ -1,5 +1,6 @@
 // #include <stddef.h>
-#include <sys/types.h>
+#include <errno.h> // errno
+// #include <sys/types.h>
 
 int main(void)
 {

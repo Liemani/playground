@@ -4,6 +4,9 @@
 #include "lmt.h"
 
 #define file_name "test.txt"
+#ifndef BUF_SIZE
+# define BUF_SIZE 2
+#endif
 
 int	main(void)
 {
@@ -12,20 +15,17 @@ int	main(void)
 	ssize_t	result;
 
 	fd = open(file_name, O_RDONLY);
-	PRINT(*buf, d);
-	PRINT(*buf, c);
-	PRINT(errno, d);
-	putchar('\n');
 
 	for (int i = 0; i < 3; ++i)
 	{
-		result = read(fd, buf, 1);
+		result = read(fd, buf, BUF_SIZE);
 		PRINT(result, zd);
 		PRINT(*buf, d);
-		PRINT(*buf, c);
+		PRINT(*(buf + 1), d);
 		PRINT(errno, d);
 		putchar('\n');
 	}
 
+	close(fd);
 	return (0);
 }
