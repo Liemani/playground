@@ -1,9 +1,16 @@
 #include <stdlib.h>
 #include <errno.h>
+#include <sys/types.h>
 #include "libft.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a013();
+#define MAIN_EXPRESSION a014();
+
+void	a014()
+{
+	PRINT(sizeof(size_t), lu);
+	PRINT(sizeof(ssize_t), lu);
+}
 
 int		ft_wordcount(char const *s, char c)
 {
