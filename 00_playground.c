@@ -4,7 +4,21 @@
 #include "libft.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a014();
+#define MAIN_EXPRESSION a015();
+
+void	a015()
+{
+	int				d;
+	unsigned char	*c;
+
+	d = 0x12345678;
+	c = (unsigned char *)&d;
+	for (int i = 0; i < 4; ++i)
+	{
+		PRINT(*c, x);
+		++c;
+	}
+}
 
 void	a014()
 {
