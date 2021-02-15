@@ -4,7 +4,52 @@
 #include "libft.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a015();
+#define MAIN_EXPRESSION a017();
+
+#ifndef STRING
+#define STRING "\a \n"
+#endif
+
+void	a017()
+{
+	int		i1;
+	int		i2;
+	int		x3;
+	int 	i4;
+	double	d5;
+
+	i1 = 20;
+	i2 = 30;
+	x3 = 0x10;
+	i4 = 2;
+	d5 = 12.34567;
+	PRINT(i1, d);
+	PRINT(i2, d);
+	PRINT(x3, i);
+	PRINT(i4, d);
+	PRINT(d5, f);
+	printf("start: [%d, %d, %n] \n", i1, i2, &x3);
+	printf("second: [%1$d, %2$d, %3$d, %3$d, %2$d, %1$d] \n", i1, i2, x3);
+	printf("(unsigned int) &i1 [as %%#x] -> [%#x] \n", (unsigned int) &i1);
+	printf("(unsigned int) &i1 [as %%x] -> [%x] \n", (unsigned int) &i1);
+	printf("i1, &i2 [as %%*p] -> [%*p] \n", i1, &i2);
+	printf("i1, &i2 [as %%2$*1$p] -> [%2$*1$p] \n", i1, &i2);
+	printf("&i2, i1 [as %%1$*2$p] -> [%1$*2$p] \n", &i2, i1);
+	printf("x3, i4, d5 [as %%3$*1$.*2$f] -> [%3$*1$.*2$f] \n", x3, i4, d5);
+	printf("x3, i4, d5 [as %%*.*f] -> [%*.*f] \n", x3, i4, d5);
+	printf("i1 [as %%.3d] -> [%.3d] \n", i1);
+	printf("d5 [as %%a] -> [%a] \n", d5);
+	printf("d5 [as %%A] -> [%A] \n", d5);
+}
+
+void	a016()
+{
+	const char	*str = STRING;
+	
+	printf(STRING);
+	PRINT(*str, x);
+	PRINT(*(str + 1), x);
+}
 
 void	a015()
 {
