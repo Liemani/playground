@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <limits.h>
 #include "libft.h"
 #include "lmt.h"
 
@@ -40,6 +41,14 @@ void	a017()
 	printf("i1 [as %%.3d] -> [%.3d] \n", i1);
 	printf("d5 [as %%a] -> [%a] \n", d5);
 	printf("d5 [as %%A] -> [%A] \n", d5);
+	PRINT(i1, 4d);
+	PRINT(i1, -4d);
+	PRINT(i1, 04d);
+	PRINT(i1, 3.4d);
+	PRINT(i1, .4d);
+	PRINT(i1, 03.4d);
+	PRINT(i1, 0.4d);
+	printf("10000, i1 [as %%0*d] -> [%0*d] \n", 10000, i1);
 }
 
 void	a016()
