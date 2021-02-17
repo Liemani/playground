@@ -18,17 +18,20 @@ void	a017()
 	int		x3;
 	int 	i4;
 	double	d5;
+	int		i6;
 
 	i1 = 20;
 	i2 = 30;
 	x3 = 0x10;
 	i4 = 2;
 	d5 = 12.34567;
+	i6 = -x3;
 	PRINT(i1, d);
 	PRINT(i2, d);
 	PRINT(x3, i);
 	PRINT(i4, d);
 	PRINT(d5, f);
+	PRINT(i6, d);
 	printf("start: [%d, %d, %n] \n", i1, i2, &x3);
 	printf("second: [%1$d, %2$d, %3$d, %3$d, %2$d, %1$d] \n", i1, i2, x3);
 	printf("(unsigned int) &i1 [as %%#x] -> [%#x] \n", (unsigned int) &i1);
@@ -38,6 +41,14 @@ void	a017()
 	printf("&i2, i1 [as %%1$*2$p] -> [%1$*2$p] \n", &i2, i1);
 	printf("x3, i4, d5 [as %%3$*1$.*2$f] -> [%3$*1$.*2$f] \n", x3, i4, d5);
 	printf("x3, i4, d5 [as %%*.*f] -> [%*.*f] \n", x3, i4, d5);
+	printf("x3, i4, d5 [as %%-*.*f] -> [%-*.*f] \n", x3, i4, d5);
+	printf("i6, i4, d5 [as %%*.*f] -> [%*.*f] \n", i6, i4, d5);
+	printf("i6, i4, d5 [as %%-*.*f] -> [%-*.*f] \n", i6, i4, d5);
+	printf("i6, i4, d5 [as %%--*.*f] -> [%--*.*f] \n", i6, i4, d5);
+	printf("i6, i4, d5 [as %%0000*.*f] -> [%0000*.*f] \n", i6, i4, d5);
+	printf("i4, d5 [as %%*f] -> [%*f] \n", i4, d5);
+	printf("i4, d5 [as %%*.f] -> [%*.f] \n", i4, d5);
+	printf("i4, i6, d5 [as %%*.*f] -> [%*.*f] \n", i4, i6, d5);
 	printf("i1 [as %%.3d] -> [%.3d] \n", i1);
 	printf("d5 [as %%a] -> [%a] \n", d5);
 	printf("d5 [as %%A] -> [%A] \n", d5);
@@ -48,7 +59,14 @@ void	a017()
 	PRINT(i1, .4d);
 	PRINT(i1, 03.4d);
 	PRINT(i1, 0.4d);
-	printf("10000, i1 [as %%0*d] -> [%0*d] \n", 10000, i1);
+//	printf("100, i1 [as %%0*d] -> [%0*d] \n", 100, i1);
+	printf("\"\" [as %%-*s] -> [%-*s] \n", 0, "");
+	printf("-5, i4 [as %%.*d] -> [%.*d] \n", -5, i4);
+	printf("5, i4 [as %%.*d] -> [%.*d] \n", 5, i4);
+	printf("i4 [as %%.5d] -> [%.5d] \n", i4);
+	printf("i4 [as %%10.5d] -> [%10.5d] \n", i4);
+	printf("\"a\" [as %%10.5s] -> [%10.5s] \n", "a");
+//	printf("\"a\" [as %%#10.5s] -> [%#10.5s] \n", "a");
 }
 
 void	a016()
