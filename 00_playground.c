@@ -2,14 +2,104 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <limits.h>
+#include <sys/types.h>
 #include "libft.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a017();
+#define MAIN_EXPRESSION a023();
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
+
+void	a023()
+{
+	PRINT(sizeof(ssize_t), lu);
+	PRINT(sizeof(size_t), lu);
+	PRINT(sizeof(int), lu);
+	PRINT(sizeof(long), lu);
+}
+
+void	a022()
+{
+	unsigned int x;
+
+	x = 0x1;
+	printf("x [as %%x] -> [%x] \n", x);
+	printf("x [as %%5x] -> [%5x] \n", x);
+	printf("x [as %%-5x] -> [%-5x] \n", x);
+	printf("x [as %%05x] -> [%05x] \n", x);
+	printf("x [as %%.5x] -> [%.5x] \n", x);
+	printf("x [as %%3.5x] -> [%3.5x] \n", x);
+	printf("x [as %%-3.5x] -> [%-3.5x] \n", x);
+	printf("x [as %%5.3x] -> [%5.3x] \n", x);
+	printf("x [as %%-5.3x] -> [%-5.3x] \n", x);
+}
+
+void	a021()
+{
+	unsigned int u;
+
+	u = 1;
+	printf("u [as %%u] -> [%u] \n", u);
+	printf("u [as %%5u] -> [%5u] \n", u);
+	printf("u [as %%-5u] -> [%-5u] \n", u);
+	printf("u [as %%05u] -> [%05u] \n", u);
+	printf("u [as %%.5u] -> [%.5u] \n", u);
+	printf("u [as %%3.5u] -> [%3.5u] \n", u);
+	printf("u [as %%-3.5u] -> [%-3.5u] \n", u);
+	printf("u [as %%5.3u] -> [%5.3u] \n", u);
+	printf("u [as %%-5.3u] -> [%-5.3u] \n", u);
+}
+
+void	a020()
+{
+	int	i;
+	int	*p;
+
+	p = &i;
+	printf("p [as %%p] -> [%p] \n", p);
+	printf("p [as %%15p] -> [%15p] \n", p);
+	printf("p [as %%-15p] -> [%-15p] \n", p);
+//	printf("p [as %%015p] -> [%015p] \n", p);
+//	printf("p [as %%.15p] -> [%.15p] \n", p);
+//	printf("p [as %%15.20p] -> [%15.20p] \n", p);
+//	printf("p [as %%-15.20p] -> [%-15.20p] \n", p);
+//	printf("p [as %%20.15p] -> [%20.15p] \n", p);
+//	printf("p [as %%-20.15p] -> [%-20.15p] \n", p);
+}
+
+void	a019()
+{
+	char	*s1;
+
+	s1 = "s";
+	printf("s1 [as %%s] -> [%s] \n", s1);
+	printf("s1 [as %%5s] -> [%5s] \n", s1);
+	printf("s1 [as %%-5s] -> [%-5s] \n", s1);
+//	printf("s1 [as %%05s] -> [%05s] \n", s1);
+	printf("s1 [as %%.5s] -> [%.5s] \n", s1);
+	printf("s1 [as %%3.5s] -> [%3.5s] \n", s1);
+	printf("s1 [as %%-3.5s] -> [%-3.5s] \n", s1);
+	printf("s1 [as %%5.3s] -> [%5.3s] \n", s1);
+	printf("s1 [as %%-5.3s] -> [%-5.3s] \n", s1);
+}
+
+void	a018()
+{
+	char c1;
+
+	c1 = 'c';
+	printf("c1 [as %%c] -> [%c] \n", c1);
+	printf("c1 [as %%5c] -> [%5c] \n", c1);
+//	printf("c1 [as %%05c] -> %05c \n", c1);
+//	printf("c1 [as %%.5c] -> %.5c \n", c1);
+//	printf("c1 [as %%3.5c] -> %3.5c \n", c1);
+//	printf("c1 [as %%5.3c] -> %5.3c \n", c1);
+	printf("c1 [as %%-5c] -> [%-5c] \n", c1);
+//	printf("c1 [as %%-5.3c] -> %-5.3c \n", c1);
+//	printf("c1 [as %%-3.5c] -> %-3.5c \n", c1);
+}
 
 void	a017()
 {
@@ -65,6 +155,10 @@ void	a017()
 	printf("5, i4 [as %%.*d] -> [%.*d] \n", 5, i4);
 	printf("i4 [as %%.5d] -> [%.5d] \n", i4);
 	printf("i4 [as %%10.5d] -> [%10.5d] \n", i4);
+	printf("i4 [as %%010.5d] -> [%010.5d] \n", i4);
+	printf("i4 [as %%010d] -> [%010d] \n", i4);
+	printf("i4 [as %%5.10d] -> [%5.10d] \n", i4);
+	printf("i4 [as %%-10.5d] -> [%-10.5d] \n", i4);
 	printf("\"a\" [as %%10.5s] -> [%10.5s] \n", "a");
 //	printf("\"a\" [as %%#10.5s] -> [%#10.5s] \n", "a");
 }
