@@ -6,11 +6,24 @@
 #include "libft.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a023();
+#define MAIN_EXPRESSION a024();
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
+
+void	a024()
+{
+	printf("[as %%%%] -> [%%] \n");
+	printf("[as %%5%%] -> [%5%] \n");
+	printf("[as %%-5%%] -> [%-5%] \n");
+	printf("[as %%05%%] -> [%05%] \n");
+	printf("[as %%.5%%] -> [%.5%] \n");
+	printf("[as %%3.5%%] -> [%3.5%] \n");
+	printf("[as %%-3.5%%] -> [%-3.5%] \n");
+	printf("[as %%5.3%%] -> [%5.3%] \n");
+	printf("[as %%-5.3%%] -> [%-5.3%] \n");
+}
 
 void	a023()
 {
