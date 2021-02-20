@@ -2,6 +2,35 @@
 #include <errno.h>
 #include "lmt.h"
 
+#define RUN_FUNCTION test002()
+
+void	read_value(va_list ap)
+{
+	PRINT(va_arg(ap, int), d);
+}
+
+void	test0020(char *fmt, ...)
+{
+	va_list	ap;
+
+	va_start(ap, fmt);
+	PRINT(va_arg(ap, int), d);
+	read_value(ap);
+	PRINT(va_arg(ap, int), d);
+}
+
+void	test002()
+{
+	int	d1;
+	int	d2;
+	int d3;
+
+	d1 = 1;
+	d2 = 2;
+	d3 = 3;
+	test0020("", d1, d2, d3);
+}
+
 void	test_int(va_list *ap)
 {
 	int	d;
@@ -34,7 +63,7 @@ void	test(const char *fmt, ...)
 	va_end(ap);
 }
 
-int		main()
+void	test001()
 {
 	char			c;
 	int				d;
@@ -50,5 +79,10 @@ int		main()
 	PRINT(sizeof(int), lu);
 	PRINT(sizeof(long), lu);
 	test("", c, d, lf, u);
+}
+
+int		main()
+{
+	RUN_FUNCTION;
 	return (0);
 }
