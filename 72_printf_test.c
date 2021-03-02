@@ -2,7 +2,13 @@
 #include <wchar.h>
 #include "lmt.h"
 
-#define FUNCTION a002
+#define FUNCTION a003
+
+void	a003()
+{
+	printf("%s", "ㄱㄴㄷㄹ \n");
+	printf("%ls", L"ㄱㄴㄷㄹ \n");
+}
 
 void	a002()
 {
@@ -24,6 +30,10 @@ void	a002()
 	PRINT(*ptr++, d);
 	ls = L"ㅇ아안ㄴ녀녕";
 	ptr = (char *)ls;
+	PRINT(*ptr++, d);
+	PRINT(*ptr++, d);
+	PRINT(*ptr++, d);
+	PRINT(*ptr++, d);
 	PRINT(*ptr++, d);
 	PRINT(*ptr++, d);
 	PRINT(*ptr++, d);
