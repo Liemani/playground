@@ -7,11 +7,170 @@
 #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a029();
+#define MAIN_EXPRESSION a037();
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
+
+void	a037()
+{
+	int	i;
+	int	*n;
+
+	n = &i;
+	printf("n [as %%n] -> [as %n] \n", n);
+	printf("n [as %%n] -> [as %5n] \n", n);
+	printf("n [as %%n] -> [as %.n] \n", n);
+	printf("n [as %%n] -> [as %05n] \n", n);
+	printf("n [as %%n] -> [as %-05n] \n", n);
+	printf("n [as %%n] -> [as %-5n] \n", n);
+	printf("n [as %%n] -> [as %.5n] \n", n);
+}
+
+void	a036()
+{
+	int	i;
+	int	*n;
+	int	return_value;
+
+	n = &i;
+	return_value = printf("n [as %%n] -> [as %n] \n", n);
+	printf("*n [as %%d] -> [%d] \n", *n);
+	printf("return_value [as %%d] -> [%d] \n", return_value);
+}
+
+void	a035()
+{
+	int				i;
+	unsigned int	u;
+
+	i = -1;
+	u = 1;
+	printf("i as [%%o] -> [%o] \n", i);
+	printf("u as [%%o] -> [%o] \n", u);
+}
+
+void	a034()
+{
+	int	i;
+	int	return_value;
+
+	i = 0;
+	return_value = printf("%*i", INT_MAX -1, i);
+	dprintf(2, "return_value [as %%d] -> [%d] \n", return_value);
+	return_value = printf("%*i", INT_MAX, i);
+	dprintf(2, "return_value [as %%d] -> [%d] \n", return_value);
+	return_value = printf("%*i \n", INT_MAX -1, i);
+	dprintf(2, "return_value [as %%d] -> [%d] \n", return_value);
+	return_value = printf("%*i \n", INT_MAX, i);
+	dprintf(2, "return_value [as %%d] -> [%d] \n", return_value);
+}
+
+void	a033()
+{
+	char	c;
+	int		a;
+	int		i;
+
+//	c = 10;
+//	printf("c as [%%-00-i] -> [%-00-i]", c);
+	a = 12;
+	i = 18;
+	MPRIN("%-00000-----*i, %---0.*d, %0-0-0-0-0.*d, %-0-0-0-0-.*d, %-----.*d", a, i, a, i, a, i, a, i, a, i);
+
+}
+
+void	a032()
+{
+	char	c;
+
+	c = 0;
+	while (c < 127)
+	{
+		printf("c as [%%d] -> [%d] \n", c);
+		printf("c as [%%c] -> [%c] \n", c);
+		printf("c as [%%.c] -> [%.c] \n", c);
+		++c;
+	}
+}
+
+void	a031()
+{
+	int	i;
+	int	j;
+	int k;
+
+	printf("\ntest start \n");
+	i = -1;
+	while (i < 2)
+	{
+		printf("i: [%d] \n", i);
+		printf("i [as %%d] -> [%d] \n", i);
+		printf("i [as %%.d] -> [%.d] \n", i);
+		printf("i [as %%.0d] -> [%.0d] \n", i);
+		printf("i [as %%u] -> [%u] \n", i);
+		printf("i [as %%.u] -> [%.u] \n", i);
+		printf("i [as %%.0u] -> [%.0u] \n", i);
+		printf("i [as %%x] -> [%x] \n", i);
+		printf("i [as %%.x] -> [%.x] \n", i);
+		printf("i [as %%.0x] -> [%.0x] \n", i);
+		++i;
+	}
+
+	printf("\ntest  start \n");
+	i = -1;
+	while (i < 2)
+	{
+		j = -1;
+		printf("i: [%d] \n", i);
+		while (j < 2)
+		{
+			printf("j: [%d] \n", j);
+			printf("j, i [as %%.*d] -> [%.*d] \n",j , i);
+			printf("j, i [as %%.*u] -> [%.*u] \n",j , i);
+			printf("j, i [as %%.*x] -> [%.*x] \n",j , i);
+			++j;
+		}
+		++i;
+	}
+
+	printf("\ntest  start \n");
+	k = -1;
+	while (k < 2)
+	{
+		i = -1;
+		while (i < 2)
+		{
+			j = -1;
+			while (j < 2)
+			{
+				printf("k: [%d] \n", k);
+				printf("i: [%d] \n", i);
+				printf("j: [%d] \n", j);
+				printf("k, j, i [as %%*.*d] -> [%*.*d] \n", k, j, i);
+				printf("k, j, i [as %%*.*u] -> [%*.*u] \n", k, j, i);
+				printf("k, j, i [as %%*.*x] -> [%*.*x] \n", k, j, i);
+				++j;
+			}
+			++i;
+		}
+		++k;
+	}
+}
+
+void	a030()
+{
+	printf("'a' [as %%.c] -> [%.c] \n", 'a');
+	printf("\"a\" [as %%.s] -> [%.s] \n", "a");
+	printf("(void *)1 [as %%.p] -> [%.p] \n", (void *)1);
+	printf("[as %%.%%] -> [%.%] \n");
+	printf("'a' [as %%.c] -> [%.c] \n", 'a');
+	printf("\"a\" [as %%.0s] -> [%.0s] \n", "a");
+	printf("(void *)1 [as %%.p] -> [%.p] \n", (void *)1);
+	printf("[as %%.0%%] -> [%.0%] \n");
+}
+
 void	a029()
 {
 	printf("%d", -0);
