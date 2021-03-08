@@ -1,13 +1,65 @@
 #include <stdio.h>
+#include <locale.h>
 #include <wchar.h>
 #include "lmt.h"
 
-#define FUNCTION a003
+#define FUNCTION a004
+
+void	a004()
+{
+	printf("%ld \n", __STDC_VERSION__);
+}
 
 void	a003()
 {
-	printf("%s", "ㄱㄴㄷㄹ \n");
-	printf("%ls", L"ㄱㄴㄷㄹ \n");
+	wchar_t	*ls;
+	char	*s;
+	char	*ptr;
+	int		return_value;
+	
+	setlocale(LC_ALL, "");
+	ls = L"ㄱㄴㄷㄹ";
+	return_value = printf("ls [as %%5ls] -> [%5ls] \n", ls);
+	return_value = printf("ls [as %%5.3ls] -> [%5.3ls] \n", ls);
+	return_value = printf("ls [as %%3.5ls] -> [%3.5ls] \n", ls);
+	ptr = (char *)ls;
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	ls = L"abcd";
+	return_value = printf("ls [as %%5ls] -> [%5ls] \n", ls);
+	return_value = printf("ls [as %%5.3ls] -> [%5.3ls] \n", ls);
+	return_value = printf("ls [as %%3.5ls] -> [%3.5ls] \n", ls);
+	ptr = (char *)ls;
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	PRINT(*ptr++, 2x);
+	s = "ㄱㄴㄷㄹ";
+	return_value = printf("ls [as %%5s] -> [%5s] \n", s);
+	return_value = printf("ls [as %%5.3s] -> [%5.3s] \n", s);
+	return_value = printf("ls [as %%3.5s] -> [%3.5s] \n", s);
+	s = "abcd";
+	return_value = printf("ls [as %%5s] -> [%5s] \n", s);
+	return_value = printf("ls [as %%5.3s] -> [%5.3s] \n", s);
+	return_value = printf("ls [as %%3.5s] -> [%3.5s] \n", s);
 }
 
 void	a002()

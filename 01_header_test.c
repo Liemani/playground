@@ -2,7 +2,9 @@
 // #include <errno.h> // errno
 // #include <sys/types.h>
 // #include <sys/uio.h>
-#include <stdarg.h>
+// #include <stdarg.h>
+// #include <wchar.h>
+#include <stdbool.h>
 
 int main(void)
 {
