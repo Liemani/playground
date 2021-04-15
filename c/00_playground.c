@@ -3,30 +3,62 @@
 #include <sys/types.h>
 #include <limits.h>
 #include <sys/types.h>
+#include <string.h>
+
 #include "libft.h"
-#include "ft_printf.h"
+// #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a037();
+#define MAIN_EXPRESSION a041();
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
 
-void	a037()
+void	a041()
 {
-	int	i;
-	int	*n;
-
-	n = &i;
-	printf("n [as %%n] -> [as %n] \n", n);
-	printf("n [as %%n] -> [as %5n] \n", n);
-	printf("n [as %%n] -> [as %.n] \n", n);
-	printf("n [as %%n] -> [as %05n] \n", n);
-	printf("n [as %%n] -> [as %-05n] \n", n);
-	printf("n [as %%n] -> [as %-5n] \n", n);
-	printf("n [as %%n] -> [as %.5n] \n", n);
+	PRINT(sizeof(int), lu);
+	PRINT(sizeof(long), lu);
+	PRINT(sizeof(long long), lu);
+	PRINT(sizeof(void *), lu);
 }
+
+void	a040()
+{
+	int		result;
+
+	result = strcmp(NULL, "hi");    // segmentation fault
+	printf("result: %d \n", result);
+}
+
+void	a039()
+{
+	char	*string;
+
+	string = strdup(NULL);    // segmentation fault
+	printf("string: %p \n", string);
+}
+
+void	a038()
+{
+	if ('\0' == '\x0')
+		printf("'\\0' is equal to '\\x' \n");
+}
+
+// void	a037()
+// {
+// 	int	i;
+// 	int	*n;
+// 
+// 	n = &i;
+// 	printf("n [as %%n] -> [as %n] \n", n);
+// 	printf("n [as %%n] -> [as %5n] \n", n);
+// 	printf("n [as %%n] -> [as %.n] \n", n);
+// 	printf("n [as %%n] -> [as %05n] \n", n);
+// 	printf("n [as %%n] -> [as %-05n] \n", n);
+// 	printf("n [as %%n] -> [as %-5n] \n", n);
+// 	printf("n [as %%n] -> [as %.5n] \n", n);
+// }
 
 void	a036()
 {
@@ -67,19 +99,18 @@ void	a034()
 	dprintf(2, "return_value [as %%d] -> [%d] \n", return_value);
 }
 
-void	a033()
-{
-	char	c;
-	int		a;
-	int		i;
-
-//	c = 10;
-//	printf("c as [%%-00-i] -> [%-00-i]", c);
-	a = 12;
-	i = 18;
-	MPRIN("%-00000-----*i, %---0.*d, %0-0-0-0-0.*d, %-0-0-0-0-.*d, %-----.*d", a, i, a, i, a, i, a, i, a, i);
-
-}
+// void	a033()
+// {
+// 	char	c;
+// 	int		a;
+// 	int		i;
+// 
+// 	c = 10;
+// 	printf("c as [%%-00-i] -> [%-00-i]", c);
+// 	a = 12;
+// 	i = 18;
+// 	MPRIN("%-00000-----*i, %---0.*d, %0-0-0-0-0.*d, %-0-0-0-0-.*d, %-----.*d", a, i, a, i, a, i, a, i, a, i);
+// }
 
 void	a032()
 {
@@ -182,46 +213,46 @@ void	a028()
 	printf("[%*.*s$] \n",-7,-3, "yolo");
 }
 
-void	a027()
-{
-	ft_printf("(void *)0 [as %%.p] -> [%.p] \n", (void *)0);
-	ft_printf("(void *)0 [as %%5p] -> [%5p] \n", (void *)0);
-	ft_printf("(void *)0 [as %%5.p] -> [%5.p] \n", (void *)0);
-	printf("(void *)0 [as %%.p] -> [%.p] \n", (void *)0);
-	printf("(void *)0 [as %%5p] -> [%5p] \n", (void *)0);
-	printf("(void *)0 [as %%5.p] -> [%5.p] \n", (void *)0);
-}
+// void	a027()
+// {
+// 	ft_printf("(void *)0 [as %%.p] -> [%.p] \n", (void *)0);
+// 	ft_printf("(void *)0 [as %%5p] -> [%5p] \n", (void *)0);
+// 	ft_printf("(void *)0 [as %%5.p] -> [%5.p] \n", (void *)0);
+// 	printf("(void *)0 [as %%.p] -> [%.p] \n", (void *)0);
+// 	printf("(void *)0 [as %%5p] -> [%5p] \n", (void *)0);
+// 	printf("(void *)0 [as %%5.p] -> [%5.p] \n", (void *)0);
+// }
 
-void	a026()
-{
-	int i;
-
-	i = -1;
-	ft_printf("i [as %%i] -> [%i] \n", i);
-	ft_printf("i [as %%5i] -> [%5i] \n", i);
-	ft_printf("i [as %%-5i] -> [%-5i] \n", i);
-	ft_printf("i [as %%05i] -> [%05i] \n", i);
-	ft_printf("i [as %%.5i] -> [%.5i] \n", i);
-	ft_printf("i [as %%3.5i] -> [%3.5i] \n", i);
-	ft_printf("i [as %%-3.5i] -> [%-3.5i] \n", i);
-	ft_printf("i [as %%5.3i] -> [%5.3i] \n", i);
-	ft_printf("i [as %%-5.3i] -> [%-5.3i] \n", i);
-	ft_printf("i [as %%0.5i] -> [%0.5i] \n", i);
-	ft_printf("i [as %%03.5i] -> [%03.5i] \n", i);
-	ft_printf("i [as %%05.3i] -> [%05.3i] \n", i);
-	ft_printf("i [as %%05.2i] -> [%05.2i] \n", i);
-	ft_printf("i [as %%05.1i] -> [%05.1i] \n", i);
-	ft_printf("i [as %%05.0i] -> [%05.0i] \n", i);
-	ft_printf("i [as %%05.*i] -> [%05.*i] \n", i, i);
-	ft_printf("i [as %%05.i] -> [%05.i] \n", i);
-}
+// void	a026()
+// {
+// 	int i;
+// 
+// 	i = -1;
+// 	ft_printf("i [as %%i] -> [%i] \n", i);
+// 	ft_printf("i [as %%5i] -> [%5i] \n", i);
+// 	ft_printf("i [as %%-5i] -> [%-5i] \n", i);
+// 	ft_printf("i [as %%05i] -> [%05i] \n", i);
+// 	ft_printf("i [as %%.5i] -> [%.5i] \n", i);
+// 	ft_printf("i [as %%3.5i] -> [%3.5i] \n", i);
+// 	ft_printf("i [as %%-3.5i] -> [%-3.5i] \n", i);
+// 	ft_printf("i [as %%5.3i] -> [%5.3i] \n", i);
+// 	ft_printf("i [as %%-5.3i] -> [%-5.3i] \n", i);
+// 	ft_printf("i [as %%0.5i] -> [%0.5i] \n", i);
+// 	ft_printf("i [as %%03.5i] -> [%03.5i] \n", i);
+// 	ft_printf("i [as %%05.3i] -> [%05.3i] \n", i);
+// 	ft_printf("i [as %%05.2i] -> [%05.2i] \n", i);
+// 	ft_printf("i [as %%05.1i] -> [%05.1i] \n", i);
+// 	ft_printf("i [as %%05.0i] -> [%05.0i] \n", i);
+// 	ft_printf("i [as %%05.*i] -> [%05.*i] \n", i, i);
+// 	ft_printf("i [as %%05.i] -> [%05.i] \n", i);
+// }
 
 void	a025()
 {
 	int i;
 
 	printf("ft_printf: \n");
-	a026();
+// 	a026();
 	putchar('\n');
 	printf("printf: \n");
 	i = -1;
