@@ -9,11 +9,22 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a041();
+#define MAIN_EXPRESSION a042();
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
+
+void	a042()
+{
+	int		d = 12;
+	char	*s = "hi";
+
+	PRINT(d, 5.3d);
+	PRINT(s, 5.3s);
+	PRINT(d, 5.8d);
+	PRINT(s, 5.8s);
+}
 
 void	a041()
 {

@@ -5,25 +5,35 @@
 #define true			1
 #define	false			0
 
-#define HAS_FIELDWIDTH	00000001
-#define HAS_PRECISION	00000002
-#define SHOULD_FREE		00000004
+#define HAS_PRECISION	00000001
+#define SHOULD_FREE		00000002
 
 
 
 typedef struct		s_var
 {
-	va_list			*ap;
-	char			*formatString;
+	va_list			ap;
 	char			*positionPrevious;
 	char			*positionCurrent;
-	int				flag;
+	int				flags;
+	size_t			fieldWidth;
+	size_t			precision;
 	char			*buf;
-	unsigned long	bufLen;
+	size_t			bufLength;
 	int				numberOfCharacterPrinted;	
 }					t_var;
 
 
+
+int		isDigit(char ch)
+{
+	return ('0' <= ch && ch <= '9');
+}
+
+char	currentCharacter(t_var *var)
+{
+	return (*var->positionCurrent);
+}
 
 int		getFlag(t_var *var, int flag)
 {
@@ -44,42 +54,90 @@ void	freeBuf(t_var *var)
 		free(var->buf);
 }
 
-void	setBuf(t_var *var, char *buf, bufLen, int shouldFree)
+void	setBuf(t_var *var, char *buf, bufLength, int shouldFree)
 {
 	freeBuf(var);
 	var->buf = buf;
-	var->bufLen = bufLen;
+	var->bufLength = bufLength;
 	setFlag(var, SHOULD_FREE, shouldFree);
 }
 
 char	*ultox(unsigned long)
 {
-
 }
 
-ultoa()
+char	*ultoa(unsigned long)
 {
 }
 
-atoi()
+int		atoi(char *string)
+{
+	char	ch;
+	int		number;
+
+	number = 0;
+	while (isDigit(ch = *string++) && ch != '\0')
+		number = 10 * number + (ch - '0');
+
+	return (number);
+}
+
+size_t	readNumber(t_var *var)
+{
+	size_t	number;
+	
+	number = atoi(positionCurrent);
+	while (isDigit(currentCharacter(var)))
+		++var->positionCurrent;
+
+	return (number);
+}
+
+void	readOption(t_var *var)
+{
+	++var->positionCurrent;
+	var->fieldWidth = readNumber(var);
+	if (currentCharacter(var) == '.')
+	{
+		setFlag(var, HAS_PRECISION, true);
+		++var->positionCurrent;
+		var->precision = readNumber(var);
+	}
+}
+
+int		conversiond(t_var *var)
 {
 }
 
-readOption
+int		conversionx(t_var *var)
 {
 }
 
-setBuf()
+int		conversions(t_var *var)
 {
+	if (var->conversion < var->bufLength)
+
 }
 
-applyOption()
+int		process(t_vat *var)
 {
-}
+	char	ch;
 
-int		process(char *formatString)
-{
-
+	while ((ch = *var->positionCurrent))
+	{
+		if (ch == '%')
+		{
+			write(var->buf, positionPrevious, positionCurrent - positionPrevious);
+			readOption(var);
+			if (d)
+				conversiond(var);
+			else if (x)
+				conversionx(var);
+			else if (s)
+				conversions(var);
+		}
+	}
+	write(var->buf, positionPrevious, positionCurrent - positionPrevious);
 }
 
 int		ft_printf(char *formatString, ...)
@@ -88,9 +146,15 @@ int		ft_printf(char *formatString, ...)
 	int		exitCode;
 
 	va_arg(formatString);
+
 	va_start(var.ap, formatString);
+	var.positionPrevious = formatString;
+	var.positionCurrent = formatString;
+	var.flags = 0;
+	var.numberOfCharacterPrinted = 0;
+
 	exitCode = process(&var);
-	va_end(var->ap);
+	va_end(var.ap);
 	freeBuf(&var);
 	if (exitCode)
 		return (exitCode);
