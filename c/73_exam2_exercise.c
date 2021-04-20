@@ -1,162 +1,173 @@
 #include <stdlib.h>
-#include <unistd.h>
 #include <stdarg.h>
+#include <sys/type.h>
 
 #define true			1
-#define	false			0
+#define false			0
 
-#define HAS_PRECISION	00000001
-#define SHOULD_FREE		00000002
+#define GOOD			0
+#define MALLOC_ERROR	-1
+#define WRITE_ERROR		-2
 
+#define IS_NEGATIVE		(0x1 << 0)
+#define SHOULD_FREE		(0x1 << 1)
+#define HAS_PRECISION	(0x1 << 2)
 
-
-typedef struct		s_var
+typedef struct	s_vars
 {
-	va_list			ap;
-	char			*positionPrevious;
-	char			*positionCurrent;
-	int				flags;
-	size_t			fieldWidth;
-	size_t			precision;
-	char			*buf;
-	size_t			bufLength;
-	int				numberOfCharacterPrinted;	
-}					t_var;
+	va_list		ap;
+	char		*positionPrevious;
+	char		*positionCurrent;
+	size_t		fieldWidth;
+	size_t		precision;
+	int			flags;
+	char		*buffer;
+	size_t		bufferLength;
+	int			numberOfChPrinted;
+}				t_vars;
 
+void	setFlags(t_vars *vars, int flag, int value)
+{
+	if (vlaue == true)
+		vars |= flag;
+	else
+		vars &= ~flag;
+}
 
+int		getFlags(t_vars *vars, int flag)
+{
+	return ((vars->flgs | flag) != 0);
+}
+
+void	freeBuf(t_vars *vars)
+{
+	if (getFlags(vars, SHOULD_FREE))
+		free(vars->buffer);
+}
+
+void	setBuf(t_vars *vars, char *buffer, size_t length, int shouldFree)
+{
+	freeBuf(vars);
+	vars->buffer = buffer;
+	vars->bufferLength = bufferLength;
+	setFlag(vars, SHOULD_FREE, shouldFree);
+}
 
 int		isDigit(char ch)
 {
 	return ('0' <= ch && ch <= '9');
 }
 
-char	currentCharacter(t_var *var)
-{
-	return (*var->positionCurrent);
-}
-
-int		getFlag(t_var *var, int flag)
-{
-	return (var & flag != 0);
-}
-
-void	setFlag(t_var *var, int flag, int value)
-{
-	if (value == true)
-		*var |= flag;
-	else
-		*var &= flag;
-}
-
-void	freeBuf(t_var *var)
-{
-	if (getFlag(var, SHOULD_FREE))
-		free(var->buf);
-}
-
-void	setBuf(t_var *var, char *buf, bufLength, int shouldFree)
-{
-	freeBuf(var);
-	var->buf = buf;
-	var->bufLength = bufLength;
-	setFlag(var, SHOULD_FREE, shouldFree);
-}
-
-char	*ultox(unsigned long)
-{
-}
-
-char	*ultoa(unsigned long)
-{
-}
-
-int		atoi(char *string)
+int		readNumber(t_vars *vars)
 {
 	char	ch;
 	int		number;
 
 	number = 0;
-	while (isDigit(ch = *string++) && ch != '\0')
-		number = 10 * number + (ch - '0');
-
-	return (number);
-}
-
-size_t	readNumber(t_var *var)
-{
-	size_t	number;
-	
-	number = atoi(positionCurrent);
-	while (isDigit(currentCharacter(var)))
-		++var->positionCurrent;
-
-	return (number);
-}
-
-void	readOption(t_var *var)
-{
-	++var->positionCurrent;
-	var->fieldWidth = readNumber(var);
-	if (currentCharacter(var) == '.')
+	while (isDigit(ch = *vars->positionCurrent))
 	{
-		setFlag(var, HAS_PRECISION, true);
-		++var->positionCurrent;
-		var->precision = readNumber(var);
+		number = number * 10 + (ch - '0');
+		++vars->positionCurrent;
+	}
+
+	return (number);
+}
+
+void	readOption(t_vars *vars)
+{
+	vars->filedWidth = readNumber(vars);
+	setFlag(vars, HAS_PRECISION, false);
+	if (*vars->positionCurrent == '.')
+	{
+		setFlag(vars, HAS_PRECISION, true);
+		++vars->positionCurrent;
+		vars->precision = readNumber(vars);
 	}
 }
 
-int		conversiond(t_var *var)
+char	*ultoa(int base)
 {
-}
-
-int		conversionx(t_var *var)
-{
-}
-
-int		conversions(t_var *var)
-{
-	if (var->conversion < var->bufLength)
 
 }
 
-int		process(t_vat *var)
+int		convertd(t_vars *vars)
 {
+	int				i;
+	unsigned int	ui;
+
+	i = va_arg(vars->ap, int);
+	if (i < 0)
+	{
+		ui = -i;
+		setFlag(vars, IS_NEGATIVE, true);
+	}
+	else
+	{
+		ui = i;
+		setFlag(vars, IS_NEGATIVE, false);
+	}
+}
+
+int		convertx(t_vars *vars)
+{
+}
+
+int		converts(t_vars *vars)
+{
+}
+
+int		process(t_vars &vars)
+{
+	int		lengthToPrint;
 	char	ch;
+	int		exitCode;
+	ssize_t	bytesWritten;
 
-	while ((ch = *var->positionCurrent))
+	lengthToPrint = 0;
+	exitCode = 0;
+	while (*vars->positionCurrent != '\0')
 	{
-		if (ch == '%')
+		if (*vars->positionCurrent == '%')
 		{
-			write(var->buf, positionPrevious, positionCurrent - positionPrevious);
-			readOption(var);
-			if (d)
-				conversiond(var);
-			else if (x)
-				conversionx(var);
-			else if (s)
-				conversions(var);
+			lengthToPrint = vars->positionCurrent - vars->positionPrevious;
+			write(1, vars->positionPrevious, lengthToPrint);
+			vars->numberOfChPrinted = lengthToPrint;
+			++vars->positionCurrent;
+			ch = *vars->positionCurrent;
+			readOption(vars);
+			if (ch == 'd')
+				exitCode = convertd(vars);
+			else if (ch == 'x')
+				exitCode = convertx(vars);
+			else if (ch == 's')
+				exitCode = converts(vars);
+			else
 		}
+		else
+			++vars->positionCurrent;
 	}
-	write(var->buf, positionPrevious, positionCurrent - positionPrevious);
+	lengthToPrint = vars->positionCurrent - vars->positionPrevious;
+	if (write(1, vars->positionPrevious, lengthToPrint) == -1)
+		return (WRITE_ERROR);
+	vars->numberOfChPrinted += lengthToPrint;
+	return (GOOD);
 }
 
-int		ft_printf(char *formatString, ...)
+int ft_printf(char *format, ...)
 {
-	t_var	var;
+	t_vars	vars;
 	int		exitCode;
 
-	va_arg(formatString);
+	vars.positionPrevious = format;
+	vars.positionCurrent = format;
+	setFlags(&vars, SHOULD_FREE, false);
+	vars.numberOfChPrinted = 0;
 
-	va_start(var.ap, formatString);
-	var.positionPrevious = formatString;
-	var.positionCurrent = formatString;
-	var.flags = 0;
-	var.numberOfCharacterPrinted = 0;
-
-	exitCode = process(&var);
-	va_end(var.ap);
-	freeBuf(&var);
+	va_start(format, vars.ap);
+	exitCode = process(&vars);
+	va_end(ap);
 	if (exitCode)
 		return (exitCode);
-	return (var.numberOfCharacterPrinted);
+
+	return (vars.numberOfChPrinted);
 }

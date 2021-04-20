@@ -9,11 +9,37 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a042();
+#define MAIN_EXPRESSION a044();
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
+
+void	a044()
+{
+	printf("[%x] \n", 0);
+	printf("[%.x] \n", 0);
+}
+
+void	a043()
+{
+	printf("%-12345678901234567890d \n", 0);
+	printf("%12345678901234567890d \n", 0);
+	printf("%-1234567890123456789d \n", 0);
+	printf("%1234567890123456789d \n", 0);
+	printf("%d \n", 0);
+	printf("%0d \n", 0);
+	printf("%-1d \n", 0);
+	printf("\n");
+
+	printf("[%-12345678901234567890.d] \n", 0);
+	printf("[%12345678901234567890.d] \n", 0);
+	printf("[%-1234567890123456789.d] \n", 0);
+	printf("[%1234567890123456789.d] \n", 0);
+	printf("[%.d] \n", 0);
+	printf("[%0.d] \n", 0);
+	printf("[%-1.d] \n", 0);
+}
 
 void	a042()
 {
