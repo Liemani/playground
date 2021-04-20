@@ -5,6 +5,8 @@
 #define true			1
 #define false			0
 
+#define BASE_TABLE		"0123456789abcdef"
+
 #define GOOD			0
 #define MALLOC_ERROR	-1
 #define WRITE_ERROR		-2
@@ -26,6 +28,33 @@ typedef struct	s_vars
 	int			numberOfChPrinted;
 }				t_vars;
 
+int		ft_isDigit(char ch)
+{
+	return ('0' <= ch && ch <= '9');
+}
+
+void	ft_memset(char *destination, char ch, size_t size)
+{
+	while (size--)
+		*destination = ch;
+}
+
+void	ft_memcpy(char *destination, char *source, size_t size)
+{
+	while (size--)
+		destination[size] = source[size];
+}
+
+size_t	ft_strlen(char *string)
+{
+	char	*pointer;
+
+	pointer = string;
+	whild (*pointer != '\0')
+		++pointer;
+	return (pointer - string);
+}
+
 void	setFlags(t_vars *vars, int flag, int value)
 {
 	if (vlaue == true)
@@ -45,17 +74,12 @@ void	freeBuf(t_vars *vars)
 		free(vars->buffer);
 }
 
-void	setBuf(t_vars *vars, char *buffer, size_t length, int shouldFree)
+void	setBuffer(t_vars *vars, char *buffer, size_t length, int shouldFree)
 {
 	freeBuf(vars);
 	vars->buffer = buffer;
 	vars->bufferLength = bufferLength;
 	setFlag(vars, SHOULD_FREE, shouldFree);
-}
-
-int		isDigit(char ch)
-{
-	return ('0' <= ch && ch <= '9');
 }
 
 int		readNumber(t_vars *vars)
@@ -64,7 +88,7 @@ int		readNumber(t_vars *vars)
 	int		number;
 
 	number = 0;
-	while (isDigit(ch = *vars->positionCurrent))
+	while (ft_isDigit(ch = *vars->positionCurrent))
 	{
 		number = number * 10 + (ch - '0');
 		++vars->positionCurrent;
@@ -76,6 +100,7 @@ int		readNumber(t_vars *vars)
 void	readOption(t_vars *vars)
 {
 	vars->filedWidth = readNumber(vars);
+	setFlag(vars, IS_NEGATIVE, false);
 	setFlag(vars, HAS_PRECISION, false);
 	if (*vars->positionCurrent == '.')
 	{
@@ -85,15 +110,61 @@ void	readOption(t_vars *vars)
 	}
 }
 
-char	*ultoa(int base)
+char	*ultoa(unsigned long number, int base)
 {
+	char	array[20];
+	char	*arrayPointer;
+	char	*buffer;
+	char	*bufferPointer;
 
+	arrayPointer = array;
+	if (!(base == 10 || base == 16))
+		return (NULL);
+	*arrayPointer = BASE_TABLE[number % base];
+	number /= base;
+	while (number != 0)
+	{
+		array[0] = BASE_TABLE[number % base];
+		number /= base;
+	}
+	buffer = malloc(arrayPointer - array + 1);
+	if (buffer == NULL)
+		return (NULL);
+	bufferPointer = buffer;
+	while (array != arrayPointer)
+		*bufferPointer++ = *(--arrayPointer);
+	return (buffer);
+}
+
+int		applyOptiondx(t_vars *vars)
+{
+	char	*buffer;
+
+	if (getFlag(vars, HAS_PRECISION))
+	{
+		if (*vars->buffer == '0')
+		{
+			*vars->buffer = '\0';
+			vars->bufferLength = 0;
+		}
+		if (vars->bufferLength < vars->precision)
+		{
+			buffer = malloc(vars->precision + 1);
+			if (buffer == NULL)
+				return (MALLOC_ERROR);
+			ft_memset(buffer, '0', vars->precisioin - vars->bufferLength);
+			ft_memcpy(buffer + (vars->precision - vars->bufferLength), vars->buffer, vars->bufferLength);
+			buffer + vars->precisioin = '\0';
+			setBuffer(vars, buffer, vars->precision + 1, true);
+		}
+	}
 }
 
 int		convertd(t_vars *vars)
 {
 	int				i;
 	unsigned int	ui;
+	char			*buffer;
 
 	i = va_arg(vars->ap, int);
 	if (i < 0)
@@ -102,10 +173,12 @@ int		convertd(t_vars *vars)
 		setFlag(vars, IS_NEGATIVE, true);
 	}
 	else
-	{
 		ui = i;
-		setFlag(vars, IS_NEGATIVE, false);
-	}
+	buffer = ultoa(10);
+	if (buffer == NULL)
+		return (MALLOC_ERROR);
+	setBuffer(vars, buffer, ft_strlen(buffer), true);
+	return (applyOptiondx(var));
 }
 
 int		convertx(t_vars *vars)
@@ -142,6 +215,10 @@ int		process(t_vars &vars)
 			else if (ch == 's')
 				exitCode = converts(vars);
 			else
+				continue;
+			if (write(1, vars->buffer, vars->bufferLength) == -1)
+				return (WRITE_ERROR);
+			vars->numberOfChPrinted += vars->bufferLength;
 		}
 		else
 			++vars->positionCurrent;
