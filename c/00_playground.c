@@ -9,11 +9,19 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a044();
+#define MAIN_EXPRESSION a045();
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
+
+void	a045()
+{
+	float	f = 123456.78;
+	PRINT(f, f);
+	float	f2 = 123.45678;
+	PRINT(f2, .10f);
+}
 
 void	a044()
 {
@@ -440,8 +448,8 @@ void	a017()
 	PRINT(i6, d);
 	printf("start: [%d, %d, %n] \n", i1, i2, &x3);
 	printf("second: [%1$d, %2$d, %3$d, %3$d, %2$d, %1$d] \n", i1, i2, x3);
-	printf("(unsigned int) &i1 [as %%#x] -> [%#x] \n", (unsigned int) &i1);
-	printf("(unsigned int) &i1 [as %%x] -> [%x] \n", (unsigned int) &i1);
+//	printf("(unsigned int) &i1 [as %%#x] -> [%#x] \n", (unsigned int) &i1);
+//	printf("(unsigned int) &i1 [as %%x] -> [%x] \n", (unsigned int) &i1);
 	printf("i1, &i2 [as %%*p] -> [%*p] \n", i1, &i2);
 	printf("i1, &i2 [as %%2$*1$p] -> [%2$*1$p] \n", i1, &i2);
 	printf("&i2, i1 [as %%1$*2$p] -> [%1$*2$p] \n", &i2, i1);
