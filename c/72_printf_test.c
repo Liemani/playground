@@ -3,7 +3,20 @@
 #include <wchar.h>
 #include "lmt.h"
 
-#define FUNCTION a004
+#define FUNCTION a006
+
+void	a006()
+{
+}
+
+void	a005()
+{
+	wchar_t	*ls;
+
+	setlocale(LC_ALL, "");
+	ls = L"한글";
+	printf("ls [as %%3.5ls] -> [%3.5ls] \n", ls);
+}
 
 void	a004()
 {
