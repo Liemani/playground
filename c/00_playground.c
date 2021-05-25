@@ -9,11 +9,24 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a046();
+#define MAIN_EXPRESSION a047();
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
+
+void	a047()
+{
+	int i = INT_MAX;
+	int j = INT_MAX;
+	long l;
+
+	PRINT(i * 10 > j, d);
+	l = i * 10;
+	PRINT(l > j, d);
+	l = (long)i * 10;
+	PRINT(l > j, d);
+}
 
 void	a046()
 {
