@@ -9,11 +9,16 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a045();
+#define MAIN_EXPRESSION a046();
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
+
+void	a046()
+{
+	PRINT(sizeof(void *), lu);
+}
 
 void	a045()
 {

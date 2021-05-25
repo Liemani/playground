@@ -3,16 +3,20 @@
 
 # define INSTRUCTION_COUNT	11
 
-int	pa(t_search_list *p_child, t_search_list *p_parent);
-int	pb(t_search_list *p_child, t_search_list *p_parent);
-int	sa(t_search_list *p_child, t_search_list *p_parent);
-int	sb(t_search_list *p_child, t_search_list *p_parent);
-int	ss(t_search_list *p_child, t_search_list *p_parent);
-int	ra(t_search_list *p_child, t_search_list *p_parent);
-int	rb(t_search_list *p_child, t_search_list *p_parent);
-int	rr(t_search_list *p_child, t_search_list *p_parent);
-int	rra(t_search_list *p_child, t_search_list *p_parent);
-int	rrb(t_search_list *p_child, t_search_list *p_parent);
-int	rrr(t_search_list *p_child, t_search_list *p_parent);
+typedef	struct s_branch	t_branch;
+
+typedef void			(*t_instruction)(t_branch *p_parent, t_branch *p_child);
+
+int						pa(t_branch *p_parent, t_branch *p_child);
+int						pb(t_branch *p_parent, t_branch *p_child);
+int						sa(t_branch *p_parent, t_branch *p_child);
+int						sb(t_branch *p_parent, t_branch *p_child);
+int						ss(t_branch *p_parent, t_branch *p_child);
+int						ra(t_branch *p_parent, t_branch *p_child);
+int						rb(t_branch *p_parent, t_branch *p_child);
+int						rr(t_branch *p_parent, t_branch *p_child);
+int						rra(t_branch *p_parent, t_branch *p_child);
+int						rrb(t_branch *p_parent, t_branch *p_child);
+int						rrr(t_branch *p_parent, t_branch *p_child);
 
 #endif
