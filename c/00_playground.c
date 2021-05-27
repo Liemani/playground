@@ -9,11 +9,22 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a047();
+#define MAIN_EXPRESSION a048
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
+
+void	a048()
+{
+	int a = 12 % 11;
+	int b = -1 % 11;
+	int c = -12 % 11;
+
+	PRINT(a, d);
+	PRINT(b, d);
+	PRINT(c, d);
+}
 
 void	a047()
 {
@@ -717,7 +728,7 @@ void	a000(void)
 
 int main(void)
 {
-	MAIN_EXPRESSION
+	MAIN_EXPRESSION();
 
 	return (0);
 }
