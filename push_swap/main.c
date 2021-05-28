@@ -1,6 +1,8 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <string.h>
 
 #define PA	0
 #define PB	1
@@ -83,8 +85,11 @@ void	list_add_new_element_front(t_list *p_list, int i)
 
 void	set_list(t_list *p_list)
 {
-	for (int i = 1; i < 9; ++i)
-		list_add_new_element_front(p_list, i);
+	int	max;
+
+	max = 9;
+	for (int i = 1; i <= max; ++i)
+		list_add_new_element_front(p_list, (2 * i) % max + 1);
 }
 
 t_process	*new_process()
@@ -122,42 +127,55 @@ int	read_string(char *string)
 		return (RRB);
 	else if (strcmp(string, "rrr") == 0)
 		return (RRR);
+	return (-1);
 }
 
 void	pa(t_process *p_process)
 {
-	t_element	*p_element;
 	t_element	*p_front;
 	t_element	*p_next;
+	t_element	*p_bf0;
+	t_element	*p_bf1;
+	t_element	*p_bf2;
 
-	if (0 < p_process->p_list_b->count)
+	if (!(0 < p_process->p_list_b->count))
 		return ;
-	p_element = p_process->p_list_b->p_front->p_next;
 	p_front = p_process->p_list_a->p_front;
 	p_next = p_front->p_next;
-	p_element->p_prev = p_front;
-	p_element->p_next = p_next;
-	p_front->p_next = p_element;
-	p_next->p_prev = p_element;
+	p_bf0 = p_process->p_list_b->p_front;
+	p_bf1 = p_bf0->p_next;
+	p_bf2 = p_bf1->p_next;
+	p_bf1->p_prev = p_front;
+	p_bf1->p_next = p_next;
+	p_front->p_next = p_bf1;
+	p_next->p_prev = p_bf1;
+	p_bf0->p_next = p_bf2;
+	p_bf2->p_prev = p_bf0;
 	++p_process->p_list_a->count;
 	--p_process->p_list_b->count;
 }
 
 void	pb(t_process *p_process)
 {
-	t_element	*p_element;
 	t_element	*p_front;
 	t_element	*p_next;
+	t_element	*p_af0;
+	t_element	*p_af1;
+	t_element	*p_af2;
 
-	if (0 < p_process->p_list_a->count)
+	if (!(0 < p_process->p_list_a->count))
 		return ;
-	p_element = p_process->p_list_a->p_front->p_next;
 	p_front = p_process->p_list_b->p_front;
 	p_next = p_front->p_next;
-	p_element->p_prev = p_front;
-	p_element->p_next = p_next;
-	p_front->p_next = p_element;
-	p_next->p_prev = p_element;
+	p_af0 = p_process->p_list_a->p_front;
+	p_af1 = p_af0->p_next;
+	p_af2 = p_af1->p_next;
+	p_af1->p_prev = p_front;
+	p_af1->p_next = p_next;
+	p_front->p_next = p_af1;
+	p_next->p_prev = p_af1;
+	p_af0->p_next = p_af2;
+	p_af2->p_prev = p_af0;
 	--p_process->p_list_a->count;
 	++p_process->p_list_b->count;
 }
@@ -169,7 +187,7 @@ void	sa(t_process *p_process)
 	t_element	*p_a2;
 	t_element	*p_a3;
 
-	if (2 <= p_process->p_list_a->count)
+	if (!(2 <= p_process->p_list_a->count))
 		return ;
 	p_front = p_process->p_list_a->p_front;
 	p_a1 = p_front->p_next;
@@ -190,7 +208,7 @@ void	sb(t_process *p_process)
 	t_element	*p_b2;
 	t_element	*p_b3;
 
-	if (2 <= p_process->p_list_b->count)
+	if (!(2 <= p_process->p_list_b->count))
 		return ;
 	p_front = p_process->p_list_b->p_front;
 	p_b1 = p_front->p_next;
@@ -214,8 +232,8 @@ void	ss(t_process *p_process)
 	t_element	*p_b2;
 	t_element	*p_b3;
 
-	if (2 <= p_process->p_list->a_count
-			|| 2 <= p_process->p_list_b->count)
+	if (!(2 <= p_process->p_list_a->count)
+			|| !(2 <= p_process->p_list_b->count))
 		return ;
 	p_front = p_process->p_list_a->p_front;
 	p_a1 = p_front->p_next;
@@ -247,7 +265,7 @@ void	ra(t_process *p_process)
 	t_element	*p_rear;
 	t_element	*p_ar1;
 
-	if (2 <= p_process->p_list_a->count)
+	if (!(2 <= p_process->p_list_a->count))
 		return ;
 	p_front = p_process->p_list_a->p_front;
 	p_af1 = p_front->p_next;
@@ -270,7 +288,7 @@ void	rb(t_process *p_process)
 	t_element	*p_rear;
 	t_element	*p_br1;
 
-	if (2 <= p_process->p_list_b->count)
+	if (!(2 <= p_process->p_list_b->count))
 		return ;
 	p_front = p_process->p_list_b->p_front;
 	p_bf1 = p_front->p_next;
@@ -296,8 +314,8 @@ void	rr(t_process *p_process)
 	t_element	*p_bf2;
 	t_element	*p_br1;
 
-	if (2 <= p_process->p_list_a->count
-			|| 2 <= p_process->p_list_b->count)
+	if (!(2 <= p_process->p_list_a->count)
+			|| !(2 <= p_process->p_list_b->count))
 		return ;
 	p_front = p_process->p_list_a->p_front;
 	p_af1 = p_front->p_next;
@@ -331,7 +349,7 @@ void	rra(t_process *p_process)
 	t_element	*p_ar1;
 	t_element	*p_ar2;
 
-	if (2 <= p_process->p_list_a->count)
+	if (!(2 <= p_process->p_list_a->count))
 		return ;
 	p_front = p_process->p_list_a->p_front;
 	p_af1 = p_front->p_next;
@@ -354,7 +372,7 @@ void	rrb(t_process *p_process)
 	t_element	*p_br1;
 	t_element	*p_br2;
 
-	if (2 <= p_process->p_list_b->count)
+	if (!(2 <= p_process->p_list_b->count))
 		return ;
 	p_front = p_process->p_list_b->p_front;
 	p_bf1 = p_front->p_next;
@@ -380,8 +398,8 @@ void	rrr(t_process *p_process)
 	t_element	*p_br1;
 	t_element	*p_br2;
 
-	if (2 <= p_process->p_list_a->count
-			|| 2 <= p_process->p_list_b->count)
+	if (!(2 <= p_process->p_list_a->count)
+			|| !(2 <= p_process->p_list_b->count))
 		return ;
 	p_front = p_process->p_list_a->p_front;
 	p_af1 = p_front->p_next;
@@ -418,18 +436,28 @@ void	display(t_process *p_process)
 	a_count = p_process->p_list_a->count;
 	b_count = p_process->p_list_b->count;
 	index = a_count > b_count ? a_count : b_count;
-	p_element_a
+	p_element_a = p_process->p_list_a->p_front->p_next;
+	p_element_b = p_process->p_list_b->p_front->p_next;
 	while (0 < index)
 	{
 		if (index <= a_count)
-			printf("%12d", p_element_a);
+		{
+			printf("%12d", p_element_a->i);
+			p_element_a = p_element_a->p_next;
+		}
 		else
 			printf("            ");
-		if (index <= a_count)
-			printf("%12d");
+		if (index <= b_count)
+		{
+			printf("%13d \n", p_element_b->i);
+			p_element_b = p_element_b->p_next;
+		}
 		else
-			printf("            ");
+			printf("              \n");
+		--index;
 	}
+	printf("------------ ------------ \n");
+	printf("      A            B      \n");
 }
 
 typedef void	(*t_instruction)(t_process *p_process);
@@ -438,12 +466,23 @@ int	main(void)
 {
 	t_instruction	p_instruction_array[INSTRUCTION_COUNT] = {pa, pb, sa, sb, ss, ra, rb, rr, rra, rrb, rrr};
 	t_process		*p_process;
-	char			*p_buf[4];
+	char			p_buf[4];
+	int				read_value;
+	int				count;
 
 	p_process = new_process();
-	while (0 < read(0, p_buf, 3))
+	display(p_process);
+	count = 0;
+	while (0 < read(0, p_buf, 4))
 	{
-		p_instruction_array[read_string(p_buf)](p_process);
+		*strchr(p_buf, '\n') = '\0';
+		read_value = read_string(p_buf);
+		if (read_value != -1)
+		{
+			printf("Command: [%s] \n", p_buf);
+			printf("Count: [%d] \n", ++count);
+			p_instruction_array[read_value](p_process);
+		}
 		display(p_process);
 	}
 	return (0);
