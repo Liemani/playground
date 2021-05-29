@@ -87,7 +87,7 @@ void	set_list(t_list *p_list)
 {
 	int	max;
 
-	max = 9;
+	max = 11;
 	for (int i = 1; i <= max; ++i)
 		list_add_new_element_front(p_list, (2 * i) % max + 1);
 }
