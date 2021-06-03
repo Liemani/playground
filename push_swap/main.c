@@ -87,9 +87,9 @@ void	set_list(t_list *p_list)
 {
 	int	max;
 
-	max = 11;
+	max = 7;
 	for (int i = 1; i <= max; ++i)
-		list_add_new_element_front(p_list, (2 * i) % max + 1);
+		list_add_new_element_front(p_list, i);
 }
 
 t_process	*new_process()
