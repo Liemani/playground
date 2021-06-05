@@ -83,23 +83,24 @@ void	list_add_new_element_front(t_list *p_list, int i)
 	++p_list->count;
 }
 
-void	set_list(t_list *p_list)
+void	set_list(t_list *p_list, int greatest)
 {
-	int	max;
-
-	max = 7;
-	for (int i = 1; i <= max; ++i)
+	int i = 1;
+	while (i <= greatest)
+	{
 		list_add_new_element_front(p_list, i);
+		++i;
+	}
 }
 
-t_process	*new_process()
+t_process	*new_process(int greatest)
 {
 	t_process	*p_process;
 
 	p_process = malloc(sizeof(t_process));
 	p_process->p_list_a = new_list();
 	p_process->p_list_b = new_list();
-	set_list(p_process->p_list_a);
+	set_list(p_process->p_list_a, greatest);
 	return (p_process);
 }
 
@@ -462,7 +463,7 @@ void	display(t_process *p_process)
 
 typedef void	(*t_instruction)(t_process *p_process);
 
-int	main(void)
+int	main(int argc, char **argv)
 {
 	t_instruction	p_instruction_array[INSTRUCTION_COUNT] = {pa, pb, sa, sb, ss, ra, rb, rr, rra, rrb, rrr};
 	t_process		*p_process;
@@ -470,7 +471,9 @@ int	main(void)
 	int				read_value;
 	int				count;
 
-	p_process = new_process();
+	if (argc != 2)
+		return (0);
+	p_process = new_process(atoi(argv[1]));
 	display(p_process);
 	count = 0;
 	while (0 < read(0, p_buf, 4))
