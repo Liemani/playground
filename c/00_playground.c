@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <unistd.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <limits.h>
@@ -9,11 +10,44 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a048
+#define MAIN_EXPRESSION a049
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
+
+#define BUFFER_SIZE	5
+
+void	a049()
+{
+	int		number_of_bytes_read;
+	char	buffer[BUFFER_SIZE];
+	char	*p_ch;
+
+	while ((number_of_bytes_read = read(0, buffer, BUFFER_SIZE)) > 0)
+	{
+		PRINT(number_of_bytes_read, d);
+		printf("[");
+		p_ch = buffer;
+		for (int i = 0; i < number_of_bytes_read; ++i)
+			printf("%c", *p_ch++);
+		printf("] \n");
+	}
+	PRINT(number_of_bytes_read, d);
+	printf("[");
+	p_ch = buffer;
+	for (int i = 0; i < number_of_bytes_read; ++i)
+		printf("%c", *p_ch++);
+	printf("] \n");
+
+	number_of_bytes_read = read(0, buffer, BUFFER_SIZE);
+	PRINT(number_of_bytes_read, d);
+	printf("[");
+	p_ch = buffer;
+	for (int i = 0; i < number_of_bytes_read; ++i)
+		printf("%c", *p_ch++);
+	printf("] \n");
+}
 
 void	a048()
 {
