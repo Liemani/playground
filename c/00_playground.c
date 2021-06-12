@@ -10,13 +10,33 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a049
+#define MAIN_EXPRESSION a050
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
 
 #define BUFFER_SIZE	5
+
+void	a051()
+{
+	PRINT("a051", s);
+}
+
+void	a050()
+{
+	typedef void	(*t_function)(void);
+	typedef void	t_function2(void);
+
+	t_function	my_function = a051;
+	t_function2	*p_my_function = a051;
+
+	void	(*p_function)(void) = a051;
+
+	my_function();
+	p_my_function();
+	p_function();
+}
 
 void	a049()
 {
@@ -39,14 +59,14 @@ void	a049()
 	for (int i = 0; i < number_of_bytes_read; ++i)
 		printf("%c", *p_ch++);
 	printf("] \n");
-
-	number_of_bytes_read = read(0, buffer, BUFFER_SIZE);
-	PRINT(number_of_bytes_read, d);
-	printf("[");
-	p_ch = buffer;
-	for (int i = 0; i < number_of_bytes_read; ++i)
-		printf("%c", *p_ch++);
-	printf("] \n");
+//
+//	number_of_bytes_read = read(0, buffer, BUFFER_SIZE);
+//	PRINT(number_of_bytes_read, d);
+//	printf("[");
+//	p_ch = buffer;
+//	for (int i = 0; i < number_of_bytes_read; ++i)
+//		printf("%c", *p_ch++);
+//	printf("] \n");
 }
 
 void	a048()
