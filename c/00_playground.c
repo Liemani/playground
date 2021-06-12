@@ -10,13 +10,19 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a050
+#define MAIN_EXPRESSION a052
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
 
 #define BUFFER_SIZE	5
+
+void	a052()
+{
+	PRINT(sizeof(int), lu);
+	PRINT(sizeof(long), lu);
+}
 
 void	a051()
 {
