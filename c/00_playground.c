@@ -5,18 +5,81 @@
 #include <limits.h>
 #include <sys/types.h>
 #include <string.h>
+#include <signal.h>
 
 #include "libft.h"
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a052
+#define MAIN_EXPRESSION a056
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
 
 #define BUFFER_SIZE	5
+
+void	a057(int signal)
+{
+	PRINT(signal, d);
+}
+
+void	a056()
+{
+	struct	sigaction	sa;
+	int					result;
+
+	sa.sa_handler = a057;
+	sigemptyset(&sa.sa_mask);
+	sigaddset(&sa.sa_mask, SIGUSR1);
+	sigaddset(&sa.sa_mask, SIGUSR2);
+	sa.sa_flags = 0;
+	if (sigaction(SIGUSR1, &sa, NULL) == -1)
+		return ;
+	if (sigaction(SIGUSR2, &sa, NULL) == -1)
+		return ;
+
+	result = sleep(1000);
+	PRINT(result, d);
+	result = sleep(1);
+	PRINT(result, d);
+}
+
+typedef enum e_test000 {first, second, third} t_test000;
+
+void	a055()
+{
+	int my_int;
+
+	my_int = third;
+	PRINT(my_int, d);
+}
+
+void	a054()
+{
+	int	a = -10;
+	int b;
+
+	while (a < 10)
+	{
+		PRINT(a, d);
+		b = a % 4;
+		PRINT(b, d);
+		++a;
+	}
+}
+
+void	a053()
+{
+	int	value;
+
+	value = INT_MIN;
+	PRINT(value, d);
+	value = -value;
+	PRINT(value, d);
+	value = ~value + 1;
+	PRINT(value, d);
+}
 
 void	a052()
 {
