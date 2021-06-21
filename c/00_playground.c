@@ -6,18 +6,36 @@
 #include <sys/types.h>
 #include <string.h>
 #include <signal.h>
+#include <sys/time.h>
 
 #include "libft.h"
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a056
+#define MAIN_EXPRESSION a058
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
 
 #define BUFFER_SIZE	5
+
+void	a058()
+{
+	struct timeval	time_value;
+	struct timezone	time_zone;
+	int				return_value;
+
+	return_value = gettimeofday(&time_value, &time_zone);
+
+	PRINT(return_value, d);
+	PRINT(time_value.tv_sec, ld);
+	PRINT(time_value.tv_usec, d);
+
+	PRINT(return_value, d);
+	PRINT(time_zone.tz_minuteswest, d);
+	PRINT(time_zone.tz_dsttime, d);
+}
 
 void	a057(int signal)
 {
