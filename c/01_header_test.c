@@ -1,3 +1,4 @@
+// INT_MAX
 // time_t				: long
 // suseconds_t			: int
 // __darwin_suseconds_t	: int
@@ -35,7 +36,8 @@
 //#include <limits.h>
 //#include <signal.h>
 //#include <ucontext.h>
-#include <unistd.h>
+//#include <unistd.h>
+#include <sys/time.h>
 
 int main(void)
 {

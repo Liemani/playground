@@ -20,6 +20,14 @@
 
 #define BUFFER_SIZE	5
 
+void	a059()
+{
+	PRINT(sizeof(long), lu);
+	PRINT(sizeof(long int), lu);
+	PRINT(sizeof(long long), lu);
+	PRINT(sizeof(long long int), lu);
+}
+
 void	a058()
 {
 	struct timeval	time_value;
