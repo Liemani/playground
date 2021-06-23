@@ -1,3 +1,4 @@
+#include <pthread.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
@@ -12,13 +13,138 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a058
+#define MAIN_EXPRESSION a066
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
 
 #define BUFFER_SIZE	5
+
+void	*a067(void *_)
+{
+	(void)_;
+	sleep(1000000);
+	return (NULL);
+}
+
+void	a066()
+{
+	pthread_t	tid;
+	int			count;
+	int			ret;
+
+	count = 0;
+	while ((ret = pthread_create(&tid, NULL, a067, NULL)) == 0)
+		++count;
+	PRINT(count, d);
+	PRINT(ret, d);
+	PRINT(strerror(ret), s);
+}
+
+void	*a065(void *mutexes)
+{
+	sleep(1);
+	while (1)
+	{
+		if (pthread_mutex_lock(mutexes) != 0)
+			printf("Deadlock occured! \n");
+	}
+	return (NULL);
+}
+
+void	*a064(void *mutexes)
+{
+	int	ret;
+	while (1)
+	{
+		ret = pthread_mutex_lock(mutexes);
+		if (ret != 0)
+			PRINT(ret, d);
+		pthread_mutex_lock(mutexes + sizeof(pthread_mutex_t));
+		printf("In the air lock of thread2 \n");
+		pthread_mutex_unlock(mutexes + sizeof(pthread_mutex_t));
+		pthread_mutex_unlock(mutexes);
+	}
+	return (NULL);
+}
+
+void	*a063(void *mutexes)
+{
+	while (1)
+	{
+		pthread_mutex_lock(mutexes);
+		pthread_mutex_lock(mutexes + sizeof(pthread_mutex_t));
+		printf("In the air lock of thread1 \n");
+		pthread_mutex_unlock(mutexes);
+		pthread_mutex_unlock(mutexes + sizeof(pthread_mutex_t));
+	}
+	return (NULL);
+}
+
+void	a062()
+{
+	pthread_t		thread1;
+	pthread_t		thread2;
+//	pthread_t		thread3;
+	pthread_mutex_t	mutexes[2];
+
+	pthread_mutex_init(&mutexes[0], NULL);
+	pthread_mutex_init(&mutexes[1], NULL);
+	if (pthread_create(&thread1, NULL, a063, mutexes) != 0)
+		return ;
+	if (pthread_create(&thread2, NULL, a064, mutexes) != 0)
+		return ;
+//	if (pthread_create(&thread3, NULL, a065, mutexes) != 0)
+//		return ;
+	pthread_join(thread1, NULL);
+	pthread_join(thread2, NULL);
+//	pthread_join(thread3, NULL);
+}
+
+void	a057(int signal);
+
+void	a061(int signal)
+{
+	struct sigaction	sa;
+	sa.sa_handler = a057;
+	sigemptyset(&sa.sa_mask);
+	if (sigaction(SIGUSR1, &sa, NULL) == -1)
+	{
+		printf("Failed \n");
+		return ;
+	}
+	while (1)
+	{
+		PRINT(signal, d);
+		sleep(5);
+	}
+}
+
+void	a057(int signal);
+
+void	a060()
+{
+	struct sigaction	sa1;
+	struct sigaction	sa2;
+	int					ret;
+
+	sa1.sa_handler = a057;
+	sa2.sa_handler = a061;
+	sigemptyset(&sa1.sa_mask);
+	sigaddset(&sa1.sa_mask, SIGUSR1);
+	sigemptyset(&sa2.sa_mask);
+	sigaddset(&sa2.sa_mask, SIGUSR2);
+	if (sigaction(SIGUSR1, &sa1, NULL) == -1)
+		return ;
+	if (sigaction(SIGUSR2, &sa2, NULL) == -1)
+		return ;
+	while (1)
+	{
+		ret = usleep(5000000);
+		PRINT(ret, d);
+	}
+}
 
 void	a059()
 {
@@ -47,7 +173,11 @@ void	a058()
 
 void	a057(int signal)
 {
-	PRINT(signal, d);
+	while (1)
+	{
+		PRINT(signal, d);
+		sleep(5);
+	}
 }
 
 void	a056()

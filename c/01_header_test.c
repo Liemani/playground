@@ -1,3 +1,4 @@
+// PTHREAD_MUTEX_INITIALIZER
 // INT_MAX
 // time_t				: long
 // suseconds_t			: int
@@ -33,11 +34,12 @@
 //#include <stdbool.h>
 //#include <stdlib.h>
 //#include <math.h>
-//#include <limits.h>
+#include <limits.h>
 //#include <signal.h>
 //#include <ucontext.h>
 //#include <unistd.h>
-#include <sys/time.h>
+//#include <sys/time.h>
+//#include <pthread.h>
 
 int main(void)
 {
