@@ -3,11 +3,12 @@
 #include <sys/time.h>
 #include <pthread.h>
 #include <stdbool.h>
+#include <time.h>
 
 #define SEC_LEN		19
 #define USEC_LEN	6
 
-#define EXECUTE	a003
+#define EXECUTE	a004
 
 void	*b000(void *nothing)
 {
@@ -17,15 +18,14 @@ void	*b000(void *nothing)
 	while (true)
 	{
 		++another_nothing;
-		usleep(1);
 	}
 }
 
 #ifndef THREAD_COUNT
-# define THREAD_COUNT	5
+# define THREAD_COUNT	20
 #endif
 
-void	a003()
+void	a004()
 {
 	struct timeval	time_prev;
 	struct timeval	time_curr;
@@ -49,6 +49,37 @@ void	a003()
 		time_prev = time_curr;
 		printf("%19ld %06d \n", result.tv_sec, result.tv_usec);
 		usleep(1);
+		++index;
+	}
+}
+
+void	a003()
+{
+	struct timeval	time_prev;
+	struct timeval	time_curr;
+	struct timeval	result;
+	pthread_t		threads[THREAD_COUNT];
+	int				index;
+	struct timespec	time;
+
+	gettimeofday(&time_prev, NULL);
+	index = 0;
+	while (index < THREAD_COUNT)
+	{
+		if (pthread_create(&threads[index], NULL, b000, NULL) != 0)
+			return ;
+		++index;
+	}
+	index = 0;
+	time.tv_sec = 0;
+	time.tv_nsec = 100000000;
+	while (index < 100)
+	{
+		gettimeofday(&time_curr, NULL);
+		timersub(&time_curr, &time_prev, &result);
+		time_prev = time_curr;
+		printf("%19ld %06d \n", result.tv_sec, result.tv_usec);
+		nanosleep(&time, NULL);
 		++index;
 	}
 }
