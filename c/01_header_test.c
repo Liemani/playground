@@ -1,3 +1,6 @@
+// pid_t
+// __darwin_pid_t
+//
 // PTHREAD_MUTEX_INITIALIZER
 // INT_MAX
 // time_t				: long
@@ -40,6 +43,7 @@
 #include <unistd.h>
 //#include <sys/time.h>
 //#include <pthread.h>
+//#include <sysexits.h>
 
 int main(void)
 {
