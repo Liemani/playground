@@ -1,3 +1,5 @@
+// dirnet
+// stat
 // pid_t
 // __darwin_pid_t
 //
@@ -45,7 +47,9 @@
 //#include <pthread.h>
 //#include <sysexits.h>
 //#include <sys/ioctl.h>
-#include <termios.h>
+//#include <termios.h>
+//#include <sys/stat.h>
+#include <dirent.h>
 
 int main(void)
 {
