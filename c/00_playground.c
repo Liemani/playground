@@ -13,17 +13,13 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a068
+#define MAIN_EXPRESSION a059
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
 
 #define BUFFER_SIZE	5
-
-void	a068()
-{
-}
 
 void	*a067(void *_)
 {

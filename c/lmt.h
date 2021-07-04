@@ -4,6 +4,6 @@
 #include <stdio.h>
 
 #define PRINT(identifier, format_specifier) \
-	printf(#identifier " [as %%" #format_specifier "] -> [%" #format_specifier "] \n", identifier)
+	printf(#identifier "\t-> [%" #format_specifier "] as %%" #format_specifier " \n", identifier)
 
 #endif
