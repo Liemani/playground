@@ -1,3 +1,5 @@
+// rusage
+// pid_t
 // dirnet
 // stat
 // pid_t
@@ -40,7 +42,7 @@
 //#include <stdlib.h>
 //#include <math.h>
 //#include <limits.h>
-//#include <signal.h>
+#include <signal.h>
 //#include <ucontext.h>
 //#include <unistd.h>
 //#include <sys/time.h>
@@ -49,7 +51,7 @@
 //#include <sys/ioctl.h>
 //#include <termios.h>
 //#include <sys/stat.h>
-#include <dirent.h>
+//#include <dirent.h>
 
 int main(void)
 {

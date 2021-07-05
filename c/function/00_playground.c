@@ -6,14 +6,47 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 #include <dirent.h>
+#include "../lmt.h"
 
 #define IN	0
 #define OUT	1
 #define ERR	2
 
-#define EXECUTE	a001
+#define EXECUTE	a007
 #define PARAMETERS	char **argv, char **envp
 #define ARGUMENTS	argv, envp
+
+//	Print parent pid
+void	a007(PARAMETERS)
+{
+	pid_t	ppid;
+
+	(void)argv;
+	(void)envp;
+	ppid = getppid();
+	PRINT(ppid, d);
+}
+
+//	What would happen if sleep until child to terminate and call wait() the terminated child?
+//		Print the return value and errno
+void	a006(PARAMETERS)
+{
+	pid_t	pid;
+	int	stat_loc;
+
+	(void)argv;
+	(void)envp;
+	pid = fork();
+	PRINT(pid, d);
+	if (pid > 0)
+		sleep(1);
+	else
+		exit(0);
+	pid = waitpid(pid, &stat_loc, 0);
+	PRINT(pid, d);
+	PRINT(errno, d);
+	perror(NULL);
+}
 
 void	a005(PARAMETERS)
 {
