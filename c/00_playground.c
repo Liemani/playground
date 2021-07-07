@@ -13,13 +13,32 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a059
+#define MAIN_EXPRESSION a068
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
 
 #define BUFFER_SIZE	5
+
+void	a068()
+{
+	pid_t	pid;
+	int	stat_loc;
+
+	pid = fork();
+	if (pid == 0)
+		exit(1);
+	PRINT(pid, d);
+	pid = wait(&stat_loc);
+	PRINT(pid, d);
+	PRINT((*(int *)&stat_loc >> 8) & 0x000000ff, d);
+	pid = wait(&stat_loc);
+	PRINT(pid, d);
+	PRINT((*(int *)&stat_loc >> 8) & 0x000000ff, d);
+	PRINT(errno, d);
+	perror("errno");
+}
 
 void	*a067(void *_)
 {

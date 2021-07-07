@@ -42,7 +42,7 @@
 //#include <stdlib.h>
 //#include <math.h>
 //#include <limits.h>
-#include <signal.h>
+//#include <signal.h>
 //#include <ucontext.h>
 //#include <unistd.h>
 //#include <sys/time.h>
@@ -52,8 +52,20 @@
 //#include <termios.h>
 //#include <sys/stat.h>
 //#include <dirent.h>
+#include <stdio.h>
+#include <sys/wait.h>
 
 int main(void)
 {
+#ifdef __DARWIN_UNIX03
+	printf("darwin unix03 \n");
+#else
+	printf("not darwin unix03 \n");
+#endif
+#if defined(_POSIX_C_SOURCE) && !defined(_DARWIN_C_SOURCE)
+	printf("true \n");
+#else
+	printf("false \n");
+#endif
 	return (0);
 }
