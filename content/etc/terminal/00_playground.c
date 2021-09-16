@@ -1,6 +1,6 @@
 #include <unistd.h>
 #include <termios.h>
-#include "../c/lmt.h"
+#include "../../c/lmt.h"
 
 void	print_ttyname(void)
 {

@@ -13,13 +13,21 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a068
+#define MAIN_EXPRESSION a069
 
 #ifndef STRING
 #define STRING "\a \n"
 #endif
 
 #define BUFFER_SIZE	5
+
+void	a069()
+{
+	const char	*sentence = "hi there";
+	printf("sentence -> [%s] as %%s \n", sentence);
+	*(char *)sentence = 'a';	// bus error occur
+	printf("sentence -> [%s] as %%s \n", sentence);
+}
 
 void	a068()
 {
