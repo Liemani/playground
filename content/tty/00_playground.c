@@ -2,7 +2,18 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#define EXECUTE isatty_example
+#define EXECUTE getttyent_example
+
+#include <ttyent.h>
+
+void	getttyent_example()
+{
+	struct ttyent	*tty_entry;
+	tty_entry = getttyent();
+	printf("tty_entry->ty_name -> [%s] \n", tty_entry->ty_name);
+	printf("tty_entry->ty_getty -> [%s] \n", tty_entry->ty_getty);
+	printf("tty_entry->ty_type -> [%s] \n", tty_entry->ty_type);
+}
 
 void	isatty_example()
 {
