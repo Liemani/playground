@@ -13,7 +13,15 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a069
+#define MAIN_EXPRESSION a070
+
+//	dereferencing null pointer test
+void	a070()
+{
+	int	*null_pointer = NULL;
+
+	printf("null_pointer -> [%d] as %%d \n", *null_pointer);
+}
 
 #ifndef STRING
 #define STRING "\a \n"
