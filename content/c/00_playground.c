@@ -13,7 +13,7 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define MAIN_EXPRESSION a070
+#define EXECUTE a070
 
 //	dereferencing null pointer test
 void	a070()
@@ -1042,7 +1042,7 @@ void	a000(void)
 
 int main(void)
 {
-	MAIN_EXPRESSION();
+	EXECUTE();
 
 	return (0);
 }
