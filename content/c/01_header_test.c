@@ -1,5 +1,6 @@
 // rusage
 // pid_t
+// __darwin_pid_t
 // dirnet
 // stat
 // pid_t
