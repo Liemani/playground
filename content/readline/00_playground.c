@@ -4,6 +4,11 @@
 #include <readline/history.h>
 #include <signal.h>
 
+#define FALSE	0
+#define TRUE	1
+
+int	global_variable;
+
 typedef void    (*t_signal_handler)(int);
 
 static void lmt_signal_set(int signal_number, t_signal_handler handler)
@@ -15,26 +20,16 @@ static void lmt_signal_set(int signal_number, t_signal_handler handler)
 static void signal_handler_sigint(int signal)
 {
     (void)signal;
-    /* '<C-c>' signal function */
 	printf("\n");
 	rl_on_new_line();
-	rl_replace_line("HAHA", 1);
-	rl_redisplay();
-}
-
-static void signal_handler_sigquit(int signal)
-{
-    (void)signal;
-    /* '<C-\>' signal function */
-	printf("rl_end -> [%d] as %%d \n", rl_end);
-	rl_on_new_line();
+	rl_replace_line("", 0);
 	rl_redisplay();
 }
 
 void    lmt_signal_init(void)
 {
     lmt_signal_set(SIGINT, signal_handler_sigint);
-    lmt_signal_set(SIGQUIT, signal_handler_sigquit);
+    lmt_signal_set(SIGQUIT, SIG_IGN);
 }
 
 
