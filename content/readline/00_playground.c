@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <signal.h>
+#include <termios.h>
 
 #define FALSE	0
 #define TRUE	1
-
-int	global_variable;
 
 typedef void    (*t_signal_handler)(int);
 
@@ -26,24 +26,85 @@ static void signal_handler_sigint(int signal)
 	rl_redisplay();
 }
 
-void    lmt_signal_init(void)
+void    signal_set_reading(void)
 {
     lmt_signal_set(SIGINT, signal_handler_sigint);
     lmt_signal_set(SIGQUIT, SIG_IGN);
 }
 
+void	signal_set_parsing(void)
+{
+	lmt_signal_set(SIGINT, SIG_IGN);
+}
+
+void	signal_set_child(void)
+{
+	lmt_signal_set(SIGINT, SIG_DFL);
+	lmt_signal_set(SIGQUIT, SIG_DFL);
+}
+
+static void	set_readline_variable(void)
+{
+	rl_catch_signals = 0;
+}
+
+//	static void	set_termios(void)
+//	{
+//		struct termios	termios;
+//		unsigned long	isig;
+//	
+//		tcgetattr(1, &termios);
+//		isig = (termios.c_lflag & ISIG) != 0;
+//		printf("Current ISIG setting: %lu \n", isig);
+//		termios.c_lflag |= ISIG;
+//		tcsetattr(1, TCSADRAIN, &termios);
+//	}
+
+static int	eof_occured(char *line)
+{
+	return (line == NULL);
+}
 
 
-int	main()
+
+int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
+	pid_t	pid;
+	int		stat_loc;
 
-	lmt_signal_init();
-	while ((line = readline("<prompt>")) != NULL)
+	if (argc != 3)
 	{
+		printf("usage: %s sleep <time>", argv[0]);
+		exit(1);
+	}
+
+	set_readline_variable();
+//		set_termios();
+	signal_set_reading();
+
+	while ((line = readline("<prompt> ")) != NULL)
+	{
+		signal_set_parsing();
 		printf("line -> [%s] as %%s \n", line);
-		add_history(line);
+		if (*line != '\0')
+			add_history(line);
 		free(line);
+		pid = fork();
+		if (pid == 0)
+		{
+			signal_set_child();
+			execve("/bin/sleep", argv + 1, envp);
+		}
+		else
+			wait(&stat_loc);
+		signal_set_reading();
+	}
+	if (eof_occured(line))
+	{
+//			rl_replace_line("exit\n", 0);
+//			rl_redisplay();
+		printf("\nexit\n");
 	}
 
 	return (0);
