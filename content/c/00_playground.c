@@ -13,7 +13,51 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a070
+#define EXECUTE a071
+
+
+
+typedef void	*(*t_prev)(void *);
+typedef void	*(*t_next)(void *);
+
+typedef struct s_iterable
+{
+	void	*first;
+	void	*terminator;
+	t_prev	prev;
+	t_next	next;
+}	t_iterable;
+
+char	*string_prev(char *p_ch)
+{
+	return (p_ch - 1);
+}
+
+char	*string_next(char *p_ch)
+{
+	return (p_ch + 1);
+}
+
+void	a071()
+{
+	char		*string = "Hello, World!\n";
+	t_iterable	string_iterator;
+	char		*iterator;
+
+	string_iterator.first = string;
+	string_iterator.terminator = string + 14;
+	string_iterator.prev = (t_prev)string_prev;
+	string_iterator.next = (t_next)string_next;
+
+	iterator = string_iterator.first;
+	while (iterator != string_iterator.terminator)
+	{
+		printf("%c \n", *iterator);
+		iterator = string_iterator.next(iterator);
+	}
+}
+
+
 
 //	dereferencing null pointer test
 void	a070()
