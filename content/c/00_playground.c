@@ -20,13 +20,13 @@
 typedef void	*(*t_prev)(void *);
 typedef void	*(*t_next)(void *);
 
-typedef struct s_iterable
+typedef struct s_protocol_iterable
 {
 	void	*first;
 	void	*terminator;
 	t_prev	prev;
 	t_next	next;
-}	t_iterable;
+}	t_protocol_iterable;
 
 char	*string_prev(char *p_ch)
 {
