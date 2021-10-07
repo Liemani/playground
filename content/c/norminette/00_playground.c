@@ -6,11 +6,11 @@
 /*   By: jeonpark <jeonpark@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/07 11:10:01 by jeonpark          #+#    #+#             */
-/*   Updated: 2021/10/07 15:18:35 by jeonpark         ###   ########.fr       */
+/*   Updated: 2021/10/07 20:47:00 by jeonpark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lmt_check_syntax_error.h"
+#include "lmt_check_syntax_error.h"	// lmt_check_syntax_error()
 
 typedef int	(*t_error_check_function)(t_token *p_token);
 
@@ -39,16 +39,6 @@ int	lmt_check_syntax_error(t_token *p_first_token)
 		else if (lmt_is_token_type_close_parenthesis(element))
 		{
 			if (lmt_is_token_type_open_parenthesis(element->pre))
-				return (1);
-		}
-		else if (lmt_is_token_type_control_operator(element))
-		{
-			if (lmt_is_token_type_control_operator(element->pre))
-				return (1);
-		}
-		else if (lmt_is_token_type_redirection(element))
-		{
-			if (lmt_is_token_type_COMMAND(element->next))
 				return (1);
 		}
 		element = element->next;
