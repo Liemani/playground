@@ -8,6 +8,14 @@
 
 
 
+///	- Then what if I set stat_loc before first wait()?
+///	- stat_loc is changed by first wait().
+///	- If wait() finish without error, it set stat_loc.
+
+/// - What if parent wait() it's child after the child exit()?
+
+
+
 void	child()
 {
 	printf("This is child process. \n");
@@ -20,6 +28,7 @@ void	parent(pid_t child_pid)
 	int		stat_loc;
 
 	printf("This is parent process. \n");
+	stat_loc = 1;
 	wait_pid = wait(&stat_loc);
 	printf("Child pid was [%d]. \n", child_pid);
 	printf("I(parent) waited [%d]. \n", wait_pid);
@@ -33,9 +42,6 @@ void	parent(pid_t child_pid)
 
 
 
-///	- When I set stat_loc randomly between wait,
-///		the value of stat_loc I set maintained.
-///	- stat_loc didn't changed by wait when error occured.
 int	main()
 {
 	pid_t	pid;
