@@ -1,4 +1,4 @@
-#include <unistd.h>	// fork(), pid_t
+#include <unistd.h>	// fork(), pid_t, sleep()
 #include <stdio.h>	// printf()
 #include <stdlib.h>	// exit()
 
@@ -15,12 +15,13 @@ void	child()
 
 void	parent()
 {
+	sleep(1);
 	printf("This is parent process. \n");
 }
 
 
 
-///	- Generally, parent print string faster than child.
+///	- If parent sleep for a short time, child print string first.
 int	main()
 {
 	pid_t	pid;
