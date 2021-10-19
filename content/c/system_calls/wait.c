@@ -8,11 +8,13 @@
 
 
 
-///	- Then what if I set stat_loc before first wait()?
-///	- stat_loc is changed by first wait().
-///	- If wait() finish without error, it set stat_loc.
-
 /// - What if parent wait() it's child after the child exit()?
+///	- Now parent sleep() for a second.
+///	- So child must call exit() before parent call wait().
+
+///	- wait() operated normally with it's already exited child.
+
+///	- What if there is several child rather than only 1?
 
 
 
@@ -27,16 +29,10 @@ void	parent(pid_t child_pid)
 	pid_t	wait_pid;
 	int		stat_loc;
 
-	printf("This is parent process. \n");
-	stat_loc = 1;
+	sleep(1);
 	wait_pid = wait(&stat_loc);
 	printf("Child pid was [%d]. \n", child_pid);
 	printf("I(parent) waited [%d]. \n", wait_pid);
-	printf("And stat_loc was [%d]. \n", stat_loc);
-	stat_loc = 1;
-	wait_pid = wait(&stat_loc);
-	printf("Wait again without child. \n");
-	printf("Reurned pid is [%d]. \n", wait_pid);
 	printf("And stat_loc was [%d]. \n", stat_loc);
 }
 
