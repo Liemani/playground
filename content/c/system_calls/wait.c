@@ -1,6 +1,7 @@
 #include <unistd.h>	// fork(), pid_t, sleep()
 #include <stdio.h>	// printf()
 #include <stdlib.h>	// exit()
+#include <sys/wait.h>	// wait()
 
 #define NORMAL	0
 #define ERROR	1
@@ -13,15 +14,21 @@ void	child()
 	exit(NORMAL);
 }
 
-void	parent()
+void	parent(pid_t child_pid)
 {
-	sleep(1);
+	pid_t	wait_pid;
+	int		stat_loc;
+
 	printf("This is parent process. \n");
+	wait_pid = wait(&stat_loc);
+	printf("Child pid was [%d]. \n", child_pid);
+	printf("I(parent) waited [%d]. \n", wait_pid);
+	printf("And stat_loc was [%d]. \n", stat_loc);
 }
 
 
 
-///	- If parent sleep for a short time, child print string first.
+///	- This version seems no problem.
 int	main()
 {
 	pid_t	pid;
@@ -32,6 +39,6 @@ int	main()
 	else if (pid == 0)
 		child();
 	else
-		parent();
+		parent(pid);
 	return (NORMAL);
 }
