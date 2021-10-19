@@ -24,6 +24,7 @@ void	parent(pid_t child_pid)
 	printf("Child pid was [%d]. \n", child_pid);
 	printf("I(parent) waited [%d]. \n", wait_pid);
 	printf("And stat_loc was [%d]. \n", stat_loc);
+	stat_loc = 1;
 	wait_pid = wait(&stat_loc);
 	printf("Wait again without child. \n");
 	printf("Reurned pid is [%d]. \n", wait_pid);
@@ -32,8 +33,9 @@ void	parent(pid_t child_pid)
 
 
 
-///	- If I try to wait again without additional child, wait() returns -1.
-///	- And stat_loc steal 0.
+///	- When I set stat_loc randomly between wait,
+///		the value of stat_loc I set maintained.
+///	- stat_loc didn't changed by wait when error occured.
 int	main()
 {
 	pid_t	pid;
