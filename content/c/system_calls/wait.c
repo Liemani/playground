@@ -1,81 +1,76 @@
-#include <unistd.h>	// fork(), pid_t, sleep(), getpgid()
+#include <unistd.h>	// fork(), pid_t, sleep(), getpgid(), execve()
 #include <stdio.h>	// printf(), perror()
-#include <stdlib.h>	// exit()
+#include <stdlib.h>	// exit(), NULL
 #include <sys/wait.h>	// wait()
+#include <signal.h>	// signal()
 
 #define NORMAL	0
 #define ERROR	1
 
 
 
-///	- print rusage.
-///	- result:
-///		This is child1 process.
-///		tv_sec: [0], tv_usec: [124]
-///		tv_sec: [0], tv_usec: [186]
-///		rusage->ru_maxress: [450560].
-///		rusage->ru_ixrss: [0].
-///		rusage->ru_idrss: [0].
-///		rusage->ru_isrss: [0].
-///		rusage->ru_minflt: [126].
-///		rusage->ru_majflt: [0].
-///		rusage->ru_nswap: [0].
-///		rusage->ru_inblock: [0].
-///		rusage->ru_oublock: [0].
-///		rusage->ru_msgsnd: [0].
-///		rusage->ru_msgrcv: [0].
-///		rusage->ru_nsignals: [0].
-///		rusage->ru_nvcsw: [0].
-///		rusage->ru_nivcsw: [1].
-///	- There is lots of information than I expected.
+///	- If option of waitpid() is WNOHANG, and there is no terminated process at that time,
+///		waitpid() returns 0.
+///	- If terminal get signal, it propagate the signal to the child process.
+///	- But i send a signal by kill command on cli, it seems not propagated to child process.
 
 
 
-void	timeval_describe(struct timeval *timeval)
+typedef void	(*t_signal_handler)(int);
+
+void	nothing(int a)
 {
-	printf("tv_sec: [%ld], tv_usec: [%d] \n", timeval->tv_sec, timeval->tv_usec);
+	(void)a;
 }
 
-void	rusage_describe(struct rusage *rusage)
+static void	signal_set(int signal_number, t_signal_handler handler)
 {
-	timeval_describe(&rusage->ru_utime);
-	timeval_describe(&rusage->ru_stime);
-	printf("rusage->ru_maxress: [%ld]. \n", rusage->ru_maxrss);
-	printf("rusage->ru_ixrss: [%ld]. \n", rusage->ru_ixrss);
-	printf("rusage->ru_idrss: [%ld]. \n", rusage->ru_idrss);
-	printf("rusage->ru_isrss: [%ld]. \n", rusage->ru_isrss);
-	printf("rusage->ru_minflt: [%ld]. \n", rusage->ru_minflt);
-	printf("rusage->ru_majflt: [%ld]. \n", rusage->ru_majflt);
-	printf("rusage->ru_nswap: [%ld]. \n", rusage->ru_nswap);
-	printf("rusage->ru_inblock: [%ld]. \n", rusage->ru_inblock);
-	printf("rusage->ru_oublock: [%ld]. \n", rusage->ru_oublock);
-	printf("rusage->ru_msgsnd: [%ld]. \n", rusage->ru_msgsnd);
-	printf("rusage->ru_msgrcv: [%ld]. \n", rusage->ru_msgrcv);
-	printf("rusage->ru_nsignals: [%ld]. \n", rusage->ru_nsignals);
-	printf("rusage->ru_nvcsw: [%ld]. \n", rusage->ru_nvcsw);
-	printf("rusage->ru_nivcsw: [%ld]. \n", rusage->ru_nivcsw);
+	signal(signal_number, handler);
 }
 
-void	child()
+static void	signal_set_parent(void)
 {
-	printf("This is child1 process. \n");
-	exit(2);
+	signal_set(SIGINT, SIG_IGN);
+}
+
+static void	signal_set_child(void)
+{
+	signal_set(SIGINT, SIG_DFL);
+}
+
+
+
+void	child(char **envp)
+{
+	char	*argv[3];
+	(void)envp;
+
+	signal_set_child();
+	argv[0] = "sleep";
+	argv[1] = "10";
+	argv[2] = NULL;
+	execve("/bin/sleep", argv, envp);
 }
 
 void	parent(pid_t pid)
 {
-	int				stat_loc;
-	struct rusage	rusage;
+	int		stat_loc;
+	pid_t	waited_process;
 
-	wait4(pid, &stat_loc, 0, &rusage);
-	rusage_describe(&rusage);
+	waited_process = waitpid(pid, &stat_loc, 0);
+	printf("waited_process: [%d]. \n", waited_process);
+	printf("stat_loc: [%d]. \n", stat_loc);
 }
 
 
 
-int	main()
+int	main(int argc, char **argv, char **envp)
 {
+	(void)argc;
+	(void)argv;
 	pid_t	pid;
+
+	signal_set_parent();
 
 	pid = 0;
 
@@ -83,7 +78,7 @@ int	main()
 	if (pid == -1)
 		return (ERROR);
 	else if (pid == 0)
-		child();
+		child(envp);
 
 	parent(pid);
 
