@@ -8,78 +8,84 @@
 
 
 
-///	- Next time, let remove that sleep().
-///	- This time, parent process rather than child process calls sleep(1).
-
+///	- print rusage.
 ///	- result:
 ///		This is child1 process.
-///		This is child2 process.
-///		pid1: [72662].
-///		pid2: [72663].
-///		pgid0: [72660], pgid1: [-1], pgid2: [-1].
-///	- As expected, getpgid() of terminated process returns -1.
+///		tv_sec: [0], tv_usec: [124]
+///		tv_sec: [0], tv_usec: [186]
+///		rusage->ru_maxress: [450560].
+///		rusage->ru_ixrss: [0].
+///		rusage->ru_idrss: [0].
+///		rusage->ru_isrss: [0].
+///		rusage->ru_minflt: [126].
+///		rusage->ru_majflt: [0].
+///		rusage->ru_nswap: [0].
+///		rusage->ru_inblock: [0].
+///		rusage->ru_oublock: [0].
+///		rusage->ru_msgsnd: [0].
+///		rusage->ru_msgrcv: [0].
+///		rusage->ru_nsignals: [0].
+///		rusage->ru_nvcsw: [0].
+///		rusage->ru_nivcsw: [1].
+///	- There is lots of information than I expected.
 
-///	- todo:
-///		- print rusage.
 
 
+void	timeval_describe(struct timeval *timeval)
+{
+	printf("tv_sec: [%ld], tv_usec: [%d] \n", timeval->tv_sec, timeval->tv_usec);
+}
 
-void	child1()
+void	rusage_describe(struct rusage *rusage)
+{
+	timeval_describe(&rusage->ru_utime);
+	timeval_describe(&rusage->ru_stime);
+	printf("rusage->ru_maxress: [%ld]. \n", rusage->ru_maxrss);
+	printf("rusage->ru_ixrss: [%ld]. \n", rusage->ru_ixrss);
+	printf("rusage->ru_idrss: [%ld]. \n", rusage->ru_idrss);
+	printf("rusage->ru_isrss: [%ld]. \n", rusage->ru_isrss);
+	printf("rusage->ru_minflt: [%ld]. \n", rusage->ru_minflt);
+	printf("rusage->ru_majflt: [%ld]. \n", rusage->ru_majflt);
+	printf("rusage->ru_nswap: [%ld]. \n", rusage->ru_nswap);
+	printf("rusage->ru_inblock: [%ld]. \n", rusage->ru_inblock);
+	printf("rusage->ru_oublock: [%ld]. \n", rusage->ru_oublock);
+	printf("rusage->ru_msgsnd: [%ld]. \n", rusage->ru_msgsnd);
+	printf("rusage->ru_msgrcv: [%ld]. \n", rusage->ru_msgrcv);
+	printf("rusage->ru_nsignals: [%ld]. \n", rusage->ru_nsignals);
+	printf("rusage->ru_nvcsw: [%ld]. \n", rusage->ru_nvcsw);
+	printf("rusage->ru_nivcsw: [%ld]. \n", rusage->ru_nivcsw);
+}
+
+void	child()
 {
 	printf("This is child1 process. \n");
 	exit(2);
 }
 
-void	child2()
+void	parent(pid_t pid)
 {
-	printf("This is child2 process. \n");
-	exit(3);
-}
+	int				stat_loc;
+	struct rusage	rusage;
 
-void	parent(pid_t pid1, pid_t pid2)
-{
-//		pid_t	wait_pid;
-	int		stat_loc;
-	pid_t	pgid0;
-	pid_t	pgid1;
-	pid_t	pgid2;
-
-	sleep(1);
-	printf("pid1: [%d]. \n", pid1);
-	printf("pid2: [%d]. \n", pid2);
-
-	pgid0 = getpgid(getpid());
-	pgid1 = getpgid(pid1);
-	pgid2 = getpgid(pid2);
-	printf("pgid0: [%d], pgid1: [%d], pgid2: [%d]. \n", pgid0, pgid1, pgid2);
-
-	wait(&stat_loc);
-	wait(&stat_loc);
+	wait4(pid, &stat_loc, 0, &rusage);
+	rusage_describe(&rusage);
 }
 
 
 
 int	main()
 {
-	pid_t	pid1;
-	pid_t	pid2;
+	pid_t	pid;
 
-	pid1 = 0;
-	pid2 = 0;
+	pid = 0;
 
-	pid1 = fork();
-	if (pid1 == -1)
+	pid = fork();
+	if (pid == -1)
 		return (ERROR);
-	else if (pid1 == 0)
-		child1();
+	else if (pid == 0)
+		child();
 
-	pid2 = fork();
-	if (pid2 == -1)
-		return (ERROR);
-	else if (pid2 == 0)
-		child2();
-
-	parent(pid1, pid2);
+	parent(pid);
 
 	return (NORMAL);
 }
