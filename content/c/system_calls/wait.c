@@ -8,59 +8,58 @@
 
 
 
-///	- Now let's dig into the wait4() function.
+///	- print pgid of parent and child process.
+///	- man page said that "If the pid parameter of wait4() is 0, the call waits for any child process in the process group of the caller.".
+///	- So i want to see the pgid of each process.
+///	- I'm not sure if the getpgid() function work for terminated child process.
+///	- So i called sleep(1) for each child process.
+///	- Next time, let remove that sleep().
 
-///	- man page said, "If pid is -1, the call waits for any child process.".
-///	- If there is no child process ever, or additional child process to wait, what would be happended?
-
-///	- call fork() only 1 time, and wait() twice.
 ///	- result:
-///		pid1: [70390]. 
-///		pid2: [0]. 
-///		This is child1 process. 
-///		pid waited: [70390]. 
-///		stat_loc: [512]. 
-///		ERROR: Undefined error: 0
-///		pid waited: [-1]. 
-///		stat_loc: [512]. 
-///		ERROR: No child processes
-
-///	- Because there was no more child process in second call of wait(), it  returned -1.
+///		pid1: [72325].
+///		pid2: [72326].
+///		pgid0: [72324], pgid1: [72324], pgid2: [72324].
+///		This is child2 process.
+///		This is child1 process.
+///	- Parent process and child process's pgid was same.
 
 ///	- todo:
-///		- print pgid of parent and child process.
 ///		- print rusage.
 
 
 
 void	child1()
 {
+	sleep(1);
 	printf("This is child1 process. \n");
 	exit(2);
 }
 
-//	void	child2()
-//	{
-//		printf("This is child2 process. \n");
-//		exit(3);
-//	}
+void	child2()
+{
+	sleep(1);
+	printf("This is child2 process. \n");
+	exit(3);
+}
 
 void	parent(pid_t pid1, pid_t pid2)
 {
-	pid_t	wait_pid;
+//		pid_t	wait_pid;
 	int		stat_loc;
+	pid_t	pgid0;
+	pid_t	pgid1;
+	pid_t	pgid2;
 
 	printf("pid1: [%d]. \n", pid1);
 	printf("pid2: [%d]. \n", pid2);
 
-	wait_pid = wait4(-1, &stat_loc, 0, 0);
-	printf("pid waited: [%d]. \n", wait_pid);
-	printf("stat_loc: [%d]. \n", stat_loc);
-	perror("ERROR");
-	wait_pid = wait4(-1, &stat_loc, 0, 0);
-	printf("pid waited: [%d]. \n", wait_pid);
-	printf("stat_loc: [%d]. \n", stat_loc);
-	perror("ERROR");
+	pgid0 = getpgid(getpid());
+	pgid1 = getpgid(pid1);
+	pgid2 = getpgid(pid2);
+	printf("pgid0: [%d], pgid1: [%d], pgid2: [%d]. \n", pgid0, pgid1, pgid2);
+
+	wait(&stat_loc);
+	wait(&stat_loc);
 }
 
 
@@ -79,11 +78,11 @@ int	main()
 	else if (pid1 == 0)
 		child1();
 
-//		pid2 = fork();
-//		if (pid2 == -1)
-//			return (ERROR);
-//		else if (pid2 == 0)
-//			child2();
+	pid2 = fork();
+	if (pid2 == -1)
+		return (ERROR);
+	else if (pid2 == 0)
+		child2();
 
 	parent(pid1, pid2);
 
