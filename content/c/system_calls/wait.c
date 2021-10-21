@@ -8,20 +8,16 @@
 
 
 
-///	- print pgid of parent and child process.
-///	- man page said that "If the pid parameter of wait4() is 0, the call waits for any child process in the process group of the caller.".
-///	- So i want to see the pgid of each process.
-///	- I'm not sure if the getpgid() function work for terminated child process.
-///	- So i called sleep(1) for each child process.
 ///	- Next time, let remove that sleep().
+///	- This time, parent process rather than child process calls sleep(1).
 
 ///	- result:
-///		pid1: [72325].
-///		pid2: [72326].
-///		pgid0: [72324], pgid1: [72324], pgid2: [72324].
-///		This is child2 process.
 ///		This is child1 process.
-///	- Parent process and child process's pgid was same.
+///		This is child2 process.
+///		pid1: [72662].
+///		pid2: [72663].
+///		pgid0: [72660], pgid1: [-1], pgid2: [-1].
+///	- As expected, getpgid() of terminated process returns -1.
 
 ///	- todo:
 ///		- print rusage.
@@ -30,14 +26,12 @@
 
 void	child1()
 {
-	sleep(1);
 	printf("This is child1 process. \n");
 	exit(2);
 }
 
 void	child2()
 {
-	sleep(1);
 	printf("This is child2 process. \n");
 	exit(3);
 }
@@ -50,6 +44,7 @@ void	parent(pid_t pid1, pid_t pid2)
 	pid_t	pgid1;
 	pid_t	pgid2;
 
+	sleep(1);
 	printf("pid1: [%d]. \n", pid1);
 	printf("pid2: [%d]. \n", pid2);
 
