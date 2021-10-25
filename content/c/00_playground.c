@@ -14,7 +14,19 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a072
+#define EXECUTE a073
+
+void	a073()
+{
+	int	a;
+	int	*b;
+
+	b = &a;
+	--b;
+	*b = 0;
+	return ;
+}
+
 
 
 void	a072()
