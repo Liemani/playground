@@ -14,7 +14,16 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a073
+#define EXECUTE a074
+
+
+
+int	a074()
+{
+	return (300);
+}
+
+
 
 void	a073()
 {
@@ -1109,7 +1118,5 @@ void	a000(void)
 
 int main(void)
 {
-	EXECUTE();
-
-	return (0);
+	return (EXECUTE());
 }
