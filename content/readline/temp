@@ -1,0 +1,5 @@
+[?2004h<prompt> hi
+[?2004lline -> [hi] as %s 
+[?2004h<prompt> there
+[?2004lline -> [there] as %s 
+[?2004h<prompt> [?2004l
