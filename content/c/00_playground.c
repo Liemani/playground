@@ -14,7 +14,20 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a074
+#define EXECUTE a075
+
+
+
+static void	print_string(char *str)
+{
+	printf("%s\n", str);
+}
+
+int	a075()
+{
+	print_string();
+	return (0);
+}
 
 
 
