@@ -14,7 +14,17 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a075
+#define EXECUTE a076
+
+
+
+int	a076()
+{
+	PRINT(sizeof(int), lu);
+	PRINT(sizeof(long), lu);
+	PRINT(sizeof(int *), lu);
+	return (0);
+}
 
 
 
@@ -25,7 +35,7 @@ static void	print_string(char *str)
 
 int	a075()
 {
-	print_string();
+	print_string("hi");
 	return (0);
 }
 
