@@ -14,7 +14,15 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a076
+#define EXECUTE a077
+
+
+
+int	a077()
+{
+	PRINT(-123 / 10, d);
+	return (0);
+}
 
 
 
