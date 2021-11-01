@@ -56,7 +56,8 @@
 //	#include <dirent.h>
 //	#include <stdio.h>
 //	#include <sys/wait.h>
-#include <term.h>
+//	#include <term.h>
+#include <stdio.h>
 
 int main(void)
 {

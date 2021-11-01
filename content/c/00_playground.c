@@ -9,12 +9,35 @@
 #include <string.h>
 #include <signal.h>
 #include <sys/time.h>
+#include <termios.h>
 
 #include "libft.h"
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a077
+#define EXECUTE a078
+
+
+
+int	a078()
+{
+	struct termios	buf, save;
+	int				ch;
+
+	tcgetattr(0, &save);
+	buf = save;
+
+	buf.c_lflag &= ~(ICANON|ECHO);
+
+	buf.c_cc[VMIN] = 1;
+	buf.c_cc[VTIME] = 0;
+
+	tcsetattr(0, TCSAFLUSH, &buf);
+	while ((ch = getchar()) != EOF)
+		printf("ch: [%c]\n", ch);
+	tcsetattr(0, TCSAFLUSH, &save);
+	return (0);
+}
 
 
 
