@@ -15,7 +15,195 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a078
+#define EXECUTE a082
+
+
+
+int	a082()
+{
+	printf("%d\n", i)
+	return (0);
+}
+
+
+
+void	a081_inner()
+{
+	int	i;
+
+	printf("Address of i in a001_inner: [%p]\n", &i);
+}
+
+int	a081()
+{
+	int	i;
+
+	printf("Address of i in a081: [%p]\n", &i);
+	a081_inner();
+	return (0);
+}
+
+
+
+//	struct termios {
+//	    tcflag_t        c_iflag;        // input flags
+//	    tcflag_t        c_oflag;        // output flags
+//	    tcflag_t        c_cflag;        // control flags
+//	    tcflag_t        c_lflag;        // local flags
+//	    cc_t            c_cc[NCCS];     // control chars
+//	    speed_t         c_ispeed;       // input speed
+//	    speed_t         c_ospeed;       // output speed
+//	};
+
+const char	*has_flag(tcflag_t c_flag, tcflag_t flag)
+{
+	if ((c_flag & flag) != 0)
+		return ("\033[32mtrue\033[0m");
+	else
+		return ("\033[31mfalse\033[0m");
+}
+
+void	termios_describe_input_flag(tcflag_t c_iflag)
+{
+	printf("IGNBRK:	[%s]\n", has_flag(c_iflag, IGNBRK));
+	printf("BRKINT:	[%s]\n", has_flag(c_iflag, BRKINT));
+	printf("IGNPAR:	[%s]\n", has_flag(c_iflag, IGNPAR));
+	printf("PARMRK:	[%s]\n", has_flag(c_iflag, PARMRK));
+	printf("INPCK:	[%s]\n", has_flag(c_iflag, INPCK));
+	printf("ISTRIP:	[%s]\n", has_flag(c_iflag, ISTRIP));
+	printf("INLCR:	[%s]\n", has_flag(c_iflag, INLCR));
+	printf("IGNCR:	[%s]\n", has_flag(c_iflag, IGNCR));
+	printf("ICRNL:	[%s]\n", has_flag(c_iflag, ICRNL));
+	printf("IXON:	[%s]\n", has_flag(c_iflag, IXON));
+	printf("IXOFF:	[%s]\n", has_flag(c_iflag, IXOFF));
+	printf("IXANY:	[%s]\n", has_flag(c_iflag, IXANY));
+	printf("IMAXBEL:[%s]\n", has_flag(c_iflag, IMAXBEL));
+	printf("IUTF8:	[%s]\n", has_flag(c_iflag, IUTF8));
+}
+
+void	termios_describe_output_flag(tcflag_t c_oflag)
+{
+	printf("OPOST:	[%s]\n", has_flag(c_oflag, OPOST));
+	printf("ONLCR:	[%s]\n", has_flag(c_oflag, ONLCR));
+	printf("OXTABS:	[%s]\n", has_flag(c_oflag, OXTABS));
+	printf("ONOEOT:	[%s]\n", has_flag(c_oflag, ONOEOT));
+	printf("OCRNL:	[%s]\n", has_flag(c_oflag, OCRNL));
+	printf("ONOCR:	[%s]\n", has_flag(c_oflag, ONOCR));
+	printf("ONLRET:	[%s]\n", has_flag(c_oflag, ONLRET));
+	printf("OFILL:	[%s]\n", has_flag(c_oflag, OFILL));
+	printf("NLDLY:	[%s]\n", has_flag(c_oflag, NLDLY));
+	printf("TABDLY:	[%s]\n", has_flag(c_oflag, TABDLY));
+	printf("CRDLY:	[%s]\n", has_flag(c_oflag, CRDLY));
+	printf("FFDLY:	[%s]\n", has_flag(c_oflag, FFDLY));
+	printf("BSDLY:	[%s]\n", has_flag(c_oflag, BSDLY));
+	printf("VTDLY:	[%s]\n", has_flag(c_oflag, VTDLY));
+	printf("OFDEL:	[%s]\n", has_flag(c_oflag, OFDEL));
+}
+
+void	termios_describe_control_flag(tcflag_t c_cflag)
+{
+	printf("CIGNORE:	[%s]\n", has_flag(c_cflag, CIGNORE));
+	printf("CSIZE:		[%s]\n", has_flag(c_cflag, CSIZE));
+	printf("CS5:		[%s]\n", has_flag(c_cflag, CS5));
+	printf("CS6:		[%s]\n", has_flag(c_cflag, CS6));
+	printf("CS7:		[%s]\n", has_flag(c_cflag, CS7));
+	printf("CS8:		[%s]\n", has_flag(c_cflag, CS8));
+	printf("CSTOPB:		[%s]\n", has_flag(c_cflag, CSTOPB));
+	printf("CREAD:		[%s]\n", has_flag(c_cflag, CREAD));
+	printf("PARENB:		[%s]\n", has_flag(c_cflag, PARENB));
+	printf("PARODD:		[%s]\n", has_flag(c_cflag, PARODD));
+	printf("HUPCL:		[%s]\n", has_flag(c_cflag, HUPCL));
+	printf("CLOCAL:		[%s]\n", has_flag(c_cflag, CLOCAL));
+	printf("CCTS_OFLOW:	[%s]\n", has_flag(c_cflag, CCTS_OFLOW));
+	printf("CRTS_IFLOW:	[%s]\n", has_flag(c_cflag, CRTS_IFLOW));
+	printf("CDTR_IFLOW:	[%s]\n", has_flag(c_cflag, CDTR_IFLOW));
+	printf("CDSR_OFLOW:	[%s]\n", has_flag(c_cflag, CDSR_OFLOW));
+	printf("CCAR_OFLOW:	[%s]\n", has_flag(c_cflag, CCAR_OFLOW));
+	printf("MDMBUF:		[%s]\n", has_flag(c_cflag, MDMBUF));
+}
+
+void	termios_describe_local_flag(tcflag_t c_lflag)
+{
+	printf("ECHOKE:		[%s]\n", has_flag(c_lflag, ECHOKE));
+	printf("ECHOE:		[%s]\n", has_flag(c_lflag, ECHOE));
+	printf("ECHOK:		[%s]\n", has_flag(c_lflag, ECHOK));
+	printf("ECHO:		[%s]\n", has_flag(c_lflag, ECHO));
+	printf("ECHONL:		[%s]\n", has_flag(c_lflag, ECHONL));
+	printf("ECHOPRT:	[%s]\n", has_flag(c_lflag, ECHOPRT));
+	printf("ECHOCTL:	[%s]\n", has_flag(c_lflag, ECHOCTL));
+	printf("ISIG:		[%s]\n", has_flag(c_lflag, ISIG));
+	printf("ICANON:		[%s]\n", has_flag(c_lflag, ICANON));
+	printf("ALTWERASE:	[%s]\n", has_flag(c_lflag, ALTWERASE));
+	printf("IEXTEN:		[%s]\n", has_flag(c_lflag, IEXTEN));
+	printf("EXTPROC:	[%s]\n", has_flag(c_lflag, EXTPROC));
+	printf("TOSTOP:		[%s]\n", has_flag(c_lflag, TOSTOP));
+	printf("FLUSHO:		[%s]\n", has_flag(c_lflag, FLUSHO));
+	printf("NOKERNINFO:	[%s]\n", has_flag(c_lflag, NOKERNINFO));
+	printf("PENDIN:		[%s]\n", has_flag(c_lflag, PENDIN));
+	printf("NOFLSH:		[%s]\n", has_flag(c_lflag, NOFLSH));
+}
+
+void	termios_describe_control_character(cc_t *c_cc)
+{
+	printf("VEOF:		[%d]\n", c_cc[VEOF]);
+	printf("VEOL:		[%d]\n", c_cc[VEOL]);
+	printf("VEOL2:		[%d]\n", c_cc[VEOL2]);
+	printf("VERASE:		[%d]\n", c_cc[VERASE]);
+	printf("VWERASE:	[%d]\n", c_cc[VWERASE]);
+	printf("VKILL:		[%d]\n", c_cc[VKILL]);
+	printf("VREPRINT:	[%d]\n", c_cc[VREPRINT]);
+	printf("VINTR:		[%d]\n", c_cc[VINTR]);
+	printf("VQUIT:		[%d]\n", c_cc[VQUIT]);
+	printf("VSUSP:		[%d]\n", c_cc[VSUSP]);
+	printf("VDSUSP:		[%d]\n", c_cc[VDSUSP]);
+	printf("VSTART:		[%d]\n", c_cc[VSTART]);
+	printf("VSTOP:		[%d]\n", c_cc[VSTOP]);
+	printf("VLNEXT:		[%d]\n", c_cc[VLNEXT]);
+	printf("VDISCARD:	[%d]\n", c_cc[VDISCARD]);
+	printf("VMIN:		[%d]\n", c_cc[VMIN]);
+	printf("VTIME:		[%d]\n", c_cc[VTIME]);
+	printf("VSTATUS:	[%d]\n", c_cc[VSTATUS]);
+	printf("NCCS:		[%d]\n", c_cc[NCCS]);
+}
+
+void	termios_describe(struct termios *termios)
+{
+	printf("	Input flag\n");
+	termios_describe_input_flag(termios->c_iflag);
+	printf("	Output flag\n");
+	termios_describe_output_flag(termios->c_oflag);
+	printf("	Control flag\n");
+	termios_describe_control_flag(termios->c_cflag);
+	printf("	Local flag\n");
+	termios_describe_local_flag(termios->c_lflag);
+	printf("	Control character\n");
+	termios_describe_control_character(termios->c_cc);
+}
+
+int	a080()
+{
+	struct termios	termios;
+
+	tcgetattr(0, &termios);
+	termios_describe(&termios);
+	return (0);
+}
+
+
+
+int	a079()
+{
+	struct termios	termios;
+
+	tcgetattr(0, &termios);
+	PRINT(cfgetispeed(&termios), lu);
+	PRINT(cfgetospeed(&termios), lu);
+	cfsetspeed(&termios, B50);
+	tcsetattr(0, TCSADRAIN, &termios);
+	PRINT(cfgetispeed(&termios), lu);
+	PRINT(cfgetospeed(&termios), lu);
+	return (0);
+}
 
 
 
@@ -25,17 +213,23 @@ int	a078()
 	int				ch;
 
 	tcgetattr(0, &save);
+	termios_describe(&save);
+	cfmakeraw(&buf);
+	termios_describe(&buf);
 	buf = save;
 
 	buf.c_lflag &= ~(ICANON|ECHO);
 
 	buf.c_cc[VMIN] = 1;
 	buf.c_cc[VTIME] = 0;
+	termios_describe(&buf);
 
 	tcsetattr(0, TCSAFLUSH, &buf);
 	while ((ch = getchar()) != EOF)
-		printf("ch: [%c]\n", ch);
+		printf("ch: [%c] == [%d]\n", ch, ch);
 	tcsetattr(0, TCSAFLUSH, &save);
+	printf("Last ch: [%c] == [%d]\n", ch, ch);
+	perror(NULL);
 	return (0);
 }
 

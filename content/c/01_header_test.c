@@ -57,7 +57,8 @@
 //	#include <stdio.h>
 //	#include <sys/wait.h>
 //	#include <term.h>
-#include <stdio.h>
+//	#include <stdio.h>
+#include <mach-o/loader.h>
 
 int main(void)
 {
