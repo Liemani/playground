@@ -10,20 +10,13 @@
 #include <signal.h>
 #include <sys/time.h>
 #include <termios.h>
+#include <fcntl.h>
 
 #include "libft.h"
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a082
-
-
-
-int	a082()
-{
-	printf("%d\n", i)
-	return (0);
-}
+#define EXECUTE a078
 
 
 
@@ -211,22 +204,29 @@ int	a078()
 {
 	struct termios	buf, save;
 	int				ch;
+	int				flag;
 
 	tcgetattr(0, &save);
 	termios_describe(&save);
 	cfmakeraw(&buf);
-	termios_describe(&buf);
+//		termios_describe(&buf);
 	buf = save;
 
 	buf.c_lflag &= ~(ICANON|ECHO);
 
 	buf.c_cc[VMIN] = 1;
 	buf.c_cc[VTIME] = 0;
-	termios_describe(&buf);
+//		termios_describe(&buf);
 
 	tcsetattr(0, TCSAFLUSH, &buf);
-	while ((ch = getchar()) != EOF)
-		printf("ch: [%c] == [%d]\n", ch, ch);
+//		flag = fcntl(0, F_GETFL);
+//		fcntl(0, F_SETFL, (flag | O_APPEND));
+	while (1)
+	{
+		ch = getchar();
+		if (ch != EOF)
+			printf("ch: [%c] == [%d]\n", ch, ch);
+	}
 	tcsetattr(0, TCSAFLUSH, &save);
 	printf("Last ch: [%c] == [%d]\n", ch, ch);
 	perror(NULL);
