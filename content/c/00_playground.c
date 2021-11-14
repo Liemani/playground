@@ -11,12 +11,52 @@
 #include <sys/time.h>
 #include <termios.h>
 #include <fcntl.h>
+#include <ncurses.h>
 
 #include "libft.h"
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a078
+#define EXECUTE a084
+
+
+
+int	a084(void)
+{
+	void	*ptr;
+
+	ptr = NULL;
+	++ptr;
+	return (0);
+}
+
+
+
+int	a083(void)
+{
+	unsigned int	x = 0xFFFFFFFF;
+	int				*y;
+
+	y = (int *)&x;
+	printf("y: [%p] as %%d\n", y);
+	return (0);
+}
+
+
+
+int	a082()
+{
+    int ch;
+
+	ch = 0;
+//	    initscr(); cbreak(); noecho();
+    while (1)
+    {
+//	        ch = getch();
+        printf("%c\n", ch);
+    }
+	return (0);
+}
 
 
 
@@ -204,7 +244,7 @@ int	a078()
 {
 	struct termios	buf, save;
 	int				ch;
-	int				flag;
+//		int				flag;
 
 	tcgetattr(0, &save);
 	termios_describe(&save);
