@@ -17,7 +17,24 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a084
+#define EXECUTE a085
+//	#define EXECUTE a078	//	print key character value
+
+
+
+int	a085(void)
+{
+	const char	*str = "\033A";
+	const char	*ptr;
+
+	ptr = str;
+	while (*ptr != '\0')
+	{
+		printf("[%c] == [%d] \n", *ptr, *ptr);
+		++ptr;
+	}
+	return (0);
+}
 
 
 
@@ -50,11 +67,13 @@ int	a082()
 
 	ch = 0;
 //	    initscr(); cbreak(); noecho();
-    while (1)
-    {
+//	    while (1)
+//	    {
 //	        ch = getch();
-        printf("%c\n", ch);
-    }
+//	        printf("%c\n", ch);
+//	    }
+	while ((ch = getchar()) != EOF)
+		printf("ch: [%c] [%d] \n", ch, ch);
 	return (0);
 }
 
