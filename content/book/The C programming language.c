@@ -1,7 +1,9 @@
 #include <stdio.h>	// printf()
 #include <stddef.h>	// size_t, NULL
 
-#define EXECUTE	a021
+#ifndef EXECUTE
+#define EXECUTE	a027
+#endif
 
 
 
@@ -15,15 +17,260 @@
 
 
 
+//	Exercise 1-22
+int	a028(int argc, char **argv)
+{
+	(void)argc;
+	(void)argv;
+	return (0);
+}
+
+
+
+//	Exercise 1-21
+#define TAB_STOP	4
+
+void	tab_buffer_increase(size_t *tab_buffer, size_t column)
+{
+	++*tab_buffer;
+	if (column % TAB_STOP != 0)
+		return ;
+	putchar('\t');
+	*tab_buffer = 0;
+}
+
+void	tab_buffer_flush(size_t *tab_buffer)
+{
+	while (0 < *tab_buffer)
+	{
+		putchar(' ');
+		--*tab_buffer;
+	}
+}
+
+int	a027(int argc, char **argv)
+{
+	int		ch;
+	size_t	column;
+	size_t	tab_buffer;
+
+	(void)argc;
+	(void)argv;
+	column = 0;
+	tab_buffer = 0;
+	while ((ch = getchar()) != EOF)
+	{
+		if (ch == '\t')
+			column = (column / TAB_STOP + 1) * TAB_STOP;
+		else
+			++column;
+		if (ch == ' ')
+			tab_buffer_increase(&tab_buffer, column);
+		else
+		{
+			tab_buffer_flush(&tab_buffer);
+			putchar(ch);
+		}
+		if (ch == '\n')
+			column = 0;
+	}
+	return (0);
+}
+
+
+
+//	Exercise 1-20
+#define TAB_STOP	4
+
+int	a026(int argc, char **argv)
+{
+	int		ch;
+	size_t	column;
+
+	(void)argc;
+	(void)argv;
+	column = 0;
+	while ((ch = getchar()) != EOF)
+	{
+		if (ch == '\t')
+		{
+			putchar(' ');
+			++column;
+			while (column % TAB_STOP != 0)
+			{
+				putchar(' ');
+				++column;
+			}
+		}
+		else
+		{
+			putchar(ch);
+			++column;
+			if (ch == '\n')
+				column = 0;
+		}
+	}
+	return (0);
+}
+
+
+
+//	Exercise 1-19
 #define LINE_COUNT_MAX	512
 
-size_t	get_line(char *line)
+size_t	get_line(char *line, size_t size);
+void	str_cpy(char *target, const char *source);
+
+void	reverse(char *str)
 {
-	int	ch;
-	int	index;
+	char	str_tmp[LINE_COUNT_MAX];
+	char	*ptr;
+
+	if (*str == '\n')
+		return ;
+	str_cpy(str_tmp, str);
+	ptr = str_tmp;
+	while (*ptr != '\n')
+		++ptr;
+	--ptr;
+	while (str_tmp <= ptr)
+		*str++ = *ptr--;
+	*str++ = '\n';
+	*str = '\0';
+}
+
+int	a025(int argc, char **argv)
+{
+	char	line[LINE_COUNT_MAX];
+
+	(void)argc;
+	(void)argv;
+	while (0 < get_line(line, LINE_COUNT_MAX))
+	{
+		reverse(line);
+		printf("%s", line);
+	}
+	return (0);
+}
+
+
+
+//	Exercise 1-18
+#define LINE_COUNT_MAX	512
+
+size_t	get_line(char *line, size_t size);
+
+int	a024(int argc, char **argv)
+{
+	char	line[LINE_COUNT_MAX];
+	char	*ptr;
+
+	(void)argc;
+	(void)argv;
+	while (0 < get_line(line, LINE_COUNT_MAX))
+	{
+		if (line[0] == '\n')
+			continue ;
+		ptr = line;
+		while (*ptr != '\n')
+			++ptr;
+		--ptr;
+		while (*ptr == ' ' || *ptr == '\t')
+			--ptr;
+		++ptr;
+		*ptr++ = '\n';
+		*ptr = '\0';
+		printf("%s", line);
+	}
+	return (0);
+}
+
+
+
+//	Exercise 1-18
+#define LINE_COUNT_MAX	512
+
+#define	STATE_NORMAL		0
+#define STATE_BLANK_OR_TAB	1
+
+int	a023(int argc, char **argv)
+{
+	int		ch;
+	char	line[LINE_COUNT_MAX];
+	size_t	index;
+	int		status;
+
+	(void)argc;
+	(void)argv;
+	line[0] = '\0';
+	index = 0;
+	status = STATE_NORMAL;
+	while ((ch = getchar()) != EOF)
+	{
+		if (status == STATE_NORMAL)
+		{
+			if (ch == ' ' || ch == '\t')
+			{
+				status = STATE_BLANK_OR_TAB;
+				line[index++] = ch;
+			}
+			else
+				putchar(ch);
+		}
+		else if (status == STATE_BLANK_OR_TAB)
+		{
+			if (ch == ' ' || ch == '\t')
+				line[index++] = ch;
+			else
+			{
+				status = STATE_NORMAL;
+				line[index] = '\0';
+				index = 0;
+				printf("%s", line);
+				putchar(ch);
+			}
+		}
+		if (index >= LINE_COUNT_MAX)
+			return (0);
+	}
+	return (0);
+}
+
+
+
+//	Exercise 1-17
+#define LINE_COUNT_MAX	512
+
+size_t	get_line(char *line, size_t size);
+void	str_cpy(char *target, const char *source);
+
+int	a022(int argc, char **argv)
+{
+	char	line[LINE_COUNT_MAX];
+	size_t	line_count;
+
+	(void)argc;
+	(void)argv;
+	while ((line_count = get_line(line, LINE_COUNT_MAX)) != 0)
+	{
+		if (line_count > 80)
+			printf("%s", line);
+	}
+	return (0);
+}
+
+
+
+//	1.9
+#define LINE_COUNT_MAX	512
+
+size_t	get_line(char *line, size_t size)
+{
+	int		ch;
+	size_t	index;
 
 	index = 0;
-	while (index < LINE_COUNT_MAX - 1 && (ch = getchar()) != '\n' && ch != EOF)
+	while (index < size - 1 && (ch = getchar()) != '\n' && ch != EOF)
 	{
 		line[index] = ch;
 		++index;
@@ -34,14 +281,21 @@ size_t	get_line(char *line)
 		++index;
 	}
 	line[index] = '\0';
+	if (ch != '\n')
+		while ((ch = getchar()) != '\n' && ch != EOF)
+			++index;
+	if (ch == '\n')
+		++index;
 	return (index);
 }
 
 void	str_cpy(char *target, const char *source)
 {
-	while (*source != '\0')
-		*target++ = *source++;
-	*target = '\0';
+	int	index;
+
+	index = 0;
+	while ((target[index] = source[index]) != '\0')
+		++index;
 }
 
 int	a021(int argc, char **argv)
@@ -55,7 +309,7 @@ int	a021(int argc, char **argv)
 	(void)argv;
 	longest_str[0] = '\0';
 	longest_str_count = 0;
-	while (0 < (line_count = get_line(line)))
+	while (0 < (line_count = get_line(line, LINE_COUNT_MAX)))
 	{
 		if (line_count > longest_str_count)
 		{
@@ -70,6 +324,7 @@ int	a021(int argc, char **argv)
 
 
 
+//	1.9
 size_t	str_count(char *str)
 {
 	char	*ptr;
@@ -87,8 +342,11 @@ int	a020(int argc, char **argv)
 	char	*str_longest;
 	size_t	str_longest_count;
 
-	(void)argc;
-	(void)argv;
+	if (argc != 2)
+	{
+		printf("You must only enter 1 argument. \n");
+		return (0);
+	}
 	str_array = argv + 1;
 	str_longest = NULL;
 	str_longest_count = 0;
@@ -109,6 +367,7 @@ int	a020(int argc, char **argv)
 
 
 
+//	1.7
 int	power(int base, int times)
 {
 	int	result;
@@ -141,6 +400,7 @@ int	a019(int argc, char **argv)
 
 
 
+//	1.6
 int	is_digit(char ch)
 {
 	return ('0' <= ch && ch <= '9');
@@ -182,6 +442,7 @@ int	a018(int argc, char **argv)
 
 
 
+//	Exercise 1-12
 #define BEFORE_WORD	0
 #define IN_WORD		1
 #define AFTER_WORD	2
@@ -232,6 +493,7 @@ int	a017(int argc, char **argv)
 
 
 
+//	1.5.4
 #define OUT_WORD	0
 #define IN_WORD		1
 
@@ -270,6 +532,7 @@ int	a016(int argc, char **argv)
 
 
 
+//	1.5.4
 #define FALSE	0
 #define TRUE	1
 
@@ -304,6 +567,7 @@ int	a015(int argc, char **argv)
 
 
 
+//	Exrcise 1-10
 int	a014(int argc, char **argv)
 {
 	int	ch;
@@ -336,6 +600,100 @@ int	a014(int argc, char **argv)
 
 
 
+//	Exercise 1-9-4
+#define	PREVIOUS_CH_NOT_BLANK	0
+#define PREVIOUS_CH_BLANK		1
+
+int	a0132(int argc, char **argv)
+{
+	char	*str;
+	int		status;
+
+	if (!(argc == 2))
+		return (0);
+	str = argv[1];
+	status = PREVIOUS_CH_NOT_BLANK;
+	while (*str != '\0')
+	{
+		if (status == PREVIOUS_CH_NOT_BLANK)
+		{
+			putchar(*str);
+			if (*str == ' ')
+				status = PREVIOUS_CH_BLANK;
+		}
+		else if (status == PREVIOUS_CH_BLANK)
+		{
+			if (*str != ' ')
+			{
+				putchar(*str);
+				status = PREVIOUS_CH_NOT_BLANK;
+			}
+		}
+		++str;
+	}
+	return (0);
+}
+
+
+
+//	Exercise 1-9-3
+int	a0131(int argc, char **argv)
+{
+	char	*str;
+
+	if (!(argc == 2))
+		return (0);
+	str = argv[1];
+	while (*str != '\0')
+	{
+		putchar(*str);
+		if (*str == ' ')
+			while (*str == ' ')
+				++str;
+		else
+			++str;
+	}
+	return (0);
+}
+
+
+
+//	Exercise 1-9-2
+#define FALSE	0
+#define TRUE	1
+
+int	a0130(int argc, char **argv)
+{
+	char	*str;
+	int		is_previous_ch_blank;
+
+	if (!(argc == 2))
+		return (0);
+	str = argv[1];
+	is_previous_ch_blank = FALSE;
+	while (*str != '\0')
+	{
+		if (*str == ' ')
+		{
+			if (!is_previous_ch_blank)
+			{
+				putchar(*str);
+				is_previous_ch_blank = TRUE;
+			}
+		}
+		else
+		{
+			putchar(*str);
+			is_previous_ch_blank = FALSE;
+		}
+		++str;
+	}
+	return (0);
+}
+
+
+
+//	Exercise 1-9
 #define FALSE	0
 #define TRUE	1
 
@@ -368,6 +726,7 @@ int	a013(int argc, char **argv)
 
 
 
+//	Exercise 1-8
 int	a012(int argc, char **argv)
 {
 	int	ch;
@@ -385,6 +744,7 @@ int	a012(int argc, char **argv)
 
 
 
+//	1.5.3
 int	a011(int argc, char **argv)
 {
 	int	ch;
@@ -402,6 +762,7 @@ int	a011(int argc, char **argv)
 
 
 
+//	1.5.2
 int	a010(int argc, char **argv)
 {
 	int	ch_count;
@@ -417,6 +778,7 @@ int	a010(int argc, char **argv)
 
 
 
+//	Exercise 1-7
 int	a009(int argc, char **argv)
 {
 	int	c;
@@ -431,6 +793,7 @@ int	a009(int argc, char **argv)
 
 
 
+//	1.5.1
 int	a008(int argc, char **argv)
 {
 	int	c;
@@ -448,6 +811,7 @@ int	a008(int argc, char **argv)
 
 
 
+//	1.4
 #define LOWER	0
 #define UPPER	300
 #define STEP	20
@@ -472,6 +836,7 @@ int	a007(int argc, char **argv)
 
 
 
+//	Exercise 1-5
 int	a006(int argc, char **argv)
 {
 	float	fahrenheit;
@@ -498,6 +863,7 @@ int	a006(int argc, char **argv)
 
 
 
+//	Exercise 1-3
 int	a005(int argc, char **argv)
 {
 	float	fahrenheit;
@@ -524,6 +890,7 @@ int	a005(int argc, char **argv)
 
 
 
+//	1.2
 int	a004(int argc, char **argv)
 {
 	float	fahrenheit;
@@ -549,6 +916,7 @@ int	a004(int argc, char **argv)
 
 
 
+//	1.2
 int	a003(int argc, char **argv)
 {
 	int	fahrenheit;
@@ -574,6 +942,7 @@ int	a003(int argc, char **argv)
 
 
 
+//	1.2
 int	a002(int argc, char **argv)
 {
 	float	celsius;
@@ -593,6 +962,7 @@ int	a002(int argc, char **argv)
 
 
 
+//	1.1
 int	a001(int argc, char **argv)
 {
 	(void)argc;
@@ -606,6 +976,7 @@ int	a001(int argc, char **argv)
 
 
 
+//	1.1
 int	a000(int argc, char **argv)
 {
 	(void)argc;
