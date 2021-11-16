@@ -1,6 +1,7 @@
-#include <stdio.h>
+#include <stdio.h>	// printf()
+#include <stddef.h>	// size_t, NULL
 
-#define EXECUTE	a018
+#define EXECUTE	a021
 
 
 
@@ -11,6 +12,132 @@
 //		(void)argv;
 //		return (0);
 //	}
+
+
+
+#define LINE_COUNT_MAX	512
+
+size_t	get_line(char *line)
+{
+	int	ch;
+	int	index;
+
+	index = 0;
+	while (index < LINE_COUNT_MAX - 1 && (ch = getchar()) != '\n' && ch != EOF)
+	{
+		line[index] = ch;
+		++index;
+	}
+	if (ch == '\n')
+	{
+		line[index] = ch;
+		++index;
+	}
+	line[index] = '\0';
+	return (index);
+}
+
+void	str_cpy(char *target, const char *source)
+{
+	while (*source != '\0')
+		*target++ = *source++;
+	*target = '\0';
+}
+
+int	a021(int argc, char **argv)
+{
+	char	line[LINE_COUNT_MAX];
+	size_t	line_count;
+	char	longest_str[LINE_COUNT_MAX];
+	size_t	longest_str_count;
+
+	(void)argc;
+	(void)argv;
+	longest_str[0] = '\0';
+	longest_str_count = 0;
+	while (0 < (line_count = get_line(line)))
+	{
+		if (line_count > longest_str_count)
+		{
+			str_cpy(longest_str, line);
+			longest_str_count = line_count;
+		}
+	}
+	printf("longest string: [%s] \n", longest_str);
+	printf("count of longest string: [%lu] \n", longest_str_count);
+	return (0);
+}
+
+
+
+size_t	str_count(char *str)
+{
+	char	*ptr;
+
+	ptr = str;
+	while (*ptr != '\0')
+		++ptr;
+	return (ptr - str);
+}
+
+int	a020(int argc, char **argv)
+{
+	char	**str_array;
+	size_t	str_tmp_count;
+	char	*str_longest;
+	size_t	str_longest_count;
+
+	(void)argc;
+	(void)argv;
+	str_array = argv + 1;
+	str_longest = NULL;
+	str_longest_count = 0;
+	while (*str_array != NULL)
+	{
+		str_tmp_count = str_count(*str_array);
+		if (str_longest_count < str_tmp_count)
+		{
+			str_longest = *str_array;
+			str_longest_count = str_tmp_count;
+		}
+		++str_array;
+	}
+	printf("longest string: [%s] \n", str_longest);
+	printf("count of longest string: [%lu] \n", str_longest_count);
+	return (0);
+}
+
+
+
+int	power(int base, int times)
+{
+	int	result;
+
+	if (!(times >= 0))
+		return (-1);
+	result = 1;
+	while (0 < times)
+	{
+		result *= base;
+		--times;
+	}
+	return (result);
+}
+
+int	a019(int argc, char **argv)
+{
+	int	index;
+
+	(void)argc;
+	(void)argv;
+	index = 0;
+	while (index < 10)
+	{
+		printf("%d: %d %d \n", index, power(2, index), power(-3, index));
+		++index;
+	}
+	return (0);
+}
 
 
 
@@ -32,7 +159,7 @@ int	a018(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 	index = 0;
-	while (index <= 9)
+	while (index < 10)
 		digit_count[index++] = 0;
 	white_space_ch_count = 0;
 	other_count = 0;
@@ -47,7 +174,7 @@ int	a018(int argc, char **argv)
 	}
 	printf("digits =");
 	index = 0;
-	while (index <= 9)
+	while (index < 10)
 		printf(" %d", digit_count[index++]);
 	printf("\nwhite_space_ch_count: %d, other_count: %d \n", white_space_ch_count, other_count);
 	return (0);
