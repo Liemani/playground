@@ -58,7 +58,8 @@
 //	#include <sys/wait.h>
 //	#include <term.h>
 //	#include <stdio.h>
-#include <mach-o/loader.h>
+//	#include <mach-o/loader.h>
+#include <float.h>
 
 int main(void)
 {

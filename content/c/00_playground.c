@@ -17,8 +17,16 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a085
+#define EXECUTE a086
 //	#define EXECUTE a078	//	print key character value
+
+
+
+int	a086(void)
+{
+	printf("sizeof(double): %lu sizeof(long double): %lu \n", sizeof(double), sizeof(long double));
+	return (0);
+}
 
 
 
