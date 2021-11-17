@@ -2,7 +2,7 @@
 #include <stddef.h>	// size_t, NULL
 
 #ifndef EXECUTE
-#define EXECUTE	a027
+#define EXECUTE	a028
 #endif
 
 
@@ -18,10 +18,58 @@
 
 
 //	Exercise 1-22
+///	- assume: TAB_STOP is less than or equal to LINE_MAX
+#define LINE_MAX	80
+#define TAB_STOP	8
+
+void	column_increase(size_t *column, int ch)
+{
+	if (ch == '\t')
+		*column = (*column / TAB_STOP + 1) * TAB_STOP;
+	else
+		++*column;
+}
+
+void	buffer_append(char *buffer, char **buffer_ptr, int ch)
+{
+	*(*buffer_ptr)++ = ch;
+}
+
+void	buffer_flush(char *buffer, char **buffer_ptr)
+{
+	char	*ptr;
+
+	ptr = buffer;
+	while (ptr < *buffer_ptr)
+		putchar(*ptr++);
+	*buffer_ptr = buffer;
+}
+
+void	buffer_discard(char *buffer, char **buffer_ptr)
+{
+	*buffer_ptr = buffer;
+}
+
 int	a028(int argc, char **argv)
 {
+	int		ch;
+	size_t	column;
+	char	buffer[LINE_MAX];
+	char	*buffer_ptr;
+
 	(void)argc;
 	(void)argv;
+	column = 0;
+	while ((ch = getchar()) != EOF)
+	{
+		column_increase(&column, ch);
+		if (column >= LINE_MAX)
+		{
+			putchar('\n');
+			column = 0;
+			column_increase(&column, ch);
+		}
+	}
 	return (0);
 }
 
