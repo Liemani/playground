@@ -4,7 +4,7 @@
 #include <float.h>
 
 #ifndef EXECUTE
-#define EXECUTE	a031
+#define EXECUTE	a032
 #endif
 
 
@@ -22,7 +22,37 @@
 //	2.7
 //	In general, the only automatic conversions are those that convert a "narrower" operand into a "wider" one without losing information
 //	On some machines a char whose leftmost bit is 1 will be converted to a negative integer ("sign extension"). On others, a char is promoted to an int by adding zeros at the left end, and thus is always positive
-//	If an operator has operands of different types, the "lower" type is promoted to the "higher" type before th operation proceeds
+//	If an operator has operands of different types, the "lower" type is promoted to the "higher" type before the operation proceeds
+//	Comparisons between signed and unsigned values are machine-dependent, because they depend on the sizes of the various integer types
+//	Suppose that int is 16 bits and long is 32 bits. Then -1L < 1U, because 1U, which is an int, is promoted to a signed long. But -1L > 1UL, because -1L is promoted to unsigned long and thus appears to be a large positive number
+int	a032(int argc, char **argv)
+{
+	int				a;
+	unsigned int	b;
+	char			c;
+	unsigned char	d;
+
+	(void)argc;
+	(void)argv;
+	printf("-1L < 1U: %s \n", -1L < 1U ? "true" : "false");	// true
+	printf("-1L < 1UL: %s \n", -1L < 1UL ? "true" : "false");	// false
+	printf("-1 < 1U: %s \n", -1 < 1U ? "true" : "false");	// false
+	a = -1;
+	b = 1;
+	printf("-1 < 1U: %s \n", a < b ? "true" : "false");	// false
+	c = -1;
+	d = 1;
+	printf("-1 < 1U: %s \n", c < d ? "true" : "false");	// true
+	b = 3000000000;
+	printf("3bilion(in ui): [%u], -3bilion: [%ld], -3bilion: [%ld] \n", b, -b, -(long)b);
+	return (0);
+}
+//	If either operand is long double, convert the other to long double
+//	Otherwise, if either operand is double, convert the other to double
+//	Otherwise, if either operand is float, convert the other to float
+//	Otherwise, convert char and short to int
+//	Then, if either operand is long, convert the other to long
+//	Last, if either operand is signed, conver the other to signed
 
 
 
