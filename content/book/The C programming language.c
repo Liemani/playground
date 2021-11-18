@@ -2,14 +2,15 @@
 #include <stddef.h>	// size_t, NULL
 #include <limits.h>
 #include <float.h>
+#include <math.h>	// sqrt()
 
 #ifndef EXECUTE
-#define EXECUTE	a032
+#define EXECUTE	a037
 #endif
 
 
 
-//	copy paste this function prototype
+//	copy paste this function template
 //	int	a000(int argc, char **argv)
 //	{
 //		(void)argc;
@@ -19,12 +20,228 @@
 
 
 
+//	Exercise 2-6
+setbits(unsigned int x, int position, int count, y)
+{
+}
+
+int	a037(int argc, char **argv)
+{
+	(void)argc;
+	(void)argv;
+	return (0);
+}
+
+
+
+//	2.9
+int	a036(int argc, char **argv)
+{
+	float	f = 12.34;
+
+	(void)argc;
+	(void)argv;
+	printf("(int)f: %d, *(int *)&f: %d \n", (int)f, *(int *)&f);
+	return (0);
+}
+
+//	Right shifting a signed quantity will fill with sign bits ("arithmetic shift") on some machines and with 0-bits ("logical shift") on others
+//	x & ~077 is independent of word length
+
+unsigned int	getbits(unsigned int x, int position, int count)
+{
+	return (x & (~(~0x0 << count) << (position + 1 - count)));
+}
+
+//	(1, 1)
+//	~0x0
+//	11111111 << count
+//	11111110 ~
+//	00000001 << (position + 1 - count)
+//	00000010
+//	76543210
+//	
+//	(5, 3)
+//	~0x0
+//	11111111 << 3
+//	11111000 ~
+//	00000111 << (5 + 1 - 3)
+//	00111000
+
+unsigned int	getbits2(unsigned int x, int position, int count)
+{
+	return ((x >> (position + 1 - count)) & ~(~0x0 << count));
+}
+
+int	a0360(int argc, char **argv)
+{
+	int	count;
+
+	(void)argc;
+	(void)argv;
+	count = -1;
+	printf("0x10 << -1: %d \n", 0x10 << count);
+	return (0);
+}
+
+//	If right operand 'count' is signed, casted to unsigned
+
+
+
+//	Exercise 2-5
+long	any(const char *str, const char *ch_set)
+{
+	long		index;
+	const char	*ch;
+
+	if (str == NULL || ch_set == NULL)
+		return (-1);
+	index = 0;
+	while (str[index] != '\0')
+	{
+		ch = ch_set;
+		while (*ch != '\0')
+			if (str[index] == *ch++)
+				return (index);
+		++index;
+	}
+	return (-1);
+}
+
+int	a035(int argc, char **argv)
+{
+	const char	*str = "abcdefgabcdefg";
+	const char	*ch_set = "xyzd";
+
+	(void)argc;
+	(void)argv;
+	printf("any(\"%s\", \"%s\"): %ld \n", str, ch_set, any(str, ch_set));
+	return (0);
+}
+
+
+
+//	Exercise 2-4
+void	squeeze(char *str, char *removing_set)
+{
+	size_t	i;
+	size_t	j;
+	size_t	k;
+
+	if (str == NULL || removing_set == NULL)
+		return ;
+	i = 0;
+	j = 0;
+	while (str[i] != '\0')
+	{
+		k = 0;
+		while (removing_set[k] != '\0')
+			if (str[i] == removing_set[k])
+				break ;
+			else
+				++k;
+		if (removing_set[k] == '\0')
+			str[j++] = str[i++];
+		else
+			++i;
+	}
+	str[j] = '\0';
+}
+
+void	squeeze2(char *str, const char *removing)
+{
+	char		*target;
+	char		*iter_str;
+	const char	*iter_removing;
+
+	if (str == NULL || removing == NULL)
+		return ;
+	target = str;
+	iter_str = str;
+	while (*iter_str != '\0')
+	{
+		iter_removing = removing;
+		while (*iter_removing != '\0')
+			if (*iter_str == *iter_removing)
+				break ;
+			else
+				++iter_removing;
+		if (*iter_removing == '\0')
+			*target++ = *iter_str++;
+		else
+			++iter_str;
+	}
+	*target = '\0';
+}
+
+int	a034(int argc, char **argv)
+{
+	char		str[13] = "hello, world";
+	const char	*removing = "lolxyz";
+
+	(void)argc;
+	(void)argv;
+	printf("squeeze2(\"%s\", \"%s\"):", str, removing);
+	squeeze2(str, removing);
+	printf(" [%s] \n", str);
+	return (0);
+}
+
+
+
+//	Exercise 2-3
+///	- assume: str contains positive hexadecimal value
+#ifndef TRUE
+#define TRUE	1
+#endif
+int	htoi(char *str)
+{
+	int	convertee;
+	int	hexa;
+
+	if (*str != '0')
+		return (0);
+	++str;
+	if (!(*str == 'x' || *str == 'X'))
+		return (0);
+	++str;
+	convertee = 0;
+	while (TRUE)
+	{
+		if ('0' <= *str && *str <= '9')
+			hexa = *str - '0';
+		else if ('A' <= *str && *str <= 'F')
+			hexa = *str - 'A' + 10;
+		else if ('a' <= *str && *str <= 'f')
+			hexa = *str - 'a' + 10;
+		else
+			break ;
+		convertee = convertee * 16 + hexa;
+		++str;
+	}
+	return (convertee);
+}
+
+int	a033(int argc, char **argv)
+{
+	if (argc != 2)
+	{
+		printf("usage: %s <hexadecimal> \n", argv[0]);
+		return (0);
+	}
+	printf("hexadecimal %s is %d in int \n", argv[1], htoi(argv[1]));
+	return (0);
+}
+
+
+
 //	2.7
 //	In general, the only automatic conversions are those that convert a "narrower" operand into a "wider" one without losing information
 //	On some machines a char whose leftmost bit is 1 will be converted to a negative integer ("sign extension"). On others, a char is promoted to an int by adding zeros at the left end, and thus is always positive
 //	If an operator has operands of different types, the "lower" type is promoted to the "higher" type before the operation proceeds
 //	Comparisons between signed and unsigned values are machine-dependent, because they depend on the sizes of the various integer types
 //	Suppose that int is 16 bits and long is 32 bits. Then -1L < 1U, because 1U, which is an int, is promoted to a signed long. But -1L > 1UL, because -1L is promoted to unsigned long and thus appears to be a large positive number
+
 int	a032(int argc, char **argv)
 {
 	int				a;
@@ -39,20 +256,22 @@ int	a032(int argc, char **argv)
 	printf("-1 < 1U: %s \n", -1 < 1U ? "true" : "false");	// false
 	a = -1;
 	b = 1;
-	printf("-1 < 1U: %s \n", a < b ? "true" : "false");	// false
+//		printf("-1 < 1U: %s \n", a < b ? "true" : "false");	// false
 	c = -1;
 	d = 1;
 	printf("-1 < 1U: %s \n", c < d ? "true" : "false");	// true
 	b = 3000000000;
-	printf("3bilion(in ui): [%u], -3bilion: [%ld], -3bilion: [%ld] \n", b, -b, -(long)b);
+	printf("3bilion(in ui): [%u], -3bilion: [%u], -3bilion: [%ld] \n", b, -b, -(long)b);
 	return (0);
 }
+
 //	If either operand is long double, convert the other to long double
 //	Otherwise, if either operand is double, convert the other to double
 //	Otherwise, if either operand is float, convert the other to float
 //	Otherwise, convert char and short to int
 //	Then, if either operand is long, convert the other to long
 //	Last, if either operand is signed, conver the other to signed
+//	When double is converted to float, whether the value is rounded or truncated is implementation-dependent
 
 
 
