@@ -3,9 +3,10 @@
 #include <limits.h>
 #include <float.h>
 #include <math.h>	// sqrt()
+#include <stdlib.h>	// atoi()
 
 #ifndef EXECUTE
-#define EXECUTE	a037
+#define EXECUTE	a039
 #endif
 
 
@@ -20,15 +21,98 @@
 
 
 
-//	Exercise 2-6
-setbits(unsigned int x, int position, int count, y)
+//	Exercise 2-8
+unsigned int	rightrot(unsigned int x, int count)
 {
+	return ((x & ~(~0x0L << count)) << (32 - count) & x >> count);
+}
+
+int	a039(int argc, char **argv)
+{
+	unsigned int	x;
+	int				count;
+
+	if (argc != 3)
+	{
+		printf("usage: %s <hexadecimal> <count> \n", argv[0]);
+		return ();
+	}
+	return (0);
+}
+
+
+
+//	Exercise 2-7
+unsigned int	setbits(unsigned int x, int position, int count, unsigned int y);
+
+unsigned int	invert(unsigned int x, int position, int count)
+{
+	unsigned int	sub_x;
+
+	sub_x = x;
+	sub_x >>= position + 1 - count;
+	sub_x = ~sub_x;
+	sub_x &= ~(~0x0L << count);
+	return (setbits(x, position, count, sub_x));
+}
+
+int	htoi(const char *hexadecimal);
+
+int	a038(int argc, char **argv)
+{
+	unsigned int	x;
+	int				position;
+	int				count;
+
+	if (argc != 4)
+	{
+		printf("usage: %s <hexadecimal> <position> <count> \n", argv[0]);
+		return (0);
+	}
+	x = htoi(argv[1]);
+	position = atoi(argv[2]);
+	count = atoi(argv[3]);
+	printf("invert(%#010x, %d, %d): %#010x \n", x, position, count, invert(x, position, count));
+	return (0);
+}
+
+
+
+//	Exercise 2-6
+int	htoi(const char *hexadecimal);
+
+unsigned int	setbits(unsigned int x, int position, int count, unsigned int y)
+{
+	const int		right_most_mask = ~(~0x0L << count);
+	const int		mask_shift = position + 1 - count;
+	unsigned int	block_parent;
+	unsigned int	block_child;
+
+	block_parent = x & ~(right_most_mask << mask_shift);
+	block_child = (y & right_most_mask) << mask_shift;
+	return (block_parent | block_child);
 }
 
 int	a037(int argc, char **argv)
 {
-	(void)argc;
-	(void)argv;
+	unsigned int	x;
+	int				position;
+	int				count;
+	unsigned int	y;
+
+	if (!(argc == 5))
+	{
+//			printf("0x12345678 << 0: %#010x \n", 0x12345678 << 0);
+//			printf("%#010x \n", ~0x00000000 << 32);
+//			printf("%#010x \n", 0x80000000 << 1);
+		printf("usage: %s <x> <position> <count> <y> \n", argv[0]);
+		return (0);
+	}
+	x = htoi(argv[1]);
+	position = atoi(argv[2]);
+	count = atoi(argv[3]);
+	y = htoi(argv[4]);
+	printf("setbits(%#010x, %d, %d, %#010x): %#010x \n", x, position, count, y, setbits(x, position, count, y));
 	return (0);
 }
 
@@ -48,9 +132,17 @@ int	a036(int argc, char **argv)
 //	Right shifting a signed quantity will fill with sign bits ("arithmetic shift") on some machines and with 0-bits ("logical shift") on others
 //	x & ~077 is independent of word length
 
+unsigned int	getbits0(unsigned int x, int position, int count)
+{
+	const int	right_most_mask = ~(~0x0L << count);
+	const int	mask_shift = position + 1 - count;
+
+	return (x & right_most_mask << mask_shift);
+}
+
 unsigned int	getbits(unsigned int x, int position, int count)
 {
-	return (x & (~(~0x0 << count) << (position + 1 - count)));
+	return (x & ~(~0x0 << count) << (position + 1 - count));
 }
 
 //	(1, 1)
@@ -85,6 +177,26 @@ int	a0360(int argc, char **argv)
 }
 
 //	If right operand 'count' is signed, casted to unsigned
+
+int	htoi(const char *hexadecimal);
+
+int	a0361(int argc, char **argv)
+{
+	unsigned int	x;
+	int				position;
+	int				count;
+
+	if (!(argc == 4))
+	{
+		printf("usage: %s <hexadecimal> <position> <count> \n", argv[0]);
+		return (0);
+	}
+	x = htoi(argv[1]);
+	position = atoi(argv[2]);
+	count = atoi(argv[3]);
+	printf("getbits0(%#010x, %d, %d): %#010x \n", x, position, count, getbits0(x, position, count));
+	return (0);
+}
 
 
 
@@ -194,7 +306,7 @@ int	a034(int argc, char **argv)
 #ifndef TRUE
 #define TRUE	1
 #endif
-int	htoi(char *str)
+int	htoi(const char *str)
 {
 	int	convertee;
 	int	hexa;
