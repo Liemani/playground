@@ -3,7 +3,7 @@
 #include <unistd.h>	// sleep()
 #include <pthread.h>	// pthread_craete()
 
-#define EXECUTE	a002
+#define EXECUTE	a003
 
 
 
@@ -17,6 +17,23 @@
 //		}
 //		return (0);
 //	}
+
+
+
+int	a003(int argc, char **argv)
+{
+	pthread_mutex_t	mutex;
+
+	(void)argc;
+	(void)argv;
+	pthread_mutex_init(&mutex, NULL);
+	pthread_mutex_lock(&mutex);
+	printf("After mutex lock \n");
+	pthread_mutex_lock(&mutex);
+	printf("After mutex lock again \n");
+	return (0);
+}
+
 
 
 void	cleanup_routine(void *arg)
@@ -102,6 +119,8 @@ int	a000(int argc, char **argv)
 	printf("exit_status: %d \n", exit_status);
 	return (0);
 }
+
+
 
 int	main(int argc, char **argv)
 {
