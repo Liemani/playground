@@ -13,10 +13,10 @@
 #define SEC_LEN			19
 #define USEC_LEN		6
 #ifndef THREAD_COUNT
-# define THREAD_COUNT	200
+# define THREAD_COUNT	0
 #endif
 #ifndef SLEEP_MICRO
-# define SLEEP_MICRO	1
+# define SLEEP_MICRO	0
 #endif
 #ifndef LOOP_COUNT
 # define LOOP_COUNT		10
