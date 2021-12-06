@@ -13,18 +13,20 @@
 #define SEC_LEN			19
 #define USEC_LEN		6
 #ifndef THREAD_COUNT
-# define THREAD_COUNT	20
+# define THREAD_COUNT	200
 #endif
-#ifndef SLEEP_NANO
-# define SLEEP_NANO		100000
+#ifndef SLEEP_MICRO
+# define SLEEP_MICRO	1
 #endif
-#define LOOP_TIME		1000
+#ifndef LOOP_COUNT
+# define LOOP_COUNT		10
+#endif
 
 
 
 void	*a0030(void *arg);
 
-void	a004()
+void	a004(void)
 {
 	struct timeval	time_prev;
 	struct timeval	time_curr;
@@ -54,19 +56,36 @@ void	a004()
 
 
 
-void	*a0030(void *arg)
+#define STATUS_READY	0
+#define STATUS_GO		1
+
+int	a003_create_threads(pthread_t *array, int *arg)
+{
+	int	index;
+
+	for (index = 0; index < THREAD_COUNT; ++index)
+		if (pthread_create(array + index, NULL, a0030, arg) != 0)
+			return (1);
+	return (0);
+}
+
+void	a003_join_threads(pthread_t *array)
+{
+	int	index;
+
+	for (index = 0; index < THREAD_COUNT; ++index)
+		pthread_join(array[index], NULL);
+}
+
+void	*a0030(void *status)
 {
 	int	count;
 
-	(void)arg;
 	count = 0;
-	while (true)
-	{
-		++*(unsigned int *)arg;
-//			++*(int *)arg;
-//			printf("In the thread %d \n", *(int *)arg);
-//			sleep(1);
-	}
+	while (*(int *)status == STATUS_READY)
+		usleep(100);
+	while (*(int *)status == STATUS_GO)
+		++count;
 	return (NULL);
 }
 
@@ -74,34 +93,34 @@ void	*a0030(void *arg)
 //	If nanosleep(     1000),       3 <= time_diff.tv_usec <=       5
 //	If nanosleep(    10000),      17 <= time_diff.tv_usec <=      18
 //	If nanosleep(   100000),     130 <= time_diff.tv_usec <=     135
-void	a003()
+void	a003(void)
 {
+	pthread_t		threads[THREAD_COUNT];
+	struct timeval	time_diff[LOOP_COUNT];
 	struct timeval	time_prev;
 	struct timeval	time_curr;
-	pthread_t		threads[THREAD_COUNT];
-	unsigned int	thread_args[THREAD_COUNT];
-	struct timeval	time_diff[LOOP_TIME];
-	int				index;
-	struct timespec	time;
+	size_t			index;
+	int				status;
 
+	status = STATUS_READY;
 	gettimeofday(&time_prev, NULL);
-	for (index = 0; index < THREAD_COUNT; ++index)
-	{
-		thread_args[index] = index;
-		if (pthread_create(&threads[index], NULL, a0030, thread_args + index) != 0)
-			return ;
-	}
-	time.tv_sec = 0;
-	time.tv_nsec = SLEEP_NANO;
-	sleep(1);
-	for (index = 0; index < LOOP_TIME; ++index)
+	if (a003_create_threads(threads, &status) != 0)
+		return ;
+	status = STATUS_GO;
+//		usleep(SLEEP_MICRO);
+//		usleep(SLEEP_MICRO);
+//		usleep(SLEEP_MICRO);
+//		usleep(SLEEP_MICRO);
+	for (index = 0; index < LOOP_COUNT; ++index)
 	{
 		gettimeofday(&time_curr, NULL);
 		timersub(&time_curr, &time_prev, time_diff + index);
 		time_prev = time_curr;
-		nanosleep(&time, NULL);
+		usleep(SLEEP_MICRO);
 	}
-	for (index = 0; index < LOOP_TIME; ++index)
+	status = STATUS_READY;
+	a003_join_threads(threads);
+	for (index = 0; index < LOOP_COUNT; ++index)
 		printf("%06d \n", time_diff[index].tv_usec);
 }
 
@@ -114,25 +133,25 @@ void	a003()
 //	If usleep(0_010_000), time_diff.tv_usec <= ~ 012_647
 //	If usleep(0_100_000), time_diff.tv_usec <= ~ 105_143
 //	If usleep(1_000_000), time_diff.tv_usec <= ~ 005_139
-void	a002()
+void	a002(void)
 {
 	int				index;
 	struct timeval	time_prev;
 	struct timeval	time_curr;
-	struct timeval	time_diff[LOOP_TIME];
+	struct timeval	time_diff[LOOP_COUNT];
 
 	index = 0;
 	gettimeofday(&time_prev, NULL);
-	while (index < LOOP_TIME)
+	while (index < LOOP_COUNT)
 	{
-		usleep(SLEEP_NANO / USEC_IN_NSEC);
+		usleep(SLEEP_MICRO);
 		gettimeofday(&time_curr, NULL);
 		timersub(&time_curr, &time_prev, &time_diff[index]);
 		time_prev = time_curr;
 		++index;
 	}
 	index = 0;
-	while (index < LOOP_TIME)
+	while (index < LOOP_COUNT)
 	{
 		printf("%06d \n", time_diff[index].tv_usec);
 		++index;
@@ -141,7 +160,7 @@ void	a002()
 
 
 
-void	a001()
+void	a001(void)
 {
 	struct timeval	time_prev;
 	struct timeval	time_curr;
@@ -163,7 +182,7 @@ void	a001()
 
 
 
-void	a000()
+void	a000(void)
 {
 	struct timeval	time_prev;
 	struct timeval	time_curr;
@@ -183,7 +202,7 @@ void	a000()
 
 
 
-int	main()
+int	main(void)
 {
 	EXECUTE();
 	return (0);

@@ -17,8 +17,22 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a086
+#define EXECUTE a087
 //	#define EXECUTE a078	//	print key character value
+
+
+
+
+
+int	a087(void)
+{
+	int	count;
+
+	count = 0;
+	while (1)
+		++count;
+	return (0);
+}
 
 
 
