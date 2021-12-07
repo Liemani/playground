@@ -6,14 +6,14 @@
 #include <time.h>
 
 #ifndef	EXECUTE
-# define EXECUTE	a003
+# define EXECUTE	a005
 #endif
 
 #define USEC_IN_NSEC	1000
 #define SEC_LEN			19
 #define USEC_LEN		6
 #ifndef THREAD_COUNT
-# define THREAD_COUNT	0
+# define THREAD_COUNT	3
 #endif
 #ifndef SLEEP_MICRO
 # define SLEEP_MICRO	0
@@ -21,6 +21,48 @@
 #ifndef LOOP_COUNT
 # define LOOP_COUNT		10
 #endif
+
+
+
+//	mutex order test
+typedef struct s_thread
+{
+	pthread_t		tid;
+	int				number;
+	pthread_mutex_t	*mutex;
+}	t_thread;
+
+void	*a0050(void *arg)
+{
+	int	index;
+
+	const int				number = ((t_thread *)arg)->number;
+	pthread_mutex_t	* const	mutex = ((t_thread *)arg)->mutex;
+	for (index = 0; index < 30; ++index)
+	{
+		pthread_mutex_lock(mutex);
+		printf("thread %d: %d \n", number, index);
+		pthread_mutex_unlock(mutex);
+	}
+	return (NULL);
+}
+
+void	a005(void)
+{
+	pthread_mutex_t	mutex;
+	t_thread		threads[THREAD_COUNT];
+	int				index;
+
+	pthread_mutex_init(&mutex, NULL);
+	for (index = 0; index < THREAD_COUNT; ++index)
+	{
+		threads[index].number = index + 1;
+		threads[index].mutex = &mutex;
+		pthread_create(&threads[index].tid, NULL, a0050, &threads[index]);
+	}
+	for (index = 0; index < THREAD_COUNT; ++index)
+		pthread_join(threads[index].tid, NULL);
+}
 
 
 
