@@ -6,7 +6,7 @@
 /*   By: jeonpark <jeonpark@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 20:18:16 by jeonpark          #+#    #+#             */
-/*   Updated: 2021/12/06 14:13:41 by jeonpark         ###   ########.fr       */
+/*   Updated: 2021/12/08 15:30:38 by jeonpark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,6 @@ int	main(void)
 	test();
 	printf("e_test.first -> [%d] \n", first);
 	printf("e_test.second -> [%d] \n", second);
+	printf("e_test.third -> [%d] \n", third);
 	return (0);
 }
