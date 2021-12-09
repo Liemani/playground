@@ -17,10 +17,23 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a087
+#define EXECUTE a088
 //	#define EXECUTE a078	//	print key character value
 
 
+
+int	a088(void)
+{
+	long	l;
+
+	l = 0x7fffffffffffffff;
+	printf("l: [%ld] \n", l++);
+	printf("l: [%ld] \n", l);
+	l = 0x8000000000000000;
+	printf("l: [%ld] \n", l--);
+	printf("l: [%ld] \n", l);
+	return (0);
+}
 
 
 
