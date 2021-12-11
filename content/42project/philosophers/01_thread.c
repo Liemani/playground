@@ -1,9 +1,9 @@
-#include <stdlib.h>	// atoi()
+#include <stdlib.h>	// atoi(), NULL
 #include <stdio.h>	// printf()
 #include <unistd.h>	// sleep()
 #include <pthread.h>	// pthread_craete()
 
-#define EXECUTE	a003
+#define EXECUTE	a004
 
 
 
@@ -19,6 +19,21 @@
 //	}
 
 
+// Let's try double destroy mutex
+int	a004(int argc, char **argv)
+{
+	pthread_mutex_t	mutex;
+	int				return_value;
+
+	(void)argc;
+	(void)argv;
+	pthread_mutex_init(&mutex, NULL);
+	return_value = pthread_mutex_destroy(&mutex);
+	printf("return_value -> [%d] \n", return_value);
+	return_value = pthread_mutex_destroy(&mutex);
+	printf("return_value -> [%d] \n", return_value);
+	return (0);
+}
 
 int	a003(int argc, char **argv)
 {

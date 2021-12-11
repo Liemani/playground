@@ -17,8 +17,27 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a088
+#define EXECUTE a089
 //	#define EXECUTE a078	//	print key character value
+
+
+
+// Let's check the result of devide
+int	a089(void)
+{
+	int	dividend;
+	int	divisor;
+
+	dividend = 10;
+	divisor = 3;
+	printf("dividend: [%d], divisor: [%d] \n", dividend, divisor);
+	printf("quotient: [%d], remainder: [%d] \n", dividend / divisor, dividend % divisor);
+	dividend = -10;
+	divisor = 3;
+	printf("dividend: [%d], divisor: [%d] \n", dividend, divisor);
+	printf("quotient: [%d], remainder: [%d] \n", dividend / divisor, dividend % divisor);
+	return (0);
+}
 
 
 
