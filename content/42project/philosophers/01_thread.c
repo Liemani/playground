@@ -3,7 +3,7 @@
 #include <unistd.h>	// sleep()
 #include <pthread.h>	// pthread_craete()
 
-#define EXECUTE	a004
+#define EXECUTE	a006
 
 
 
@@ -17,6 +17,51 @@
 //		}
 //		return (0);
 //	}
+
+
+// What about join double time?
+static void	*a0060(void *arg);
+
+int	a006(int argc, char **argv)
+{
+	pthread_t	tid;
+	int			return_value;
+
+	(void)argc;
+	(void)argv;
+	pthread_create(&tid, NULL, a0060, NULL);
+	printf("tid: [%p] \n", tid);
+	return_value = pthread_join(tid, NULL);
+	printf("first join: return_value: [%d] \n", return_value);
+	printf("tid: [%p] \n", tid);
+	return_value = pthread_join(tid, NULL);
+	printf("second join: return_value: [%d] \n", return_value);
+	printf("tid: [%p] \n", tid);
+	return (0);
+}
+
+static void	*a0060(void *arg)
+{
+	return (arg);
+}
+
+
+
+// Let's join to unvalid tid
+int	a005(int argc, char **argv)
+{
+	pthread_t	unvalid_tid;
+	int			return_value;
+
+	(void)argc;
+	(void)argv;
+	unvalid_tid = NULL;
+	return_value = printf("unvalid_tid: [%p] \n", unvalid_tid);
+	pthread_join(unvalid_tid, NULL);
+	printf("return_value: [%d] \n", return_value);
+	return (0);
+}
+
 
 
 // Let's try double destroy mutex
