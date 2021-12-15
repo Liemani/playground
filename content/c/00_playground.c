@@ -17,10 +17,32 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a089
+#define EXECUTE a090
 //	#define EXECUTE a078	//	print key character value
 
 
+
+// Let's see addresses of array on stack
+
+int	a090(void)
+{
+	int	int1;
+	int	array1[4];
+	int	array2[4];
+	int	int2;
+
+	printf("&int1:      %p \n", &int1);
+	printf("array1:     %p \n", array1);
+	printf("&array1:    %p \n", &array1);
+	printf("array2:     %p \n", array2);
+	printf("&array2:    %p \n", &array2);
+	printf("&int2:      %p \n", &int2);
+	printf("&array1[0]: %p \n", &array1[0]);
+	printf("&array1[1]: %p \n", &array1[1]);
+	printf("&array2[0]: %p \n", &array2[0]);
+	printf("&array2[1]: %p \n", &array2[1]);
+	return (0);
+}
 
 // Let's check the result of devide
 int	a089(void)
