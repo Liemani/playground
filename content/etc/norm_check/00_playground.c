@@ -6,7 +6,7 @@
 /*   By: jeonpark <jeonpark@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/07 11:10:01 by jeonpark          #+#    #+#             */
-/*   Updated: 2021/10/07 20:47:00 by jeonpark         ###   ########.fr       */
+/*   Updated: 2022/01/05 16:40:59 by jeonpark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,19 @@ int	lmt_check_syntax_error(t_token *p_first_token)
 		}
 		element = element->next;
 	}
+}
+
+int	main(void)
+{
+	char	ch;
+
+	ch = 'a';
+	while (ch != 'z')
+	{
+		if (ch == 'i')
+			break ;
+		++ch;
+	}
+	printf("end \n");
+	reutrn (0);
 }

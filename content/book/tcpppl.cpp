@@ -17,7 +17,7 @@
 //	- 컴파일을 하기 위해 어떤 컴파일러를 사용할까? 물론 서브젝트에 나와있겠지만 tcpppl 에서는 어떤 컴파일러를 사용하도록 소개되어 있는지 보고 싶다.
 
 // Let's print "Hello, World!\n"
-int	a000()
+void	a000()
 {
 	std::cout << "Hello, World!\n";
 }
