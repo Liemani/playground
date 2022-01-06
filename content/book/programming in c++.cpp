@@ -1,11 +1,27 @@
 #include <iostream>
 
-#define EXECUTE	a001
+#define EXECUTE	a002
 
-//	void	a001(int argc, char **argv)
+//	void	a000(int argc, char **argv)
 //	{
 //		(void)argc;
 //		(void)argv;
+//	}
+
+
+
+// 236p
+//	#include <string>
+//	
+void	a002(int argc, char **argv)
+{
+	std::string	command;
+
+	(void)argc;
+	(void)argv;
+	std::cin >> command;
+	std::cout << command << std::endl;
+}
 
 
 
@@ -13,14 +29,15 @@
 // practice getopt()
 #include <unistd.h>
 
-void	a001(int argc, char **argv) {
+void	a001(int argc, char **argv)
+{
 	int	ch;
 
-	if (argc < 2) {
+	if (argc == 2) {
 		std::cout << "need argument" << std::endl;
+		return ;
 	}
 
-	(void)argc;
 	(void)argv;
 	while ((ch = getopt(argc, argv, "ab:")) != EOF) {
 		switch (ch) {
@@ -57,4 +74,6 @@ void	a000(int argc, char **argv)
 int	main(int argc, char **argv)
 {
 	EXECUTE(argc, argv);
+
+	return 0;
 }

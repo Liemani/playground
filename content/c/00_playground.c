@@ -23,7 +23,6 @@
 
 
 // Let's see addresses of array on stack
-
 int	a090(void)
 {
 	int	int1;
