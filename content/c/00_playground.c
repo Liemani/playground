@@ -17,8 +17,22 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a090
+#define EXECUTE a091
 //	#define EXECUTE a078	//	print key character value
+
+
+
+void	a0910()
+{
+	printf("a0910 is called \n");
+}
+
+int	a091(void)
+{
+	a0910(42);
+
+	return (0);
+}
 
 
 
