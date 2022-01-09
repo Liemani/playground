@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cassert>
 
-#define GROUND015
+#define GROUND025
 
 //	template
 #ifdef GROUND999
@@ -11,7 +11,253 @@ public:
 
 
 
-int	main()	{
+int	main(void) {
+	return 0;
+}
+#endif
+
+#ifdef GROUND025
+//	string practice
+//
+//	결과:
+//	str.size() 는 13 이며, 실제 차지하는 공간은 16 byte 이기 때문에 npos 와 max_size() 가 16 만큼 차이가 난다.
+int	main(void) {
+	std::string	str = std::string("hello, world!");
+	std::cout << "value of str: [" << str << "]" << std::endl;
+	std::cout << "size of str: [" << str.size() << "]" << std::endl;
+	std::cout << "max_size of str: [" << str.max_size() << "]" << std::endl;
+	std::cout << "npos of string: [" << std::string::npos << "]" << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND024
+//	궁금: 없는 namespace 의 맴버를 선언하고 사용할 수 있을까?
+int	main(void) {
+	int	name::first = 42;	// error: use of undeclared identifier 'name'
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND023
+//	궁금: 있는 namespace 의 맴버를 추가 선언하고 사용할 수 있을까?
+namespace name {
+	int	first;
+}
+
+int	main(void) {
+	std::cout << "name::first: " << name::first << std::endl;
+	name::first = 42;
+	std::cout << "name::first: " << name::first << std::endl;
+	int	name::second = 1;	// error: definition or redeclaration of 'second' not allowed inside a function
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND022
+//	pointer practice
+//
+//	결과:
+//	Object pointer 는 c 처럼 애매하게 사용할 수 없고, 딱 정해진 방식으로 사용해야 compile 이 진행된다.(& 와 * 를 정확한 위치에 정확한 갯수로 명시해야 한다.)
+//	compiler 는 'void (*)(Object *const)' 와 'void (Object::*)() const' 를 다른 type 으로 처리한다.
+class Object	{
+public:
+	int	value;
+
+	Object(void);
+
+	void	function(void) const;
+};
+
+
+
+Object::Object(void): value(0) {
+	std::cout << "Object(void) is called" << std::endl;
+}
+
+void	Object::function(void) const {
+	std::cout << "Object.function() is called" << std::endl;
+}
+
+
+
+int	main(void) {
+	Object	object;
+	Object	*pObject = &object;
+	std::cout << "object.value: " << object.value << std::endl;
+	std::cout << "pObject->value: " << pObject->value << std::endl;
+	object.function();
+	pObject->function();
+
+	int	*ptr = &object.value;
+	std::cout << "*ptr: " << *ptr << std::endl;
+	*ptr = 42;
+	std::cout << "*ptr: " << *ptr << std::endl;
+	std::cout << "object.value: " << object.value << std::endl;
+
+	int	Object::*pValue;
+	pValue = &Object::value;
+	std::cout << "object.*pValue = " << object.*pValue << std::endl;
+	//	pObject->*pValue
+
+	void	(Object::*f)(void) const;
+	f = &Object::function;
+	(object.*f)();
+	//	(pObject->*f)();
+
+//		void	(*newF)(Object *const);
+//		newF = &Object::function;	// error: assigning to 'void (*)(Object *const)' from incompatible type 'void (Object::*)() const'
+//		(*newF)(object);
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND021
+//	static member practice
+//	static member attribute 는 꼭 'type Object::attr' 로 class declaration 밖에서 선언을 해주어야 한다.
+//	그렇지 않으면 Undefined symbol link error 가 발생한다.
+//	값은 c 처럼 compiler 가 알아서 초기화해 줄까?
+class Object {
+private:
+	static int	_value;
+public:
+	static int	getValue(void);
+};
+
+
+
+int	Object::_value;
+
+int	Object::getValue(void) {
+	return Object::_value;
+}
+
+
+
+int	main(void) {
+	std::cout << Object::getValue() << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND020
+//	궁금:
+//	어떤 object 를 정의할 때 어떤 변수를 private 으로 정의하여 Object.cpp 로 Object.o 파일을 생성한 후, main.cpp 에서 사용할 때 해당 변수 선언을 public 으로 바꾸고 main.o 파일을 생성할 수 있을까?
+//	그렇게 생성된 Object.o 파일과 mainc.o 파일을 link 하여 a.out 파일을 생성할 수 있을까?
+//	생성된다면 이 파일이 실행될까?
+//	02_main.cpp 로 테스트를 진행했다.
+//	private 에 있던 변수를 public 으로 옮기면 당연히 잘 작동할 것 같다.
+//	public 에 선언된 변수를 private 으로 옮기면 문제가 발생할 수 있을까?
+//	가령 'Object(Object const &object) {}' 이런 복사 생성자에서 인자인 object 에 직접 접근 가능한 public 상태로 Object class 를 컴파일하고 main 은 private 으로 바꿔서 컴파일하면 어떨까?
+//	아니다 이것은 어리석은 생각이다.
+//	오류가 나든 나지 않든 크게 얻을 것이 없는 생각인 것 같다.
+//	실제 저런 식으로 프로그램을 실행시킬 일은 없기 때문이다.
+//	보안상으로도 private 으로 구현된 object 의 변수를 public 으로 수정하여 강제로 내부 변수에 직접 접근하는 방식을 제외하고는 큰 의미가 없다.
+//	반대로 public 을 private 으로 바꾼다면 오히려 접근 권한을 더 줄일 뿐이다.
+//
+//	결과:
+//	private 으로 선언된 attribute 를 public 으로 변경하여 main.o 를 생성하고 미리 컴파일해둔 Object.o 와 link 를 하니 해당 attribute 에 직접 접근하는 코드가 에러 없이 실행되는 것을 볼 수 있었다.
+#endif
+
+#ifdef GROUND019
+//	궁금:
+//	member variable 이 primitive type 이라면 초기화를 하지 않지만, instance 라면 default constructor 를 호출하지 않을까?
+//
+//	결과:
+//	Container 의 default constructor 를 호출하기만 하고 member variable 인 content 의 값을 초기화하지 않았지만 content 의 type 이 object type 이기 때문에 default constructor 가 호출되었다.
+//	그럼 structure 는 어떨까? 나중에 structure 를 사용할 일이 있으면 자세히 알아보도록 하자.
+class	Content {
+private:
+public:
+	Content(void);
+	~Content(void);
+};
+
+Content::Content(void) {
+	std::cout << "Content(void) is called" << std::endl;
+}
+
+Content::~Content(void) {
+	std::cout << "~Content(void) is called" << std::endl;
+}
+
+
+
+class	Container {
+private:
+	Content	content;
+public:
+	Container(void);
+	~Container(void);
+};
+
+Container::Container(void) {
+	std::cout << "Container(void) is called" << std::endl;
+}
+
+Container::~Container(void) {
+	std::cout << "~Container(void) is called" << std::endl;
+}
+
+
+
+int	main(void) {
+	Container	container = Container();
+
+	container = Container();
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND018
+//	Let's test cin
+int	main(void) {
+	char	buf[512];
+
+	std::cout << "Input a word: ";
+	std::cin >> buf;
+	std::cout << "You input [" << buf << "]" << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND017
+//	namespace alias practice
+namespace	Shape {
+	class Point {public: double x, y;};
+	class Circle {public: Point center; double radius;};
+}
+
+namespace	ShapeNew = Shape;
+
+int	main(void) {
+	ShapeNew::Circle	circle;
+
+	std::cout << circle.radius << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND016
+//	namespace practice
+namespace	Shape {
+	class Point {public: double x, y;};
+	class Circle {public: Point center; double radius;};
+}
+
+int	main(void) {
+	Shape::Circle	circle;
+
+	std::cout << circle.radius << std::endl;
+
 	return 0;
 }
 #endif
@@ -27,7 +273,7 @@ void	function(void) {
 	std::cout << "After set local variable: " << local << std::endl;
 }
 
-int	main() {
+int	main(void) {
 	function();
 	function();
 
@@ -92,7 +338,7 @@ int	Object::getValue(void) const {
 
 
 
-int	main()	{
+int	main(void) {
 	Object	object1;
 	Object	object2 = Object();
 
@@ -116,7 +362,7 @@ void	function() {
 	std::cout << "function() is called" << std::endl;
 }
 
-int	main()	{
+int	main(void) {
 	function(42);
 
 	return 0;
@@ -153,7 +399,7 @@ Object::Object(int value) {
 }
 
 
-int	main() {
+int	main(void) {
 	Object	object;	// error: call to constructor of 'Object' is ambiguous
 
 	return 0;
@@ -185,7 +431,7 @@ Object::Object(int value): _value(value) {
 
 
 
-int	main() {
+int	main(void) {
 	Object	object = Object(2);
 
 	std::cout << object._value << std::endl;
@@ -234,7 +480,7 @@ Object::Object(int value): _value(value) {
 
 
 
-int	main() {
+int	main(void) {
 	Object	object;	// error: no matching constructor for initialization of 'Object'
 
 	std::cout << object._value << std::endl;
@@ -251,7 +497,7 @@ void	function(int &referenceInt) {
 	std::cout << "Value of parameter: " << referenceInt << std::endl;
 }
 
-int	main() {
+int	main(void) {
 	function(NULL);	// error: no matching function for call to 'function'
 
 	return 0;
@@ -264,7 +510,7 @@ void	function(int &referenceInt) {
 	std::cout << "Value of parameter: " << referenceInt << std::endl;
 }
 
-int	main() {
+int	main(void) {
 	int	i;
 
 	i = 42;
@@ -308,7 +554,7 @@ public:
 
 
 
-int	main() {
+int	main(void) {
 	Object	object;	// error: unused variable 'object'
 
 	return 0;
@@ -376,7 +622,7 @@ std::ostream	&operator<<(std::ostream &out, Object const &rhs) {
 
 
 
-int	main() {
+int	main(void) {
 	Object	instance1;
 	Object	instance2 = Object(42);
 	Object	instance3 = Object(instance1);
@@ -451,7 +697,7 @@ std::ostream	&operator<<(std::ostream &out, Object const &rhs) {
 
 
 
-int	main() {
+int	main(void) {
 	Object	x = Object(10);
 	Object y = Object(20);
 	Object z = Object(30);
@@ -525,7 +771,7 @@ void	Object::bar(Object const &i) const {
 
 
 
-int	main() {
+int	main(void) {
 	Object	object;
 
 	object.bar('a');
@@ -541,7 +787,7 @@ int	main() {
 #ifdef GROUND001
 // let's print the return value of cin::operator>>()
 // If wrong type input, will it return NULL?
-int	main() {
+int	main(void) {
 	int	num;
 
 	std::cout << (std::cin >> num) << std::endl;

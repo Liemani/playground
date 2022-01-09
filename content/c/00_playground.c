@@ -17,11 +17,30 @@
 // #include "ft_printf.h"
 #include "lmt.h"
 
-#define EXECUTE a091
+#define EXECUTE a092
 //	#define EXECUTE a078	//	print key character value
 
 
+//	structure 에 '==' 를 사용하여 비교할 수 있을까?
+//
+//	결과:
+//	invalid operands error 가 발생한다.
+typedef struct 
+{
+	char	a[4];
+	int		b;
+}	structure;
 
+int	a092(void)
+{
+	structure	structure1;
+	structure	structure2;
+
+//		printf("Is two structure same? ", structure1 == structure2 ? "TRUE" : "FALSE");	// error: invalid operands to binary expression ('structure' and 'structure')
+}
+
+
+//	Let's call a function which is not accept argument with argument.
 void	a0910()
 {
 	printf("a0910 is called \n");
@@ -29,7 +48,7 @@ void	a0910()
 
 int	a091(void)
 {
-	a0910(42);
+//		a0910(42);
 
 	return (0);
 }
