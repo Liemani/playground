@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <cassert>
 
-#define GROUND027
+#define GROUND029
 
 //	template
 #ifdef GROUND999
@@ -13,6 +13,80 @@ public:
 
 
 int	main(void) {
+	return 0;
+}
+#endif
+#ifdef GROUND029
+//	궁금: const member를 constructor에서 assign하면 어떤 에러가 뜰까?
+//	결과: "error: constructor for 'Object' must explicitly initialize the const member '_constant'"
+//	"error: cannot assign to non-static data member '_constant' with const-qualified type 'const int'"
+class Object {
+public:
+	int const	_constant;
+
+	Object(int constant = 42);
+};
+
+
+
+Object::Object(int constant) {
+	this->_constant = constant; 
+	std::cout << "this->_constant: " << this->_constant << std::endl;
+}
+
+
+
+int	main(void) {
+	Object	object = Object(10);
+
+	std::cout << "object._constant: " << object._constant << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND028
+//	implicit type conversion을 할 때, source type을 인자로 하는 target type constructor와, source type의 conversion operator to target type이 모두 존재하면 ambiguous error가 발생할까?
+//	결과: error: conversion from 'Source' to 'Target' is ambiguous
+class Source;
+
+class Target {
+public:
+	Target(void);
+	Target(Source const &source);
+
+	void nothing(void);
+};
+
+Target::Target(void) {}
+
+Target::Target(Source const &source) {
+	(void)source;
+	std::cout << "Target(Source const &source) is called" << std::endl;
+}
+
+void	Target::nothing(void) {}
+
+
+
+class Source {
+public:
+	operator Target(void) const;
+};
+
+Source::operator Target(void) const {
+	std::cout << "operator Target(void) is called" << std::endl;
+
+	return Target();
+}
+
+
+
+int	main(void) {
+	Target	target = Source();
+
+	target.nothing();
+
 	return 0;
 }
 #endif
