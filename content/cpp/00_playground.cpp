@@ -1,7 +1,8 @@
 #include <iostream>
+#include <iomanip>
 #include <cassert>
 
-#define GROUND025
+#define GROUND027
 
 //	template
 #ifdef GROUND999
@@ -12,6 +13,47 @@ public:
 
 
 int	main(void) {
+	return 0;
+}
+#endif
+
+#ifdef GROUND027
+//	Let's test cin
+bool	getLine(std::string &line) {
+	std::cout << "Input a word: ";
+	std::getline(std::cin, line);
+
+	return !std::cin.eof();
+}
+
+int	main(void) {
+	std::string	line;
+
+	while (getLine(line))
+		std::cout << "You input [" << line << "]" << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND026
+//	궁금: std::setbase 의 return type 은 무엇일까?
+//
+//	결과:
+//	실제 iomanip 파일을 열어보니 std::setbase(int)는 단순히 std::__iom_t3를 반환하는 inline 함수였다.
+//	뜨는 에러로 확인해보아도 type은 std::__iom_t3이었다. 왜 cplusplus.com 등의 사이트에서는 /*unspecified*/ 라고 했을까?
+//	아마 실제 implementation 은 'std::__iom_t3' 로 되어 있었지만 interface로는 /*unspecified*/이기 때문일 것 같다.
+//	즉 implementation defined일 것 같다.
+//	이 용어를 잘 설명한 블로그를 발견했다.
+//	- https://m.blog.naver.com/ttagui/10043795874
+//	implementation defined 와 unspecified 가 독립적으로 존재하는 개념이었다.
+class Object {
+};
+
+int	main(void) {
+	Object	object = Object(std::setbase(16));
+	// error: no matching conversion for functional-style cast from 'std::__iom_t3' to 'Object'
+
 	return 0;
 }
 #endif

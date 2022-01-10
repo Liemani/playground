@@ -1,4 +1,5 @@
 // winsize
+// sizeof
 // rusage
 // pid_t
 // __darwin_pid_t
