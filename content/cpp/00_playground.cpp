@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <cassert>
 
-#define GROUND030
+#define GROUND033
 
 //	template
 #ifdef GROUND999
@@ -13,6 +13,45 @@ public:
 
 
 int main(void) {
+	return 0;
+}
+#endif
+
+#ifdef GROUND033
+//	namespace 안에서 'static const int' type 변수를 선언하고 초기화할 수 있을까?
+//	가능하다, 'static' keyword를 빼도 잘 작동한다.
+namespace name {
+	int	value = 42;
+}
+
+int	main(void) {
+	std::cout << "name::value: " << name::value << std::endl;
+	return 0;
+}
+#endif
+
+#ifdef GROUND032
+//	인자의 type에 reference를 사용하면 Type 전후의 const는 주소가 가리키는 object가 변하지 않음을 의미한다.
+class Object {
+private:
+public:
+	int	_value;
+};
+
+void	function(Object &object) {
+	object._value = 1;
+	std::cout << "object._value: " << object._value << std::endl;
+}
+
+void	constFunction(const Object &object) {
+	std::cout << "object._value: " << object._value << std::endl;
+}
+
+int	main(void) {
+	Object	object;
+	constFunction(object);
+	function(object);
+
 	return 0;
 }
 #endif
