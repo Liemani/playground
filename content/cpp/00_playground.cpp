@@ -2,20 +2,73 @@
 #include <iomanip>
 #include <cassert>
 
-#define GROUND029
+#define GROUND030
 
 //	template
 #ifdef GROUND999
-class Object	{
+class Object {
 public:
 };
 
 
 
-int	main(void) {
+int main(void) {
 	return 0;
 }
 #endif
+
+#ifdef GROUND031
+//	practice string
+int main(void) {
+	std::string str = "hello, world!";
+
+	std::cout << "str: " << str << std::endl;
+	str.erase(0, 1);
+	std::cout << "str: " << str << std::endl;
+	return 0;
+}
+#endif
+
+#ifdef GROUND031
+//	global에 선언된 type은 '::'로 global type에 접근 가능하기 때문에 namespace 내부에서 같은 identifier를 사용하여 namespace를 정의할 수 있다.
+typedef int Type;
+
+namespace name {
+	namespace Type {
+		extern ::Type value;
+	}
+}
+
+Type name::Type::value = 1;
+
+
+
+int main(void) {
+	std::cout << "name::Type::value: " << name::Type::value << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND030
+//	namespace의 identifier로 keyword를 사용할 수 없다. 
+namespace name {
+	namespace int {
+		extern int value;
+	}
+}
+
+int name::int::value = 1;
+
+
+
+int main(void) {
+	std::cout << "namespace::value: " << name::int::value << std::endl;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND029
 //	궁금: const member를 constructor에서 assign하면 어떤 에러가 뜰까?
 //	결과: "error: constructor for 'Object' must explicitly initialize the const member '_constant'"
