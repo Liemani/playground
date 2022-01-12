@@ -2,6 +2,8 @@
 #include <iomanip>
 #include <cassert>
 
+#define NDEBUG
+
 #define GROUND033
 
 //	template
