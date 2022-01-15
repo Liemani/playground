@@ -4,7 +4,7 @@
 
 #define NDEBUG
 
-#define GROUND033
+#define GROUND034
 
 //	template
 #ifdef GROUND999
@@ -15,6 +15,124 @@ public:
 
 
 int main(void) {
+	return 0;
+}
+#endif
+
+#ifdef GROUND034
+//	https://www.geeksforgeeks.org/default-methods-in-c-with-examples/
+//	Default Methods in C++ with Examples
+//	Type	type;
+//		같다 Type	type = Type();
+class	Super {
+private:
+	static int	referenceCount;
+public:
+	int	value;
+
+	Super(void) { value = ++referenceCount; std::cout << "Super.defaultConstructor: " << referenceCount << std::endl; };
+	Super(const Super& super) { this->value = super.value; std::cout << "Super.copyConstructor" << std::endl; };
+	//	Called when an instance is passed as arguments to a constructor or returned
+	~Super(void) { std::cout << "Super.destructor" << std::endl; };
+
+	Super&	operator=(const Super& rhs) { this->value = rhs.value; std::cout << "super.copyAssignmentOperator" << std::endl; return *this; };
+};
+
+int	Super::referenceCount = 0;
+
+class	Property {
+private:
+	static int	referenceCount;
+public:
+	int	value;
+
+	Property(void) { value = ++referenceCount; std::cout << "Property.defaultConstructor: " << referenceCount << std::endl; };
+	Property(const Property& property) { this->value = property.value; std::cout << "Property.copyConstructor" << std::endl; };
+	~Property(void) { std::cout << "Property.destructor" << std::endl; };
+	Property&	operator=(const Property& rhs) { this->value = rhs.value; std::cout << "property.copyAssignmentOperator" << std::endl; return *this; };
+};
+
+int	Property::referenceCount = 0;
+
+class	Default: public Super {
+private:
+	Property	property;
+//	public:
+//		Default(void);
+//		Default(const Default& type);
+//		~Default(void);
+//	
+//		Default&	operator=(const Default& rhs);
+};
+
+//	Default::Default(void) {
+//		super.defaultConstructor();
+//		this->property.defaultConstructor();
+//	}
+//	
+//	Default::Default(const Default& type) {
+//		super.copyConstructor(type);
+//		this->property.copyConstructor(type.property);
+//	}
+//	
+//	Default::~Default(void) {
+//		this->property.destructor();
+//		super.destructor();
+//	}
+//	
+//	Default&	Default::operator=(const Default& rhs) {
+//		super.copyAssignmentOperator(rhs);
+//		this->property.copyAssignmentOperator(rhs.property);
+//	
+//		return *this;
+//	}
+
+class	Type: public Super {
+private:
+	Property	property;
+public:
+	Type(void);
+	Type(const Type& type);
+	~Type(void);
+
+	Type&	operator=(const Type& rhs);
+};
+
+Type::Type(void) {
+	//	super.defaultConstructor
+	//	this->property.defaultConstructor
+	std::cout << "Type.defaultConstructor" << std::endl;
+}
+
+Type::Type(const Type& type) {
+	(void)type;
+	//	super.defaultConstructor
+	//	this->property.defaultConstructor
+	std::cout << "Type.copyConstructor" << std::endl;
+}
+
+Type::~Type(void) {
+	std::cout << "Type.destructor" << std::endl;
+	//	this->property.destructor
+	//	super.destructor
+}
+
+//	선언과 할당을 동시에 하는 경우를 제외한 모든 할당 시 호출
+Type&	Type::operator=(const Type& rhs) {
+	(void)rhs;
+	std::cout << "type.copyAssignmentOperator" << std::endl;
+
+	return *this;
+}
+
+int	main(void) {
+//		Default	default1 = Default();
+//		Default	default2 = Default(default1);
+//		default2 = default1;
+	Type	type1 = Type();
+	Type	type2 = Type(type1);
+	type2 = type1;
+
 	return 0;
 }
 #endif
