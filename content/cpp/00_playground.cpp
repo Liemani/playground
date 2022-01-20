@@ -4,7 +4,7 @@
 
 #define NDEBUG
 
-#define GROUND034
+#define GROUND036
 
 //	template
 #ifdef GROUND999
@@ -15,6 +15,49 @@ public:
 
 
 int main(void) {
+	return 0;
+}
+#endif
+
+#ifdef GROUND036
+//	c++에서 private access modifier는 접근 범위를 instance로 제한하는 것이 아니라 class name scope으로 제한된다.
+class	Type {
+private:
+	int	value;
+public:
+	Type(void) { this->value = 42; };
+	Type(const Type& type);
+
+	int	getValue(void) { return this->value; };
+	void	setValue(int newValue) { this->value = newValue; };
+};
+
+Type::Type(const Type& type) {
+	this->value = type.value;
+}
+
+int	main(void) {
+	Type type1;
+	type1.setValue(21);
+	Type type2 = Type(type1);
+	std::cout << "type2.value: " << type2.getValue() << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND035
+//	and, or, not practice
+int	main(void) {
+	bool	a = true;
+	bool	b = false;
+
+	std::cout << a << std::endl;
+	std::cout << b << std::endl;
+	std::cout << (a and b) << std::endl;
+	std::cout << (a or b) << std::endl;
+	std::cout << not a << std::endl;
+	std::cout << not b << std::endl;
 	return 0;
 }
 #endif
