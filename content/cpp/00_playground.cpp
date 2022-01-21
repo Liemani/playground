@@ -4,7 +4,7 @@
 
 #define NDEBUG
 
-#define GROUND036
+#define GROUND034
 
 //	template
 #ifdef GROUND999
@@ -67,6 +67,12 @@ int	main(void) {
 //	Default Methods in C++ with Examples
 //	Type	type;
 //		같다 Type	type = Type();
+//	궁금: constructor에서 member variable에게 assign operator를 사용하면 member variable의 constructor가 두 번 호출될까?
+//		default constructor도 호출되고 추가적인 constructor도 호출되고 copy assignment opertor도 호출되고 destructor도 호출된다.
+//		: property(10)을 사용하면 parameterized constructor 하나만 호출된다.
+//	Property의 default constructor가 없는데 Type이 Property를 member variable로 가지고 constructor에서 명시적으로 initialization을 하지 않으면 어떻게 될까?
+//		error: constructor for 'Type' must explicitly initialize the member 'property' which does not have a default constructor
+//	new keyword는 heap영역에 메모리 공간을 할당할 뿐만 아니라 default constructor도 호출한다. 
 class	Super {
 private:
 	static int	referenceCount;
@@ -90,6 +96,7 @@ public:
 	int	value;
 
 	Property(void) { value = ++referenceCount; std::cout << "Property.defaultConstructor: " << referenceCount << std::endl; };
+	Property(int value) { this->value = value; };
 	Property(const Property& property) { this->value = property.value; std::cout << "Property.copyConstructor" << std::endl; };
 	~Property(void) { std::cout << "Property.destructor" << std::endl; };
 	Property&	operator=(const Property& rhs) { this->value = rhs.value; std::cout << "property.copyAssignmentOperator" << std::endl; return *this; };
@@ -135,6 +142,7 @@ private:
 	Property	property;
 public:
 	Type(void);
+	Type(Property& property);
 	Type(const Type& type);
 	~Type(void);
 
@@ -144,7 +152,14 @@ public:
 Type::Type(void) {
 	//	super.defaultConstructor
 	//	this->property.defaultConstructor
+//		this->property = Property(10);
 	std::cout << "Type.defaultConstructor" << std::endl;
+}
+
+Type::Type(Property& property): property(property) {
+	//	super.defaultConstructor
+	//	property.copyConstructor
+	std::cout << "Type.parameterizedConstructor" << std::endl;
 }
 
 Type::Type(const Type& type) {
@@ -172,9 +187,16 @@ int	main(void) {
 //		Default	default1 = Default();
 //		Default	default2 = Default(default1);
 //		default2 = default1;
-	Type	type1 = Type();
-	Type	type2 = Type(type1);
-	type2 = type1;
+
+//		Type	type1 = Type();
+//		Type	type2 = Type(type1);
+//		type2 = type1;
+
+//		Type*	type1 = new Type[2];
+//		delete [] type1;
+
+//		Property	property = Property(10);
+//		Type	type = Type(property);
 
 	return 0;
 }
