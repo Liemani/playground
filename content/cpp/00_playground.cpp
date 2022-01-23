@@ -4,7 +4,7 @@
 
 #define NDEBUG
 
-#define GROUND037
+#define GROUND039
 
 //	template
 #ifdef GROUND999
@@ -15,6 +15,38 @@ public:
 
 
 int main(void) {
+	return 0;
+}
+#endif
+
+#ifdef GROUND039
+//	사용하지 않는 함수가 완성된 프로그램의 크기에 영향을 미칠까?
+//	main 용량: 16834
+//	hello 추가 용량: 40258
+//	world 추가 용량: 30306
+//
+//	결과: 사용하지 않는 함수가 추가되어도 컴파일러는 이를 알아서 최적화하지 못하고 완성된 프로그램에 추가한다.
+//		- 아마 최적화 옵션으로 결과가 달라질 수도 있을 것 같다.
+void	world(void) {
+	std::cout << "world" << std::endl;
+}
+
+void	hello(void) {
+	std::cout << "hello" << std::endl;
+}
+
+int	main(void) {
+	return 0;
+}
+#endif
+
+#ifdef GROUND038
+//	float, double, long double의 size를 출력해보자.
+int	main(void) {
+	std::cout << "sizeof(float): " << sizeof(float) << std::endl;
+	std::cout << "sizeof(double): " << sizeof(double) << std::endl;
+	std::cout << "sizeof(long double): " << sizeof(long double) << std::endl;
+
 	return 0;
 }
 #endif
