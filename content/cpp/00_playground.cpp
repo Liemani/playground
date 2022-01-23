@@ -4,7 +4,7 @@
 
 #define NDEBUG
 
-#define GROUND034
+#define GROUND037
 
 //	template
 #ifdef GROUND999
@@ -15,6 +15,23 @@ public:
 
 
 int main(void) {
+	return 0;
+}
+#endif
+
+#ifdef GROUND037
+//	반환값만 달라도 overloading이 될까?
+//	error: functions that differ only in their return type cannot be overloaded
+int	returnValue(void) {
+	return 42;
+}
+
+double	returnValue(void) {
+	return 4.2;
+}
+int	main(void) {
+	int	x = returnValue();
+
 	return 0;
 }
 #endif
