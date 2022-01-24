@@ -4,7 +4,7 @@
 
 #define NDEBUG
 
-#define GROUND039
+#define GROUND049
 
 //	template
 #ifdef GROUND999
@@ -15,6 +15,261 @@ public:
 
 
 int main(void) {
+	return 0;
+}
+#endif
+
+#ifdef GROUND049
+//	C++ Primer Plus 5ed 175p/6
+struct CandyBar {
+	std::string	name;
+	double	weight;
+	int	calorie;
+};
+
+void	CandyBarDescribe(CandyBar* candyBar, int index) {
+	std::cout << index << ". Name: " << candyBar->name << std::endl;
+	std::cout << index << ". Weight: " << candyBar->weight << std::endl;
+	std::cout << index << ". Calories: " << candyBar->calorie << std::endl;
+}
+
+int	main(void) {
+	CandyBar*	candyBars = new CandyBar[3];
+
+	candyBars[0].name = "sneakers";
+	candyBars[0].weight = 1.2;
+	candyBars[0].calorie = 100;
+	candyBars[1].name = "hot break";
+	candyBars[1].weight = 2.3;
+	candyBars[1].calorie = 200;
+	candyBars[2].name = "free time";
+	candyBars[2].weight = 3.4;
+	candyBars[2].calorie = 300;
+
+	CandyBarDescribe(candyBars, 1);
+	std::cout << std::endl;
+	CandyBarDescribe(candyBars + 1, 2);
+	std::cout << std::endl;
+	CandyBarDescribe(candyBars + 2, 3);
+
+	delete [] candyBars;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND048
+//	C++ Primer Plus 5ed 175p/7
+struct Pizza {
+	std::string	nameOfCompany;
+	double	diameter;
+	double	weight;
+};
+
+int	main(void) {
+	Pizza*	pizza = new Pizza;
+
+	std::cout << "Enter the diameter of pizza: ";
+	std::cin >> pizza->diameter;
+	std::cin.get();
+	std::cout << "Enter the name of pizza company: ";
+	std::getline(std::cin, pizza->nameOfCompany);
+	std::cout << "Enter the weight of pizza: ";
+	std::cin >> pizza->weight;
+
+	std::cout << "Name: " << pizza->nameOfCompany << std::endl;
+	std::cout << "Diameter: " << pizza->diameter << std::endl;
+	std::cout << "Weight: " << pizza->weight << std::endl;
+
+	delete pizza;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND047
+//	C++ Primer Plus 5ed 175p/7
+struct Pizza {
+	std::string	nameOfCompany;
+	double	diameter;
+	double	weight;
+};
+
+int	main(void) {
+	Pizza	pizza;
+
+	std::cout << "Enter the name of pizza company: ";
+	std::getline(std::cin, pizza.nameOfCompany);
+	std::cout << "Enter the diameter of pizza: ";
+	std::cin >> pizza.diameter;
+	std::cout << "Enter the weight of pizza: ";
+	std::cin >> pizza.weight;
+
+	std::cout << "Name: " << pizza.nameOfCompany << std::endl;
+	std::cout << "Diameter: " << pizza.diameter << std::endl;
+	std::cout << "Weight: " << pizza.weight << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND046
+//	C++ Primer Plus 5ed 175p/6
+struct CandyBar {
+	std::string	name;
+	double	weight;
+	int	calorie;
+};
+
+void	CandyBarDescribe(CandyBar* candyBar, int index) {
+	std::cout << index << ". Name: " << candyBar->name << std::endl;
+	std::cout << index << ". Weight: " << candyBar->weight << std::endl;
+	std::cout << index << ". Calories: " << candyBar->calorie << std::endl;
+}
+
+int	main(void) {
+	CandyBar	candyBars[3] = {
+		{"sneakers", 1.2, 100},
+		{"hot break", 2.3, 200},
+		{"free time", 3.4, 300},
+	};
+
+	CandyBarDescribe(candyBars, 1);
+	std::cout << std::endl;
+	CandyBarDescribe(candyBars + 1, 2);
+	std::cout << std::endl;
+	CandyBarDescribe(candyBars + 2, 3);
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND045
+//	C++ Primer Plus 5ed 175p/5
+struct CandyBar {
+	std::string	name;
+	double	weight;
+	int	calorie;
+};
+
+int	main(void) {
+	CandyBar	snack = {"Mocha Munch", 2.3, 350};
+
+	std::cout << "Name: " << snack.name << std::endl;
+	std::cout << "Weight: " << snack.weight << std::endl;
+	std::cout << "Calories: " << snack.calorie << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND044
+//	C++ Primer Plus 5ed 174p/4
+int	main(void) {
+	std::string	firstName;
+	std::string	lastName;
+	std::string	name;
+
+	std::cout << "Enter your first name: ";
+	std::getline(std::cin, firstName);
+	std::cout << "Enter your last name: ";
+	std::getline(std::cin, lastName);
+	name = lastName + ", " + firstName;
+	std::cout << "Here's the information in a single string: " << name << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND043
+//	C++ Primer Plus 5ed 174p/3
+int	main(void) {
+	const int	lineMaxCount = 80;
+	char	firstName[lineMaxCount];
+	char	lastName[lineMaxCount];
+	char	name[lineMaxCount];
+	char*	namePointer;
+
+	std::cout << "Enter your first name: ";
+	std::cin.getline(firstName, lineMaxCount);
+	std::cout << "Enter your last name: ";
+	std::cin.getline(lastName, lineMaxCount);
+	namePointer = name;
+	strcpy(namePointer, lastName);
+	namePointer += strlen(lastName);
+	*namePointer++ = ',';
+	*namePointer++ = ' ';
+	strcpy(namePointer, firstName);
+	std::cout << "Here's the information in a single string: " << name << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND042
+//	C++ Primer Plus 5ed 174p/2
+int	main(void) {
+	std::string	name;
+	std::string	dessert;
+
+	std::cout << "Enter your name:" << std::endl;
+	std::getline(std::cin, name);
+	std::cout << "Enter your favorite dessert:" << std::endl;
+	std::getline(std::cin, dessert);
+	std::cout << "I have some delicious " << dessert;
+	std::cout << " for you, " << name << "." << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND041
+//	C++ Primer Plus 5ed 174p/1
+enum Grade {A, B, C};
+
+int	main(void) {
+	const int	maxSize = 80;
+	char	firstName[maxSize];
+	char	lastName[maxSize];
+	Grade	grade;
+	int	age;
+
+	std::cout << "What is your first name? ";
+	std::cin.get(firstName, maxSize);
+	std::cout << "What is your last name? ";
+	std::cin >> lastName;
+	std::cout << "What letter grade do you deserve? ";
+	std::cin.get();
+	grade = Grade(std::cin.get() - 'A');
+	std::cout << "What is your age? ";
+	std::cin >> age;
+	std::cout << "Name: " << lastName << ", " << firstName << std::endl;
+	std::cout << "Grade: " << char('A' + grade + 1) << std::endl;
+	std::cout << "Age: " << age << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND040
+//	stack과 heap의 주소를 출력해보자.
+//
+//	결과: stack의 주소값은 점점 작아지고 heap의 주소값은 점점 커진다.
+//		- code와 data를 담을 영역과 stack을 담을 영역을 먼저 결정하여 끝과 끝에 위치시켜두고 그 사이에서 heap이 채워져나가도록 만드는 것이 좋을 것이다.
+int	main(void) {
+	int	a;
+	int	b;
+	int*	c = new int;
+	int*	d = new int;
+
+	std::cout << "&a: " << &a << std::endl;
+	std::cout << "&b: " << &b << std::endl;
+	std::cout << "c: " << c << std::endl;
+	std::cout << "d: " << d << std::endl;
+
+	delete c;
+	delete d;
+
 	return 0;
 }
 #endif
