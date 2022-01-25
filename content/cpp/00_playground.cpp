@@ -4,7 +4,7 @@
 
 #define NDEBUG
 
-#define GROUND049
+#define GROUND058
 
 //	template
 #ifdef GROUND999
@@ -15,6 +15,212 @@ public:
 
 
 int main(void) {
+	return 0;
+}
+#endif
+
+#ifdef GROUND058
+//	C++ Primer Plus 5ed 229p/Programming Exercises/4
+int	main(void) {
+	const int	monthsOfTheYear = 12;
+	const char*	monthsStr[monthsOfTheYear] = {
+		"January",
+		"Fabruary",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"August",
+		"September",
+		"October",
+		"November",
+		"December",
+	};
+	int	monthlySales[monthsOfTheYear];
+
+	std::cout << "Enter mothly sales of year" << std::endl;
+	for (int i = 0; i < monthsOfTheYear; i +=1) {
+		std::cout << monthsStr[i] << ": ";
+		if (!(std::cin >> monthlySales[i])) {
+			std::cout << "Invalid value has input!" << std::endl;
+			return 0;
+		}
+	}
+
+	int	sum = 0;
+	for (int i = 0; i < monthsOfTheYear; i +=1) {
+		sum += monthlySales[i];
+	}
+
+	std::cout << "Sum: " << sum << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND057
+//	C++ Primer Plus 5ed 229p/Programming Exercises/3
+int	main(void) {
+	const double	initialInvest = 100.0;
+	double	investOfDaphne = initialInvest;
+	double	investOfCleo = initialInvest;
+	int	yearCount;
+
+	yearCount = 0;
+	do {
+		investOfDaphne += 0.1 * initialInvest;
+		investOfCleo *= 1.05;
+		yearCount += 1;
+	} while (investOfDaphne > investOfCleo);
+	std::cout << "The year took to exceed Cleo's invest Daphne's invest: " << yearCount << std::endl;
+	std::cout << "Daphne's invest: " << investOfDaphne << std::endl;
+	std::cout << "Cleo's invest: " << investOfCleo << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND056
+//	C++ Primer Plus 5ed 229p/Programming Exercises/2
+int	main(void) {
+	int	inputNumber;
+	int	accumulator;
+
+	std::cout << "Enter a int type number: ";
+	accumulator = 0;
+	while (std::cin >> inputNumber) {
+		if (inputNumber == 0)
+			break;
+		accumulator += inputNumber;
+		std::cout << "Cumulative sum: " << accumulator << std::endl;
+		std::cout << "Enter a int type number: ";
+	}
+
+	if (!std::cin)
+		std::cout << "Failed reading number!" << std::endl;
+	else
+		std::cout << "\'0\' is entered!" << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND055
+//	C++ Primer Plus 5ed 229p/Programming Exercises/1
+int	main(void) {
+	int	smallNumber;
+	int	bigNumber;
+
+	std::cout << "Enter two int type number to calculate the total sum from to: ";
+
+	if (!(std::cin >> smallNumber))
+		std::cout << "failed reading number!" << std::cout;
+	if (!(std::cin >> bigNumber))
+		std::cout << "Failed reading number!" << std::endl;
+
+	if (smallNumber > bigNumber) {
+		const int	temp = smallNumber;
+		smallNumber = bigNumber;
+		bigNumber = temp;
+	}
+
+	long	accumulator = 0;
+	for (int index = smallNumber; index <= bigNumber; index += 1)
+		accumulator += index;
+
+	std::cout << "Total: " << accumulator << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND054
+//	C++ Primer Plus 5ed 229p/Review Questions/6
+int	main(void) {
+	for (int i = 1; i <= 64; i *= 2)
+		std::cout << i << ' ';
+	std::cout << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND053
+//	C++ Primer Plus 5ed 227p
+int	main(void) {
+	char	cities[25][5] = {
+		"Gribble City",
+		"Gribbletown",
+		"New Gribble",
+		"San Gribble",
+		"Gribble Vista",
+	};
+
+	for (int i = 0; i < 5; i += 1) {
+		std::cout << cities[i] << std::endl;
+	}
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND052
+//	C++ Primer Plus 5ed 218p/listing 5.18
+int	main(void) {
+	int	ch;
+	int	count;
+
+	count = 0;
+	ch = std::cin.get();
+	while (std::cin.fail() == false) {
+		std::cout << char(ch);
+		count += 1;
+		ch = std::cin.get();
+	}
+	std::cout << std::endl;
+	std::cout << count << " characters read" << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND051
+//	C++ Primer Plus 5ed 214p/listing 5.16
+//	textin1.cpp
+int	main(void) {
+	std::cout << "Enter character; Enter # to quit: " << std::endl;;
+	char	ch;
+	int	count = 0;
+	std::cin >> ch;
+	while (ch != '#') {
+		std::cout << ch;
+		count += 1;
+		std::cin >> ch;
+	}
+	std::cout << std::endl;
+	std::cout << "count: " << count << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND050
+//	C++ Primer Plus 5ed 214p/listing 5.16
+//	textin1.cpp
+int	main(void) {
+	std::cout << "Enter character; Enter # to quit: " << std::endl;;
+	char	ch;
+	int	count = 0;
+	while (true) {
+		std::cin >> ch;
+		if (ch == '#') break;
+		std::cout << ch;
+		count += 1;
+	}
+	std::cout << std::endl;
+	std::cout << "count: " << count << std::endl;
+
 	return 0;
 }
 #endif
