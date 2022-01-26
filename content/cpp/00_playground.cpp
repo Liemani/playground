@@ -1,20 +1,166 @@
 #include <iostream>
-#include <iomanip>
-#include <cassert>
 
-#define NDEBUG
+#define GROUND063
+#ifdef GROUND063
+//	C++ Primer Plus 5ed 230p/Programming Exercises/9
+#include <cstring>	// strcmp()
 
-#define GROUND058
+int	main(void) {
+	std::cout << "Enter number of rows: ";
+	int	rowCount;
+	if (!(std::cin >> rowCount)) {
+		std::cout << "Invalid value has input!" << std::endl;
+		return 0;
+	}
 
-//	template
-#ifdef GROUND999
-class Object {
-public:
+	for (int i = 0; i < rowCount; i += 1) {
+		const int	dotCount = rowCount - (i + 1);
+		for (int j = 0; j < dotCount; j += 1)
+			std::cout << ".";
+		const int	starCount = i + 1;
+		for (int j = 0; j < starCount; j += 1)
+			std::cout << "*";
+		std::cout << std::endl;
+	}
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND062
+//	C++ Primer Plus 5ed 230p/Programming Exercises/8
+#include <cstring>	// strcmp()
+
+int	main(void) {
+	std::string	str;
+	int	wordCount;
+
+	std::cout << "Enter words (to stop, type the word done):" << std::endl;
+	wordCount = 0;
+	while (std::cin >> str && str != "done")
+		wordCount += 1;
+	std::cout << "You entered a total of " << wordCount << " words." << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND061
+//	C++ Primer Plus 5ed 230p/Programming Exercises/7
+#include <cstring>	// strcmp()
+
+int	main(void) {
+	const int	strMaxCount = 80;
+	char	str[strMaxCount];
+	int	wordCount;
+
+	std::cout << "Enter words (to stop, type the word done):" << std::endl;
+	wordCount = 0;
+	while (std::cin >> str && strcmp(str, "done") != 0)
+		wordCount += 1;
+	std::cout << "You entered a total of " << wordCount << " words." << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND060
+//	C++ Primer Plus 5ed 230p/Programming Exercises/6
+struct Car {
+	std::string	make;
+	int	yearMade;
 };
 
+int	main(void) {
+	int	carCount;
 
+	std::cout << "How many cars do you wish to catalog? ";
+	if (!(std::cin >> carCount)) {
+		std::cout << "Invalid value has input!" << std::endl;
+		return 0;
+	}
+	std::cin.ignore();
 
-int main(void) {
+	Car*	carArray = new Car[carCount];
+
+	for (int i = 0; i < carCount; i += 1) {
+		std::cout << "Car #" << i + 1 << ":" << std::endl;
+		std::cout << "Please enter the Make: ";
+		if (!getline(std::cin, carArray[i].make)) {
+			std::cout << "Invalid value has input!" << std::endl;
+			return 0;
+		}
+		std::cout << "Please enter the year made: ";
+		if (!(std::cin >> carArray[i].yearMade)) {
+			std::cout << "Invalid value has input!" << std::endl;
+			return 0;
+		}
+		std::cin.ignore();
+	}
+
+	std::cout << "Here is your collection:" << std::endl;
+	for (int i = 0; i < carCount; i += 1)
+		std::cout << carArray[i].yearMade << ' ' << carArray[i].make << std::endl;
+
+	delete [] carArray;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND059
+//	C++ Primer Plus 5ed 230p/Programming Exercises/5
+int	main(void) {
+	const int	yearCount = 3;
+	const int	monthsOfTheYear = 12;
+
+	const char*	monthsStr[monthsOfTheYear] = {
+		"January",
+		"Fabruary",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"August",
+		"September",
+		"October",
+		"November",
+		"December",
+	};
+
+	int	monthlySales[yearCount][monthsOfTheYear];
+
+	std::cout << "Enter mothly sales for " << yearCount << "years" << std::endl;
+	for (int j = 0; j < yearCount; j += 1) {
+		std::cout << j + 1 << "year" << std::endl;
+		for (int i = 0; i < monthsOfTheYear; i +=1) {
+			std::cout << monthsStr[i] << ": ";
+			if (!(std::cin >> monthlySales[j][i])) {
+				std::cout << "Invalid value has input!" << std::endl;
+				return 0;
+			}
+		}
+	}
+
+	int	sumOfYear[yearCount] = { 0 };
+	for (int j = 0; j < yearCount; j += 1) {
+		for (int i = 0; i < monthsOfTheYear; i +=1) {
+			sumOfYear[j] += monthlySales[j][i];
+		}
+	}
+
+	int	totalSum = 0;
+	for (int i = 0; i < yearCount; i +=1)
+		totalSum += sumOfYear[i];
+
+	std::cout << "Sum of years: ";
+	for (int i = 0; i < yearCount; i += 1)
+		std::cout << sumOfYear[i] << ' ';
+	std::cout << std::endl;
+
+	std::cout << "Total sum: " << totalSum << std::endl;
+
 	return 0;
 }
 #endif
@@ -694,6 +840,7 @@ Type&	Type::operator=(const Type& rhs) {
 }
 
 int	main(void) {
+//		Default	default1;
 //		Default	default1 = Default();
 //		Default	default2 = Default(default1);
 //		default2 = default1;
@@ -908,6 +1055,8 @@ int	main(void) {
 //	이 용어를 잘 설명한 블로그를 발견했다.
 //	- https://m.blog.naver.com/ttagui/10043795874
 //	implementation defined 와 unspecified 가 독립적으로 존재하는 개념이었다.
+#include <iomanip>
+
 class Object {
 };
 
@@ -1700,7 +1849,10 @@ int	main(void) {
 #endif
 
 #ifdef GROUND000
-// use assert()
+#include <cassert>	// assert()
+
+//	#define NDEBUG
+
 int	main(int argc, char **argv) {
 	assert(argc != 1);
 	(void)argv;
