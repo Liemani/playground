@@ -1,6 +1,504 @@
 #include <iostream>
+#include <fstream>
 
-#define GROUND063
+#define GROUND072
+#ifdef GROUND072
+//	C++ Primer Plus 5ed 278/Programming Exercises/9
+struct Contributor {
+	std::string	name;
+	double		contribution;
+	static const double	grandBasis;
+};
+
+const double	Contributor::grandBasis = 10000.0;
+
+bool	getValidInt_isEOF(std::istream& is, int& variable) {
+	double	temp;
+	char	ch;
+
+	while (!(is >> temp).eof()) {
+		if (is.fail()) {
+			std::cout << "Invalid input!" << std::endl;
+			is.clear();
+			while (is.get(ch) && !std::isspace(ch));
+			if (is.eof())
+				return true;
+		}
+		else {
+			is.get();
+			variable = temp;
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool	getValidDouble_isEOF(std::istream& is, double& variable) {
+	char	ch;
+
+	while (!(is >> variable).eof()) {
+		if (is.fail()) {
+			std::cout << "Invalid input!" << std::endl;
+			is.clear();
+			while (is.get(ch) && !std::isspace(ch));
+			if (is.eof())
+				return true;
+		}
+		else {
+			is.get();
+			return false;
+		}
+	}
+
+	return true;
+}
+
+int	main(void) {
+	int	contributorCount;
+	int	petronInCategoryCount;
+
+	std::ifstream	ifs;
+	ifs.open(".temp");
+	if (getValidInt_isEOF(ifs, contributorCount))
+		return 0;
+	Contributor*	contributorArray = new Contributor[contributorCount];
+
+	for (int i = 0; i < contributorCount; i += 1) {
+		Contributor&	contributor = contributorArray[i];
+		if (!getline(ifs, contributor.name))
+			return 0;
+		if (getValidDouble_isEOF(ifs, contributor.contribution))
+			return 0;
+	}
+
+	ifs.close();
+
+	std::cout << "Grand Patrons" << std::endl;
+	petronInCategoryCount = 0;
+	for (int i = 0; i < contributorCount; i += 1) {
+		Contributor&	contributor = contributorArray[i];
+		if (contributor.contribution >= Contributor::grandBasis) {
+			std::cout << contributor.name << ": " << contributor.contribution << std::endl;
+			petronInCategoryCount += 1;
+		}
+	}
+
+	if (petronInCategoryCount == 0)
+		std::cout << "none." << std::endl;
+
+	std::cout << "Petrons" << std::endl;
+	petronInCategoryCount = 0;
+	for (int i = 0; i < contributorCount; i += 1) {
+		Contributor&	contributor = contributorArray[i];
+		if (contributor.contribution < Contributor::grandBasis) {
+			std::cout << contributor.name << ": " << contributor.contribution << std::endl;
+			petronInCategoryCount += 1;
+		}
+	}
+
+	if (petronInCategoryCount == 0)
+		std::cout << "none." << std::endl;
+
+	delete [] contributorArray;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND071
+//	C++ Primer Plus 5ed 278/Programming Exercises/8
+int	main(void) {
+	char	ch;
+
+	std::ifstream	ifs;
+	ifs.open(".temp");
+
+	int	characterCount = 0;
+	while (ifs.get(ch))
+		characterCount += 1;
+
+	ifs.close();
+
+	std::cout << characterCount << " character" << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND070
+//	C++ Primer Plus 5ed 278/Programming Exercises/7
+bool	getWord_shouldLoop(std::string& string) {
+	if (!(std::cin >> string))
+		return false;
+	if (string == "q")
+		return false;
+	return true;
+}
+
+bool	isVowel(char ch) {
+	switch (ch) {
+		case 'a':
+		case 'e':
+		case 'i':
+		case 'o':
+		case 'u':
+		case 'A':
+		case 'E':
+		case 'I':
+		case 'O':
+		case 'U':
+			return true;
+	}
+	return false;
+}
+
+int	main(void) {
+	std::string	word;
+
+	std::cout << "Enter words (q to quit):" << std::endl;
+	int	wordBeginningWithVowelCount = 0;
+	int	wordBeginningWithConsonantCount = 0;
+	int	wordBeginningWithOthersCount = 0;
+	while (getWord_shouldLoop(word)) {
+		const char	firstLetter = word[0];
+		if (isalpha(firstLetter)) {
+			if (isVowel(firstLetter))
+				wordBeginningWithVowelCount += 1;
+			else
+				wordBeginningWithConsonantCount += 1;
+		}
+		else
+			wordBeginningWithOthersCount += 1;
+	}
+
+	if (!std::cin)
+		return 0;
+
+	std::cout << wordBeginningWithVowelCount << " words beginning with vowels" << std::endl;
+	std::cout << wordBeginningWithConsonantCount << " words beginning with consonants" << std::endl;
+	std::cout << wordBeginningWithOthersCount << " others" << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND069
+//	C++ Primer Plus 5ed 277/Programming Exercises/6
+struct Contributor {
+	std::string	name;
+	double		contribution;
+	static const double	grandBasis;
+};
+
+const double	Contributor::grandBasis = 10000.0;
+
+bool	getValidInt_isEOF(int& variable) {
+	double	temp;
+	char	ch;
+
+	while (!(std::cin >> temp).eof()) {
+		if (std::cin.fail()) {
+			std::cout << "Invalid input!" << std::endl;
+			std::cin.clear();
+			while (std::cin.get(ch) && !std::isspace(ch));
+			if (std::cin.eof())
+				return true;
+		}
+		else {
+			std::cin.get();
+			variable = temp;
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool	getValidDouble_isEOF(double& variable) {
+	char	ch;
+
+	while (!(std::cin >> variable).eof()) {
+		if (std::cin.fail()) {
+			std::cout << "Invalid input!" << std::endl;
+			std::cin.clear();
+			while (std::cin.get(ch) && !std::isspace(ch));
+			if (std::cin.eof())
+				return true;
+		}
+		else {
+			std::cin.get();
+			return false;
+		}
+	}
+
+	return true;
+}
+
+int	main(void) {
+	int	contributorCount;
+	int	petronInCategoryCount;
+
+	std::cout << "Enter contributor count: ";
+	if (getValidInt_isEOF(contributorCount))
+		return 0;
+	Contributor*	contributorArray = new Contributor[contributorCount];
+
+	for (int i = 0; i < contributorCount; i += 1) {
+		Contributor&	contributor = contributorArray[i];
+		std::cout << "Enter contributor #" << i + 1 << " information: " << std::endl;
+		std::cout << "name: ";
+		if (!getline(std::cin, contributor.name))
+			return 0;
+		std::cout << "contribution: ";
+		if (getValidDouble_isEOF(contributor.contribution))
+			return 0;
+	}
+
+	std::cout << "Grand Patrons" << std::endl;
+	petronInCategoryCount = 0;
+	for (int i = 0; i < contributorCount; i += 1) {
+		Contributor&	contributor = contributorArray[i];
+		if (contributor.contribution >= Contributor::grandBasis) {
+			std::cout << contributor.name << ": " << contributor.contribution << std::endl;
+			petronInCategoryCount += 1;
+		}
+	}
+
+	if (petronInCategoryCount == 0)
+		std::cout << "none." << std::endl;
+
+	std::cout << "Petrons" << std::endl;
+	petronInCategoryCount = 0;
+	for (int i = 0; i < contributorCount; i += 1) {
+		Contributor&	contributor = contributorArray[i];
+		if (contributor.contribution < Contributor::grandBasis) {
+			std::cout << contributor.name << ": " << contributor.contribution << std::endl;
+			petronInCategoryCount += 1;
+		}
+	}
+
+	if (petronInCategoryCount == 0)
+		std::cout << "none." << std::endl;
+
+	delete [] contributorArray;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND068
+//	C++ Primer Plus 5ed 277/Programming Exercises/5
+const int	tax0 = 5000;
+const int	tax1 = 15000;
+const int	tax2 = 35000;
+
+bool	getTvarp_isValid(int& tvarp) {
+	double	temp;
+
+	std::cout << "Enter income: ";
+	if (!(std::cin >> temp))
+		return false;
+	if (temp < 0)
+		return false;
+
+	tvarp = temp;
+	return true;
+}
+
+int	main(void) {
+	int	tvarp;
+
+	while (getTvarp_isValid(tvarp)) {
+		int	tax = 0;
+		if (tvarp > tax2) {
+			tax += (tvarp - tax2) * (20 / 100.0);
+			tvarp = tax2;
+		}
+		if (tvarp > tax1) {
+			tax += (tvarp - tax1) * (15 / 100.0);
+			tvarp = tax1;
+		}
+		if (tvarp > tax0) {
+			tax += (tvarp - tax0) * (10 / 100.0);
+			tvarp = tax0;
+		}
+		std::cout << "Tax: " << tax << " tvarps" << std::endl;
+	}
+
+	if (!std::cin.eof() && std::cin.fail())
+		std::cout << "Invalid input!" << std::endl;
+	else
+		std::cout << "Bye!" << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND067
+//	C++ Primer Plus 5ed 276/Programming Exercises/4
+const int	strSize = 80;
+const int	bopArray_count = 3;
+
+struct Bop {
+	enum Preference {
+		preference_preference = -1,
+		preference_fullName,
+		preference_title,
+		preference_nickname,
+		preference_count,
+	};
+
+	char		property[preference_count][strSize];
+	Preference	preference;
+};
+
+bool	getCh_shouldLoop(char& ch) {
+	return (std::cin >> ch && ch != 'q');
+}
+
+int	main(void) {
+	const Bop	bopArray[bopArray_count] = {
+		{ {"A", ".", "a"}, Bop::preference_fullName},
+		{ {"B", "?", "b"}, Bop::preference_title},
+		{ {"C", "!", "c"}, Bop::preference_nickname},
+	};
+
+	std::cout << "a. display by name	b. display by title" << std::endl;
+	std::cout << "c. display by nickname	d. display by preference" << std::endl;
+	std::cout << "q. quit" << std::endl;
+
+	std::cout << "Enter your choice: ";
+	char	ch;
+	while (getCh_shouldLoop(ch)) {
+		Bop::Preference	preference;
+		switch (ch) {
+			case 'a':
+				preference = Bop::preference_fullName;
+				break;
+			case 'b':
+				preference = Bop::preference_title;
+				break;
+			case 'c':
+				preference = Bop::preference_nickname;
+				break;
+			case 'd':
+				preference = Bop::preference_preference;
+				break;
+			default:
+				std::cout << "Please enter a a, b, c, d, or q: ";
+				continue;
+		}
+		for (int i = 0; i < bopArray_count; i += 1) {
+			const Bop*	bop = &bopArray[i];
+			std::cout << bop->property[preference == Bop::preference_preference ? bop->preference : preference] << std::endl;
+		}
+		std::cout << "Next choice: ";
+	}
+	std::cout << "Bye!" << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND066
+//	C++ Primer Plus 5ed 276/Programming Exercises/3
+int	main(void) {
+	std::cout << "Please enter one of the following choices:" << std::endl
+		<< "c) carnivore	p)pianist" << std::endl
+		<< "t) tree		g)game" << std::endl;
+
+	char	ch;
+	while (std::cin >> ch) {
+		switch (ch) {
+			case 'C':
+			case 'c':
+				std::cout << "What does carnivore mean?" << std::endl;
+				break;
+			case 'P':
+			case 'p':
+				std::cout << "Pianist is gorgeous!" << std::endl;
+				break;
+			case 'T':
+			case 't':
+				std::cout << "A maple is a tree." << std::endl;
+				break;
+			case 'G':
+			case 'g':
+				std::cout << "What a pity.." << std::endl;
+				break;
+			default:
+				std::cout << "Please enter a c, p, t, or g: ";
+		}
+	}
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND065
+//	C++ Primer Plus 5ed 276/Programming Exercises/2
+const int	donationsCount = 10;
+
+bool	getDonation_isValid(double* donations, int index) {
+	return (index < donationsCount
+			&& std::cin >> donations[index]);
+}
+
+int	main(void) {
+	double	donations[donationsCount];
+
+	std::cout << "Enter donation values(non-digit: exit):" << std::endl;
+
+	int	index = 0;
+	while (getDonation_isValid(donations, index))
+		index += 1;
+
+	double	sum = 0;
+	for (int i = 0; i < index; i += 1)
+		sum += donations[i];
+	const double	average = index == 0 ? 0 : sum / index;
+
+	int	biggerThanAverage_count = 0;
+	for (int i = 0; i < index; i += 1)
+		if (donations[i] > average)
+			biggerThanAverage_count += 1;
+
+	std::cout << "Average of donations: "
+		<< average
+		<< std::endl;
+	std::cout << biggerThanAverage_count
+		<< " donations are larger than the average"
+		<< std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND064
+//	C++ Primer Plus 5ed 276/Programming Exercises/1
+int	main(void) {
+	char	ch;
+	char	outputCh;
+	while (std::cin.get(ch)) {
+		if (ch == '@')
+			break;
+		else if (isnumber(ch))
+			continue;
+		else if (islower(ch))
+			outputCh = toupper(ch);
+		else if (isupper(ch))
+			outputCh = tolower(ch);
+		else
+			outputCh = ch;
+
+		std::cout << outputCh;
+	}
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND063
 //	C++ Primer Plus 5ed 230p/Programming Exercises/9
 #include <cstring>	// strcmp()
