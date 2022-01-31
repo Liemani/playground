@@ -1,7 +1,76 @@
 #include <iostream>
 #include <fstream>
 
-#define GROUND072
+#define GROUND075
+#ifdef GROUND075
+int	main(void) {
+	int			constValue = 10;
+	int* pointer = &constValue;
+	int* const*	constPPointer;
+
+	std::cout << "constValue: " << constValue << std::endl;
+
+	constPPointer = &pointer;	// valid
+	**constPPointer = 42;		// valid!!
+
+	std::cout << "constValue: " << constValue << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND074
+int	main(void) {
+	const int	constValue = 10;
+	int*		pointer;
+	const int**	constPPointer;
+
+	std::cout << "constValue: " << constValue << std::endl;
+
+// 	constPPointer = &pointer;		// invalid
+//	error: assigning to 'const int **' from 'int **' discards qualifiers in nested pointer types
+	*constPPointer = &constValue;	// valid
+	*pointer = 42;					// valid!!
+
+	std::cout << "constValue: " << constValue << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND073
+//	const type pointer가 가리키는 값이 가리키는 값은 수정이 가능할까?
+//
+//	결과: 'const Type*' type이라고 해도 Type 안의 pointer가 가리키는 값은 수정이 가능하다!
+//		더불어 const type으로 전달받은 parameter도 const가 없는 type으로 explicit type conversion으로 값을 수정하는 것이 가능했다.
+struct Type {
+	int*	pointer;
+};
+
+void	lets_assign_value_to_a_variable_pointed_by_member_variable_of_const_type(const Type* constPointer) {
+	*(constPointer->pointer) = 42;
+}
+
+void	lets_assign_value_to_a_member_variable_of_const_type_by_force_casting(const Type* constPointer) {
+	int	a;
+	((Type*)constPointer)->pointer = &a;
+	std::cout << constPointer->pointer << std::endl;
+}
+
+int	main(void) {
+	int		variable = 0;;
+	Type	type = { &variable };
+
+	lets_assign_value_to_a_variable_pointed_by_member_variable_of_const_type(&type);
+	std::cout << *(type.pointer) << std::endl;
+	lets_assign_value_to_a_member_variable_of_const_type_by_force_casting(&type);
+	std::cout << type.pointer << std::endl;
+	std::cout << *(type.pointer) << std::endl;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND072
 //	C++ Primer Plus 5ed 278/Programming Exercises/9
 struct Contributor {
