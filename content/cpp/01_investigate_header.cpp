@@ -1,8 +1,9 @@
-//	#include <iostream>
-//	#include <algorithm>
-//	#include <iomanip>
-#include <fstream>
-//	#include <streambuf>
+// #include <iostream>
+// #include <algorithm>
+// #include <iomanip>
+// #include <fstream>
+// #include <streambuf>
+#include <cmath>
 
 int	main()
 {

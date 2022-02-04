@@ -1,0 +1,260 @@
+//	# foundation
+//	## varaible
+set LMI_pcArray cell1
+set LMI_pcArrayIndex 0
+
+//	## function
+//	LMI_function
+//	- syntax:
+//		//	- Declaration
+//		op add LMI_functionCall @counter 3
+//		set implementationLineCount <body line count>
+//		op add addressAfterFunction LMI_functionCall implementationLineCount
+//		set @counter addressAfterFunction
+//		//	- Body
+//		op add callee @counter 1
+//		set @counter LMI_functionCall
+//		//	compose function behabior here..
+//		set @counter LMI_functionReturn
+//	LMI_function call
+//	- syntax: call <function name>
+//		op add caller @counter 1
+//		set @counter <function name>
+
+//	LMI_functionCall
+//	- Declaration
+op add LMI_functionCall @counter 3
+set implementationLineCount 3
+op add addressAfterFunction LMI_functionCall implementationLineCount
+set @counter addressAfterFunction
+//	- Body
+write caller LMI_pcArray LMI_pcArrayIndex
+op add LMI_pcArrayIndex LMI_pcArrayIndex 1
+set @counter callee
+
+//	LMI_functionReturn
+//	- Declaration
+op add LMI_functionReturn @counter 3
+set implementationLineCount 3
+op add addressAfterFunction LMI_functionReturn implementationLineCount
+set @counter addressAfterFunction
+//	- Body
+op sub LMI_pcArrayIndex LMI_pcArrayIndex 1
+read caller LMI_pcArray LMI_pcArrayIndex
+set @counter caller
+
+//	## if statement
+//	LMI_ifStatement
+//	- syntax:
+//		//	operators for condition
+//		op <operator> condition <lhs> <rhs>
+//		set trueExecutionLineCount <true execution line count>
+//		set falseExecutionLineCount <false execution line count>
+//		op add caller @counter 1
+//		set @counter LMI_ifStatement
+//		//	- True execution
+//		//	compose code here..
+//		set @counter LMI_functionReturn
+//		//	- False execution
+//		//	compose code here..
+//	- Declaration
+op add LMI_ifStatement @counter 3
+set implementationLineCount 12
+op add addressAfterFunction LMI_ifStatement implementationLineCount
+set @counter addressAfterFunction
+//	- Initializer
+op add divergence @counter 3
+//	- Body
+op mul divergenceBias 6 condition
+op add divergence divergence divergenceBias
+set @counter divergence
+//	- True execution header
+set temp caller
+op add caller caller trueExecutionLineCount
+op add caller caller falseExecutionLineCount
+op add callee @counter 1
+set @counter LMI_functionCall
+set @counter temp
+//	- False execution header
+op add caller caller trueExecutionLineCount
+set @counter caller
+
+//	## while statement
+//	LMI_whileStatementCondition
+//	LMI_whileStatement
+//	- syntax:
+//		//	operators for condition
+//		op <operator> condition <lhs> <rhs>
+//		set bodyLineCount <true execution line count>
+//		set loop
+//		op add caller @counter 1
+//		set @counter LMI_whileStatement
+//		//	- Body
+//		//	compose code here..
+//		set @counter LMI_functionReturn
+//	- Declaration
+op add LMI_whileStatement @counter 3
+set implementationLineCount
+op add addressAfterFunction LMI_whileStatement implementationLineCount
+set @counter addressAfterFunction
+//	- Initializaer
+op add divergence @counter 3
+//	- Body
+op mul divergenceBias ?? condition
+op add divergence divergence divergenceBias
+set @counter divergence
+//	- Loop execution
+op add callee @counter 1
+set @counter LMI_functionCall
+set temp caller
+op sub caller caller 
+set @counter caller
+//	- Break execution
+set trueExecution caller
+op add falseExecution trueExecution trueExecutionLineCount
+op add caller falseExecution falseExecutionLineCount
+op add callee @counter 1
+set @counter LMI_functionCall
+op sub divergence trueExecution falseExecution
+op mul divergence divergence condition
+op add divergence falseExecution divergence
+set @counter divergence
+
+
+
+
+
+
+//	# user-defined function
+//	forEachLink
+//	- Declaration
+op add forEachLink @counter 3
+set implementationLineCount 8
+op add addressAfterFunction forEachLink implementationLineCount
+set @counter addressAfterFunction
+//	- Body
+set index 0
+op lessThan condition index @links
+set trueExecutionLineCount
+set falseExecutionLineCount
+op add caller @counter 1
+set @counter LMI_ifStatement
+set @counter LMI_functionReturn
+set @counter LMI_functionReturn
+getlink element index
+op add index index 1
+	else
+
+
+
+//	# main
+op add caller @counter 1
+set @counter forEachLink
+
+label loopAddress:
+{
+	loopLineCount = @counter - loopAddress
+	loopLineCount += loopConditionLineCount
+	condition = i < @links
+	selector = loopLineCount * condition
+	nextAddress = loopAddress + selector
+	goto nextAddress
+}
+
+//	function
+//	function LMI_loopCondition
+//	- Declaration
+op add LMI_loopCondition @counter 3
+set implementationLineCount ???
+op add addressAfterFunction @counter implementationLineCount
+set @counter addressAfterFunction
+//	- Body
+set caller
+
+
+
+op add loopAddress @counter 1
+set index 0
+getlink element index
+op add index index 1
+set loopAddress
+
+nextAddress = i < @links ? loopAddress : @counter;
+
+
+
+set loopConditionLineCount 5
+set index 0
+set loopAddress @counter
+//	body
+op sub loopLineCount @counter loopAddress
+op add loopLineCount loopLineCount loopConditionLineCount
+op lessThan condition index
+
+
+//	message control
+print "frog"
+printflush message1
+
+//	testType
+getlink result 1
+sensor message result @totalItems
+print result
+printflush message1
+jump 7 equal result @switch
+control enabled switch1 false 0 0 0
+jump 0 always x false
+control enabled switch1 true 0 0 0
+jump 0 always x false
+
+
+
+set threshold 2000
+set activeCount 0
+sensor enable1 reactor1 @enabled
+set activeCount 0
+op add activeCount activeCount 1
+sensor powerIn reactor1 @powerNetIn
+sensor powerOut reactor1 @powerNetOut
+op sub power powerIn powerOut
+set index 0
+getlink result 0
+
+
+
+# operator subcommand
+op sub result a b
+op mul result a b
+op div result a b
+op idiv result a b
+op mod result a b
+op pow result a b
+op equal result a b
+op notEqual result a b
+op land result a b
+op lessThan result a b
+op lessThanEq result a b
+op greaterThan result a b
+op greaterThanEq result a b
+op strictEqual result a b
+op shl result a b
+op shr result a b
+op or result a b
+op and result a b
+op xor result a b
+op not result a b
+op max result a b
+op min result a b
+op angle result a b
+op len result a b
+op noise result a b
+op abs result a b
+op log result a b
+op log10 result a b
+op sin result a b
+op cos result a b
+op tan result a b
+op floor result a b
+op ceil result a b
+op sqrt result a b
+op rand result a b

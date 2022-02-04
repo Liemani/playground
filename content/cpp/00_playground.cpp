@@ -1,11 +1,100 @@
 #include <iostream>
-#include <fstream>
 
-#define GROUND075
+#define GROUND077
+#ifdef GROUND077
+#include <cmath>
+
+struct PlaneCoordinate {
+	double	x;
+	double	y;
+};
+
+struct PolarCoordinate {
+	double	distance;
+	double	angle;
+};
+
+void	planeToPolar(PlaneCoordinate& plane, PolarCoordinate& polar) {
+	polar.distance = sqrt(plane.x * plane.x + plane.y * plane.y);
+	polar.angle = atan2(plane.y, plane.x);
+}
+
+void	showPolar(PolarCoordinate& polar) {
+	using std::cout;
+	using std::endl;
+
+	cout
+		<< "Polar Coordinate:" << endl
+		<< "	Distance: " << polar.distance << endl
+		<< "	Angle: " << polar.angle * 180 / M_PI << endl;
+}
+
+int	main(void) {
+	using std::cin;
+	using std::cout;
+	using std::endl;
+
+	PlaneCoordinate	plane;
+	PolarCoordinate	polar;
+
+	cout << "Enter Plane Coordinate's x-axis and y-axis: ";
+	while (cin >> plane.x >> plane.y) {
+		planeToPolar(plane, polar);
+		showPolar(polar);
+		cout << "Enter Plane Coordinate's x-axis and y-axis: ";
+	}
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND076
+//	이중 배열 연습
+//
+//	결과: 나는 이중 배열이 이중 포인터와 비슷할 거라고 알고 있었는데 이중 포인터가 아니라 배열의 주소값을 저장하는 포인터였다.
+void	array2d_function(int array2d[][4]) {
+	std::cout << array2d << std::endl;
+	std::cout << *array2d << std::endl;
+	std::cout << **array2d << std::endl;
+}
+
+void	pointerOfArray(int (*array2d)[4]) {
+	std::cout << array2d << std::endl;
+	std::cout << *array2d << std::endl;
+	std::cout << **array2d << std::endl;
+}
+
+void	ppointer_function(int** ppointer) {
+	std::cout << ppointer << std::endl;
+	std::cout << *ppointer << std::endl;
+	std::cout << **ppointer << std::endl;
+}
+
+int	main(void) {
+	int	array2d[3][4] = {
+		{ 11, 10, 9, 8, },
+		{ 7, 6, 5, 4, },
+		{ 3, 2, 1, 0, },
+	};
+
+	std::cout << array2d << std::endl;
+	std::cout << *array2d << std::endl;
+	std::cout << **array2d << std::endl;
+	array2d_function(array2d);
+// 	ppointer_function(array2d);
+//	error: no matching function for call to 'ppointer_function'
+//		candidate function not viable: no known conversion from 'int [3][4]' to 'int **' for 1st argument
+	pointerOfArray(array2d);
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND075
+//	const 연습2
 int	main(void) {
 	int			constValue = 10;
-	int* pointer = &constValue;
+	int* const	pointer = &constValue;
 	int* const*	constPPointer;
 
 	std::cout << "constValue: " << constValue << std::endl;
@@ -20,6 +109,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND074
+//	const 연습1
 int	main(void) {
 	const int	constValue = 10;
 	int*		pointer;
@@ -73,6 +163,8 @@ int	main(void) {
 
 #ifdef GROUND072
 //	C++ Primer Plus 5ed 278/Programming Exercises/9
+#include <fstream>
+
 struct Contributor {
 	std::string	name;
 	double		contribution;
@@ -177,6 +269,8 @@ int	main(void) {
 
 #ifdef GROUND071
 //	C++ Primer Plus 5ed 278/Programming Exercises/8
+#include <fstream>
+
 int	main(void) {
 	char	ch;
 
