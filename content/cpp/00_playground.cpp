@@ -1,7 +1,396 @@
 #include <iostream>
 
-#define GROUND077
+#define GROUND085
+#ifdef GROUND085
+//	C++ Primer Plus 5ed 336/Programming Exercises/9
+double	calculate(double lhs, double rhs, double (*operation)(double, double)) {
+	return operation(lhs, rhs);
+}
+
+double	add(double lhs, double rhs) {
+	return lhs + rhs;
+}
+
+double	sub(double lhs, double rhs) {
+	return lhs - rhs;
+}
+
+double	mul(double lhs, double rhs) {
+	return lhs * rhs;
+}
+
+double	div(double lhs, double rhs) {
+	return rhs == 0 ? 0 : lhs / rhs;
+}
+
+int	main(void) {
+	using std::cin;
+	using std::cout;
+	using std::endl;
+
+	const int	operationArray_count = 4;
+
+	double	(*operationArray[operationArray_count])(double, double) = {
+		add,
+		sub,
+		mul,
+		div,
+	};
+
+	double	lhs;
+	double	rhs;
+	cout << "Enter two number to calculate: ";
+	while (cin >> lhs >> rhs) {
+		for (int index = 0; index < operationArray_count; index += 1)
+			cout << "#" << index << ": " << calculate(lhs, rhs, operationArray[index]) << endl;
+		cout << "Enter two number to calculate: ";
+	}
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND084
+//	C++ Primer Plus 5ed 335/Programming Exercises/8
+using namespace std;
+
+const int	SLEN = 30;
+struct student {
+	char	fullname[SLEN];
+	char	hobby[SLEN];
+	int	ooplevel;
+};
+
+int	getinfo(student pa[], int n) {
+	int	index = 0;
+	student*	element = pa;
+	while (index < n) {
+		cout << "student #" << index + 1 << ": " << endl;
+		cout << "	fullname: ";
+		cin.getline(element->fullname, SLEN);
+		if (!cin) {
+			cin.clear();
+			while (cin.get() != '\n' && cin);
+		}
+		cout << "	hobby: ";
+		cin.getline(element->hobby, SLEN);
+		if (!cin) {
+			cin.clear();
+			while (cin.get() != '\n' && cin);
+		}
+
+		element += 1;
+		index += 1;
+	}
+
+	return index;
+}
+
+void	display1(student st) {
+	cout << "student:" << endl;
+	cout << "	fullname: " << st.fullname << endl;
+	cout << "	hobby: " << st.hobby << endl;
+}
+
+void	display2(const student * ps) {
+	cout << "student:" << endl;
+	cout << "	fullname: " << ps->fullname << endl;
+	cout << "	hobby: " << ps->hobby << endl;
+}
+
+void	display3(const student pa[], int n) {
+	int index = 0;
+	const student*	element = pa;
+	while (index < n) {
+		cout << "student #" << index + 1 << ": " << endl;
+		cout << "	fullname: " << element->fullname << endl;
+		cout << "	hobby: " << element->hobby << endl;
+		element += 1;
+		index += 1;
+	}
+}
+
+int	main(void) {
+	cout << "Enter class size: ";
+	int	class_size;
+	cin >> class_size;
+	while (cin.get() != '\n')
+		continue;
+
+	student * ptr_stu = new student[class_size];
+	int	entered = getinfo(ptr_stu, class_size);
+	for (int i = 0; i < entered; i++)
+	{
+		display1(ptr_stu[i]);
+		display2(&ptr_stu[i]);
+	}
+	display3(ptr_stu, entered);
+	delete [] ptr_stu;
+	cout << "Done\n";
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND083
+//	C++ Primer Plus 5ed 335/Programming Exercises/7
+const int	Max = 5;
+
+double*	fill_array(double* start, double* end) {
+	using std::cin;
+	using std::cout;
+
+	double temp;
+
+	for (int index = 1; start != end; index += 1, start +=1) {
+		cout << "Enter value #" << index << ": ";
+		cin >> temp;
+		if(!cin) {
+			cin.clear();
+			while (cin.get() != '\n' && cin);
+			cout << "Bad input; input process terminated.\n";
+			break;
+		}
+		else if (temp < 0)
+			break;
+		*start = temp;
+	}
+	return start;
+}
+
+void	show_array(const double* start, const double* end) {
+	using std::cout;
+	using std::endl;
+
+	for (int index = 1; start != end; index += 1, start +=1) {
+		cout << "Property #" << index << ": $";
+		cout << *start << endl;
+	}
+}
+
+void	revalue(double r, double* start, double* end) {
+	for (; start != end; start += 1)
+		*start *= r;
+}
+
+int	main(void) {
+	using namespace std;
+	double	properties[Max];
+
+	double* end = fill_array(properties, properties + Max);
+	show_array(properties, end);
+	cout << "Enter rebaluation factor: ";
+	double	factor;
+	cin >> factor;
+	revalue(factor, properties, end);
+	show_array(properties, end);
+	cout << "Done.\n";
+	return 0;
+}
+#endif
+
+#ifdef GROUND082
+//	C++ Primer Plus 5ed 335/Programming Exercises/6
+int	Fill_array(double array[], int size) {
+	using std::cout;
+	using std::endl;
+	using std::cin;
+
+	cout << "Enter double values to fill array" << endl;
+	int	index;
+	for (index = 0; index < size && cin >> array[index]; index += 1);
+
+	return index;
+}
+
+void	Show_array(double array[], int size) {
+	using std::cout;
+	using std::endl;
+
+	for (int index = 0; index < size; index += 1)
+		cout << "array[" << index << "]: " << array[index] << endl;
+}
+
+void	Reverse_array(double array[], int size) {
+	for (int lhs = 0, rhs = size - 1; lhs < rhs; lhs += 1, rhs -= 1) {
+		double	temp;
+		temp = array[lhs];
+		array[lhs] = array[rhs];
+		array[rhs] = temp;
+	}
+}
+
+int	main(void) {
+	const int	arraySize = 10;
+	double	array[arraySize];
+
+	const int	arrayCount = Fill_array(array, arraySize);
+	Show_array(array, arrayCount);
+	Reverse_array(array, arrayCount);
+	Show_array(array, arrayCount);
+	Reverse_array(array + 1, arrayCount - 2);
+	Show_array(array, arrayCount);
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND081
+//	C++ Primer Plus 5ed 334/Programming Exercises/5
+long	getFactorial(int number) {
+	if (number > 0)
+		return number * getFactorial(number - 1);
+	else if (number == 0)
+		return 1;
+	else
+		return -1;
+}
+
+int	main(void) {
+	using std::cout;
+	using std::endl;
+	using std::cin;
+
+	int	number;
+
+	cout << "Enter a number you want to get of factorial: ";
+	while (cin >> number)
+		cout << "Fatorial: " << getFactorial(number) << endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND080
+//	C++ Primer Plus 5ed 334/Programming Exercises/3
+#include <cstring>
+
+struct Box {
+	char	maker[40];
+	float	height;
+	float	width;
+	float	length;
+	float	volume;
+};
+
+void	Box_describe(Box box) {
+	using std::cout;
+	using std::endl;
+
+	cout
+		<< "box.maker: " << box.maker << endl
+		<< "box.height: " << box.height << endl
+		<< "box.width: " << box.width << endl
+		<< "box.length: " << box.length << endl
+		<< "box.volume: " << box.volume << endl;
+}
+
+void	Box_setVolume(Box* box) {
+	box->volume = box->height * box->width * box->length;
+}
+
+int	main(void) {
+	using std::cout;
+	using std::endl;
+	using std::cin;
+
+	Box	box;
+
+	strcpy(box.maker, "nonsan");
+	box.height = 2;
+	box.width = 3;
+	box.length = 5;
+	box.volume = 0;
+
+	Box_setVolume(&box);
+	Box_describe(box);
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND079
+//	C++ Primer Plus 5ed 334/Programming Exercises/2
+int	setGolfScoreArray(int golfScoreArray[], int arraySize) {
+	using std::cout;
+	using std::endl;
+	using std::cin;
+
+	double	input;
+	int	index;
+
+	cout << "Enter up to 10 golf scores:" << endl;
+	index = 0;
+	while (index < arraySize && cin >> input) {
+		golfScoreArray[index] = input;
+		index += 1;
+	}
+
+	return index;
+}
+
+void	describeGolfScoreArray(int golfScoreArray[], int count) {
+	using std::cout;
+	using std::endl;
+
+	for (int index = 0; index < count; index += 1)
+		cout << golfScoreArray[index] << ' ';
+	cout << endl;
+}
+
+double	averageGolfScore(int golfScoreArray[], int count) {
+	int	sum = 0;
+	for (int index = 0; index < count; index += 1)
+		sum += golfScoreArray[index];
+
+	return double(sum) / count;
+}
+
+int	main(void) {
+	using std::cout;
+	using std::endl;
+	using std::cin;
+
+	const int	scoreArrayCount = 10;
+	int	golfScoreArray[scoreArrayCount];
+
+	int	setCount = setGolfScoreArray(golfScoreArray, scoreArrayCount);
+	describeGolfScoreArray(golfScoreArray, setCount);
+
+	cout << averageGolfScore(golfScoreArray, setCount) << endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND078
+//	C++ Primer Plus 5ed 334/Programming Exercises/1
+double	harmonicMean(double number1, double number2) {
+	return (2.0 * number1 * number2 / (number1 + number2));
+}
+
+int	main(void) {
+	using std::cout;
+	using std::endl;
+	using std::cin;
+
+	double	number1;
+	double	number2;
+
+	while (cin >> number1 >> number2) {
+		if (number1 == 0 || number2 == 0)
+			break;
+		harmonicMean(number1, number2);
+		const double	mean = harmonicMean(number1, number2);
+		cout << "harmonic mean: " << mean << endl;
+	}
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND077
+//	C++ Primer Plus 5ed 321/LISTING 7.13
 #include <cmath>
 
 struct PlaneCoordinate {

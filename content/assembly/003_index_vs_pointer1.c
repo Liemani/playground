@@ -1,11 +1,9 @@
-const int	size = 2;
+const int	size = 3;
 
 int	main(void) {
-	int	array[size] = { 2, 1 };
-	int	index;
+	int	array[size] = { 3, 2, 1 };
 
-	index = 1;
-	if (index < size)
+	for (int index = 0; index < size; index += 1)
 		array[index] = 0;
 
 	return 0;

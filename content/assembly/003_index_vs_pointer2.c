@@ -1,11 +1,10 @@
-const int	size = 2;
+const int	size = 3;
 
 int	main(void) {
-	int	array[size] = { 2, 1 };
-	int*	pointer;
+	int	array[size] = { 3, 2, 1 };
+	const int*	end = array + size;
 
-	pointer = array + 1;
-	if (pointer - array < size)
+	for (int* pointer = array; pointer < end; pointer += 1)
 		*pointer = 0;
 
 	return 0;
