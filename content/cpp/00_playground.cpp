@@ -1,6 +1,77 @@
 #include <iostream>
 
-#define GROUND085
+#define GROUND087
+#ifdef GROUND087
+//	C++ Primer Plus 5ed 371
+template <class T>
+void swap(T& lhs, T& rhs);
+
+int	main(void) {
+	using std::cout;
+	using std::endl;
+
+	int	a = 1;
+	int	b = 2;
+	swap(a, b);
+	cout << a << b << endl;
+
+	double c = 1.1;
+	double d = 2.2;
+	swap(c, d);
+	cout << c << d << endl;
+
+	return 0;
+}
+
+template <class T>
+void swap(T& lhs, T& rhs) {
+	T	temp;
+
+	temp = lhs;
+	lhs = rhs;
+	rhs = temp;
+}
+#endif
+
+#ifdef GROUND086
+//	C++ Primer Plus 5ed 351/8.6
+using namespace std;
+struct sysop {
+	char	name[26];
+	char	quote[64];
+	int	used;
+};
+
+const sysop&	use(sysop& sysopref);
+
+int	main(void) {
+	sysop	looper = {
+		"Rick \"Fortran\" Looper",
+		"I'm a goto kink of guy.",
+		0,
+	};
+
+	use(looper);
+	cout << "Looper: " << looper.used << " use(s)\n";
+
+// 	sysop	copycat;
+// 	copycat = use(looper);
+// 	copycat = (const sysop&)looper;
+	sysop&	copycat = (const sysop&)looper;
+	copycat.used = 42;
+
+	cout << "Copycat: " << copycat.used << " use(s)\n";
+	return 0;
+}
+
+const sysop&	use(sysop& sysopref) {
+	cout << sysopref.name << " says:\n";
+	cout << sysopref.quote << endl;
+	sysopref.used++;
+	return sysopref;
+}
+#endif
+
 #ifdef GROUND085
 //	C++ Primer Plus 5ed 336/Programming Exercises/9
 double	calculate(double lhs, double rhs, double (*operation)(double, double)) {
