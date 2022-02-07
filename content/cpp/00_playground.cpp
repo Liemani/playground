@@ -1,6 +1,432 @@
 #include <iostream>
 
-#define GROUND087
+#define GROUND097
+#ifdef GROUND097
+//	C++ Primer Plus 5ed 391/Programming Exercises/7
+template <typename T>
+T	ShowArray(T arr[], int n);
+
+template <typename T>
+T	ShowArray(T* arr[], int n);
+
+struct debts {
+	char	name[50];
+	double	amount;
+};
+
+int	main(void) {
+	using namespace std;
+	int	things[6] = { 13, 31, 103, 301, 310, 130 };
+	struct	debts mr_E[3] = {
+		{"Ima Wolfe", 2400.0},
+		{"Ura Foxe", 1300.0},
+		{"Iby Stout", 1800.0}
+	};
+	double* pd[3];
+
+	for (int i = 0; i < 3; i++)
+		pd[i] = &mr_E[i].amount;
+
+	cout << "Listing Mr. E's counts of things:\n";
+	cout << ShowArray(things, 6) << endl;
+	cout << "Listing Mr. E's debts:\n";
+	cout << ShowArray(pd, 3) << endl;
+
+	return 0;
+}
+
+template <typename T>
+T	ShowArray(T arr[], int n) {
+	using namespace std;
+
+	T	total = 0.0;
+	cout << "template A\n";
+	for (int i = 0; i < n; i++)
+		total += arr[i];
+
+	return total;
+}
+template <typename T>
+T	ShowArray(T* arr[], int n) {
+	using namespace std;
+
+	T	total = 0.0;
+	cout << "template B\n";
+	for (int i = 0; i < n; i++)
+		total += *arr[i];
+
+	return total;
+}
+#endif
+
+#ifdef GROUND096
+//	C++ Primer Plus 5ed 391/Programming Exercises/6
+template <typename T>
+T& maxn(T array[], int count) {
+	T*	biggest = &array[0];
+	for (int i = 1; i < count; ++i)
+		if (array[i] > *biggest)
+			biggest = &array[i];
+
+	return *biggest;
+}
+
+template <>
+const char*&	maxn<const char*>(const char* array[], int count);
+
+int	main(void) {
+	int	intArray[6] = { 1, 3, 2, 5, 4, 6 };
+	double	doubleArray[4] = { 1.1, 3.3, 4.4, 2.2 };
+	const char*	strArray[5] = { "hi", "hello", "there", ":DD", "!" };
+
+	std::cout << maxn(intArray, 6) << std::endl;
+	std::cout << maxn(doubleArray, 4) << std::endl;
+	std::cout << maxn(strArray, 4) << std::endl;
+
+	return 0;
+}
+
+template <>
+const char*&	maxn<const char*>(const char* array[], int count) {
+	const char**	longest = &array[0];
+	int	longest_count = strlen(*longest);
+	int	str_count;
+
+	for (int i = 1; i < count; ++i) {
+		str_count = strlen(array[i]);
+		if (str_count > longest_count) {
+			longest = &array[i];
+			longest_count = str_count;
+		}
+	}
+
+	return *longest;
+}
+
+#endif
+
+#ifdef GROUND095
+//	C++ Primer Plus 5ed 391/Programming Exercises/5
+template <typename T>
+T&	max5(T array[5]) {
+	T*	biggest = &array[0];
+	for (int i = 1; i < 5; ++i)
+		if (array[i] > *biggest)
+			biggest = &array[i];
+
+	return *biggest;
+}
+
+int	main(void) {
+	int	intArray[5] = { 0, 4, 3, 2, 1 };
+	double doubleArray[5] = { 0.5, 4.4, 3.3, 2.2, 1.1 };
+
+	std::cout << max5(intArray) << std::endl;
+	std::cout << max5(doubleArray) << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND094
+//	C++ Primer Plus 5ed 390/Programming Exercises/4
+using namespace std;
+#include <cstring>
+struct stringy {
+	char*	str;
+	int	ct;
+};
+
+void	set(stringy& string, const char* str);
+void	show(stringy& string, int count = 1);
+void	show(const char* str, int count = 1);
+
+int	main(void) {
+	stringy	beany;
+	char	testing[] = "Reality isn't what it used to be.";
+
+	set(beany, testing);
+	show(beany);
+	show(beany, 2);
+	testing[0] = 'D';
+	testing[1] = 'u';
+	show(testing);
+	show(testing, 3);
+	show("Done!");
+
+	delete [] beany.str;
+
+	return 0;
+}
+
+void	set(stringy& string, const char* str) {
+	string.ct = strlen(str);
+	string.str = new char[string.ct + 1];
+	strcpy(string.str, str);
+}
+
+void	show(stringy& string, int count) {
+	for (int i = 0; i < count; i += 1)
+		cout << string.str << endl;
+}
+
+void	show(const char* str, int count) {
+	for (int i = 0; i < count; i += 1)
+		cout << str << endl;
+}
+#endif
+
+#ifdef GROUND093
+//	C++ Primer Plus 5ed 390/Programming Exercises/3
+void	string_toupper(std::string& string);
+
+int	main(void) {
+	using std::cin;
+	using std::cout;
+	using std::endl;
+
+	std::string	string;
+
+	cout << "Enter a string (q to quit): ";
+	while (getline(cin, string) && string != "q") {
+		string_toupper(string);
+		cout << string << endl;
+		cout << "Enter a string (q to quit): ";
+	}
+
+	cout << "Bye." << endl;
+
+	return 0;
+}
+
+void	string_toupper(std::string& string) {
+	for (unsigned long i = 0; i < string.length(); i += 1)
+		string[i] = toupper(string[i]);
+}
+#endif
+
+#ifdef GROUND092
+//	C++ Primer Plus 5ed 390/Programming Exercises/2
+struct CandyBar {
+	std::string	brandName;
+	double	weight;
+	int	calories;
+};
+
+void	CandyBar_init(CandyBar& bar,
+		const char* brandName = "Millenium Munch",
+		double weight = 2.85,
+		int calories = 350);
+
+void	CandyBar_describe(const CandyBar& bar);
+
+int	main(void) {
+	CandyBar	bar;
+
+	CandyBar_init(bar);
+	CandyBar_describe(bar);
+	CandyBar_init(bar, "nonsan");
+	CandyBar_describe(bar);
+	CandyBar_init(bar, "nonsan", 4.2);
+	CandyBar_describe(bar);
+
+	return 0;
+}
+
+void	CandyBar_init(CandyBar& bar, const char* brandName, double weight, int calories) {
+	bar.brandName = brandName;
+	bar.weight = weight;
+	bar.calories = calories;
+}
+
+void	CandyBar_describe(const CandyBar& bar) {
+	using std::cout;
+	using std::endl;
+
+	cout << "candy bar:" << endl;
+	cout << "	brandName: " << bar.brandName << endl;
+	cout << "	weight: " << bar.weight << endl;
+	cout << "	calories: " << bar.calories << endl;
+}
+#endif
+
+#ifdef GROUND091
+//	C++ Primer Plus 5ed 390/Programming Exercises/1
+void	str_print(const char* str, int attr = 0);
+
+int	main(void) {
+	str_print("hello, world1");
+	str_print("hello, world2");
+	str_print("hello, world3");
+	str_print("hello, world4", -1);
+
+	return 0;
+}
+
+void	str_print(const char* str, int attr) {
+	using std::cout;
+	using std::endl;
+
+	static int	str_print_callCount = 0;
+
+	str_print_callCount += 1;
+	if (attr == 0)
+		cout << str << endl;
+	else
+		for (int i = 0; i < str_print_callCount; i += 1)
+			cout << str << endl;
+}
+#endif
+
+#ifdef GROUND090
+//	C++ Primer Plus 5ed 390/Review Questions/7
+struct box {
+	char	maker[40];
+	float	height;
+	float	width;
+	float	length;
+	float	volume;
+};
+
+void	boxDescribe(box& box1);
+void	boxSetVolume(box& box1);
+
+template <typename T>
+T&	larger(T& lhs, T& rhs) {
+	return lhs > rhs ? lhs : rhs;
+}
+
+template <>
+box&	larger<box>(box& lhs, box& rhs);
+
+int	main(void) {
+	box	box1 = {
+		"nonsan",
+		42,
+		10,
+		13,
+		15,
+	};
+	box	box2 = {
+		"daejeon",
+		10,
+		20,
+		30,
+		40,
+	};
+
+	boxSetVolume(box1);
+	boxSetVolume(box2);
+	boxDescribe(larger(box1, box2));
+	boxDescribe(box1);
+	boxDescribe(box2);
+
+	return 0;
+}
+
+void	boxDescribe(box& box1) {
+	using std::cout;
+	using std::endl;
+
+	cout << "box:" << endl;
+	cout << "	maker: " << box1.maker << endl;
+	cout << "	height: " << box1.height << endl;
+	cout << "	width: " << box1.width << endl;
+	cout << "	length: " << box1.length << endl;
+	cout << "	volume: " << box1.volume << endl;
+}
+
+void	boxSetVolume(box& box1) {
+	box1.volume = box1.height * box1.width * box1.length;
+}
+
+template <>
+box&	larger<box>(box& lhs, box& rhs) {
+	return lhs.volume > rhs.volume ? lhs : rhs;
+}
+#endif
+
+#ifdef GROUND089
+//	C++ Primer Plus 5ed 389/Review Questions/4
+struct box {
+	char	maker[40];
+	float	height;
+	float	width;
+	float	length;
+	float	volume;
+};
+
+void	boxDescribe(box& box1);
+void	boxSetVolume(box& box1);
+
+int	main(void) {
+	box	box1 = {
+		"nonsan",
+		42,
+		10,
+		13,
+		15,
+	};
+
+	boxSetVolume(box1);
+	boxDescribe(box1);
+
+	return 0;
+}
+
+void	boxDescribe(box& box1) {
+	using std::cout;
+	using std::endl;
+
+	cout << "box:" << endl;
+	cout << "	maker: " << box1.maker << endl;
+	cout << "	height: " << box1.height << endl;
+	cout << "	width: " << box1.width << endl;
+	cout << "	length: " << box1.length << endl;
+	cout << "	volume: " << box1.volume << endl;
+}
+
+void	boxSetVolume(box& box1) {
+	box1.volume = box1.height * box1.width * box1.length;
+}
+#endif
+
+#ifdef GROUND088
+//	C++ Primer Plus 5ed 389/Review Questions/3
+void	iquote(int number);
+void	iquote(double number);
+void	iquote(std::string string);
+
+int	main(void) {
+	iquote(42);
+	iquote(4.2);
+	iquote("42");
+
+	return 0;
+}
+
+void	iquote(int number) {
+	using std::cout;
+	using std::endl;
+
+	cout << '\"' << number << '\"' << endl;
+}
+
+void	iquote(double number) {
+	using std::cout;
+	using std::endl;
+
+	cout << '\"' << number << '\"' << endl;
+}
+
+void	iquote(std::string string) {
+	using std::cout;
+	using std::endl;
+
+	cout << '\"' << string << '\"' << endl;
+}
+#endif
+
 #ifdef GROUND087
 //	C++ Primer Plus 5ed 371
 template <class T>
