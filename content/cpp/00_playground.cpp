@@ -1,6 +1,33 @@
 #include <iostream>
 
-#define GROUND097
+#define GROUND098
+#ifdef GROUND098
+//	C++ Primer Plus 5ed 406
+//	함수 안에서 선언된 static variable은 declaration statement가 실행된 후 함수가 호출됐을 때 함수의 실행과 동시에 come into scope할까?
+//
+//	결과: 항상 declaration statement가 실행된 시점부터 come into scope한다.
+using std::cout;
+using std::endl;
+
+static int	var = 42;
+
+void	printVar(void);
+
+int	main(void) {
+	printVar();
+	printVar();
+
+	return 0;
+}
+
+void	printVar(void) {
+	cout << var << endl;
+	static int	var = 10;
+	cout << var << endl;
+	var = 21;
+}
+#endif
+
 #ifdef GROUND097
 //	C++ Primer Plus 5ed 391/Programming Exercises/7
 template <typename T>
