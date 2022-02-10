@@ -1,6 +1,156 @@
 #include <iostream>
 
-#define GROUND098
+#define GROUND104
+#ifdef GROUND104
+//	C++ Primer Plus 5ed 442/Programming Exercises/4
+#include "06_programming_exercise_9_4.hpp"
+
+int	main(void) {
+	const double	ar[3] = { 1.1, 4.4, 2.2 };
+
+	SALES::Sales	sales1;
+	setSales(sales1, ar, 3);
+	showSales(sales1);
+
+	SALES::Sales	sales2;
+	setSales(sales2);
+	showSales(sales2);
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND103
+//	C++ Primer Plus 5ed 442/Programming Exercises/3
+struct chaff
+{
+	char	dross[20];
+	int		slag;
+};
+
+int	main(void) {
+	using std::cout;
+	using std::endl;
+
+	char*	buffer = new char[100];
+
+	chaff* array = new (buffer) chaff[2];
+	strcpy(array[0].dross, "1234");
+	array[0].slag = 10;
+	strcpy(array[1].dross, "4321");
+	array[1].slag = 42;
+
+	for (int i = 0; i < 2; ++i)
+		cout << array[i].dross << array[i].slag << endl;
+
+	delete [] buffer;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND102
+//	C++ Primer Plus 5ed 442/Programming Exercises/2
+void	strcount(const char* str);
+
+int	main(void) {
+	using std::cin;
+	using std::cout;
+	using std::string;
+
+	string	input;
+
+	cout << "Enter a line:\n";
+	std::getline(cin, input);
+	while(cin and input != "")
+	{
+		strcount(input.c_str());
+		cout << "Enter next line (empty line to quit):\n";
+		std::getline(cin, input);
+	}
+	cout << "Bye\n";
+
+	return 0;
+}
+
+void	strcount(const char* str)
+{
+	using std::cout;
+
+	static int	total = 0;
+	int count = 0;
+
+	cout << "\"" << str << "\" contains ";
+	while (*str++)
+		count++;
+	total += count;
+	cout << count << " characters\n";
+	cout << total << " characters total\n";
+}
+#endif
+
+#ifdef GROUND101
+//	C++ Primer Plus 5ed 441/Programming Exercises/1
+#include "05_programming_exercise_9_1.hpp"
+
+int	main(void) {
+	golf	ann;
+	setgolf(ann, "Ann Birdfree", 24);
+	showgolf(ann);
+	handicap(ann, 42);
+	showgolf(ann);
+
+	golf	andy;
+	if (setgolf(andy) != 0) {
+		showgolf(andy);
+		handicap(andy, 42);
+		showgolf(andy);
+	}
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND100
+//	C++ Primer Plus 5ed 439/Review Questions/4
+int	main(void) {
+	using std::cin;
+	using std::cout;
+	using std::endl;
+
+	double	x;
+
+	cout << "Enter value: ";
+	while (!(cin >> x)) {
+		cout << "Bad input. Please enter a number: ";
+		cin.clear();
+		while (cin.get() != '\n')
+			continue;
+	}
+	cout << "Value = " << x << endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND099
+//	C++ Primer Plus 5ed 439/Review Questions/3
+int	main(void) {
+	double	x;
+
+	std::cout << "Enter value: ";
+	while (!(std::cin >> x)) {
+		std::cout << "Bad input. Please enter a number: ";
+		std::cin.clear();
+		while (std::cin.get() != '\n')
+			continue;
+	}
+	std::cout << "Value = " << x << std::endl;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND098
 //	C++ Primer Plus 5ed 406
 //	함수 안에서 선언된 static variable은 declaration statement가 실행된 후 함수가 호출됐을 때 함수의 실행과 동시에 come into scope할까?
