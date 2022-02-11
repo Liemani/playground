@@ -1,6 +1,43 @@
 #include <iostream>
 
-#define GROUND104
+#define GROUND105
+#ifdef GROUND105
+//	C++ Primer Plus 5ed 458
+class Type {
+	int variable;
+
+public:
+	Type(int variable = 0) { Type::variable = variable; }
+	void increaseVariable(void) { variable += 1; }
+	void decreaseVariable(void) { Type::variable -= 1; }
+	void setVariable(int variable) { Type::variable = variable; }
+	const int& getVariable(void) const { return Type::variable; }
+	void add(const Type& rhs, Type& result) const;
+};
+
+void Type::add(const Type& rhs, Type& result) const {
+	result.variable = Type::variable + rhs.variable;
+}
+
+int	main(void) {
+	using std::cout;
+	using std::endl;
+
+	Type type1 = Type(42);
+
+	cout << type1.getVariable() << endl;
+	type1.setVariable(10);
+	cout << type1.getVariable() << endl;
+
+	Type type2 = Type(21);
+	Type type3;
+	type1.add(type2, type3);
+	cout << type3.getVariable() << endl;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND104
 //	C++ Primer Plus 5ed 442/Programming Exercises/4
 #include "06_programming_exercise_9_4.hpp"
