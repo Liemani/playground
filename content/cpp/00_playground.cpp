@@ -1,8 +1,32 @@
 #include <iostream>
 
-#define GROUND105
+#define GROUND106
+#ifdef GROUND106
+//	C++ Primer Plus 5ed 489
+//
+//	기본적으로는 class declaration에서 private section에 static const double type을 초기화하는 것을 지원하지 않는다.
+class Type {
+private:
+	static const double	test = 3.14;
+public:
+	double getTest(void) { return test; };
+};
+
+int	main(void) {
+	using std::cout;
+	using std::endl;
+
+	Type type;
+	cout << type.getTest() << endl;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND105
 //	C++ Primer Plus 5ed 458
+//
+//	instance method implementation에서 qualified name으로 private member variable에 접근하기
 class Type {
 	int variable;
 
