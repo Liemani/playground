@@ -1,6 +1,21 @@
 #include <iostream>
 
-#define GROUND106
+#define GROUND107
+#ifdef GROUND107
+//	conio.h 테스트
+#include <conio.h>
+
+int	main(void) {
+	using std::cout;
+
+	while (true) {
+		cout << "input: " << _getch();
+	}
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND106
 //	C++ Primer Plus 5ed 489
 //
