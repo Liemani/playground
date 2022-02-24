@@ -1,6 +1,49 @@
 #include <iostream>
 
-#define GROUND107
+#define GROUND108
+#ifdef GROUND108
+//	precedence of '+' operator
+class Type {
+private:
+	int value;
+public:
+	Type(int value = 0);
+
+	int getValue(void) const;
+	void setValue(int value);
+
+	Type operator+(const Type& rhs) const;
+};
+
+Type::Type(int value_)
+	: value(value_) {}
+
+int Type::getValue(void) const {
+	return this->value;
+}
+
+void Type::setValue(int value) {
+	this->value = value;
+}
+
+Type Type::operator+(const Type& rhs) const {
+	Type type;
+	std::cout << "rhs.getValue(): " << rhs.getValue() << std::endl;
+	type.setValue(this->getValue() + rhs.getValue());
+	return type;
+}
+
+int	main(void) {
+	Type a = Type(10);
+	Type b = Type(20);
+	Type c = Type(30);
+
+	a + b + c;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND107
 //	conio.h 테스트
 #include <conio.h>
