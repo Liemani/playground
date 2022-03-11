@@ -1,0 +1,3 @@
+#define A_LINE_HAS_BEEN_READ 1
+#define EOF_HAS_BEEN_REACHED 0
+#define AN_ERROR_HAPPEND -1

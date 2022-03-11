@@ -4,7 +4,7 @@
 // #include <fstream>
 // #include <streambuf>
 // #include <cmath>
-#include <GLFW/glfw3.h>
+// #include <GLFW/glfw3.h>
 
 int	main()
 {

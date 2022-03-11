@@ -1,6 +1,54 @@
 #include <iostream>
 
-#define GROUND108
+#define GROUND109
+#ifdef GROUND109
+//	C++ Primer Plus 5ed 588
+//	getline() discard '\n'
+void cinDescribe(void) {
+	std::cout << (std::cin ? "NORMAL" : "ERROR") << " / " << (std::cin.eof() ? "EOF" : "NOT EOF") << std::endl;
+	std::cin.clear();
+}
+
+void getInput1(void) {
+	char temp[80];
+
+	std::cin.get(temp, 80);
+	cinDescribe();
+	std::cout << "temp: " << temp << std::endl;
+}
+
+void getInput2(void) {
+	std::cin.get(*std::cout.rdbuf());
+	cinDescribe();
+}
+
+void getInput3(void) {
+	std::string str;
+
+	std::getline(std::cin, str);
+	cinDescribe();
+	std::cout << "str: " << str << std::endl;
+}
+
+void getInput4(void) {
+	char temp[80];
+
+	std::cin.getline(temp, 80);
+	cinDescribe();
+	std::cout << "temp: " << temp << std::endl;
+}
+
+int	main(void) {
+	getInput1();
+	getInput2();
+	getInput3();
+	getInput4();
+	getInput1();
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND108
 //	precedence of '+' operator
 class Type {
