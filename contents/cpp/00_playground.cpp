@@ -1,6 +1,85 @@
 #include <iostream>
 
-#define GROUND109
+#define GROUND110
+#ifdef GROUND110
+//	C++ Primer Plus 5ed 139
+//	struct possess at least 4 bytes
+
+using std::cout;
+using std::endl;
+
+void floatToBit(float number, char bits[32]);
+void charToBit(char ch, char bits[8]);
+
+void describeBit(char bits[32]);
+
+typedef union ClearFloat{
+	char raw[4];
+	float data;
+} ClearFloat;
+
+typedef union ieee754_float {
+	float floatNumber;
+	struct {
+		unsigned int negative:1;
+		unsigned int exponent:8;
+		unsigned int mantissa:23;
+	} ieee;
+} ieee754_float;
+
+union torgle_register_float {
+	float floatNumber;
+	struct {
+		unsigned int SN: 4;
+		unsigned int :4;
+		bool goodIn: 1;
+		bool goodTorgle: 1;
+		bool goodTorgle2: 1;
+	} torgle_register;
+};
+
+int	main(void) {
+	torgle_register_float tr;
+	char bits[32];
+
+	tr.torgle_register.SN = 14;
+	tr.torgle_register.goodIn = true;
+	tr.torgle_register.goodTorgle = false;
+	tr.torgle_register.goodTorgle2 = true;
+
+	cout << "sizeof(ieee754_float): " << sizeof(ieee754_float) << endl;
+	cout << "sizeof(tr): " << sizeof(tr) << endl;
+	floatToBit(tr.floatNumber, bits);
+	describeBit(bits);
+
+	return 0;
+}
+
+void floatToBit(float number, char bits[32]) {
+	ClearFloat data;
+
+	data.data = number;
+	for (int i = 0; i < 4; ++i) {
+		charToBit(data.raw[3 - i], &bits[8 * i]);
+	}
+}
+
+void charToBit(char ch, char bits[8]) {
+	for (int i = 0; i < 8; ++i) {
+		bits[i] = '0' + (ch >> (8 - i - 1) & 0x1);
+	}
+}
+
+void describeBit(char bits[32]) {
+	for (int i = 0; i < 32; ++i) {
+		if (i % 8 == 0)
+			putchar(' ');
+		putchar(bits[i]);
+	}
+	putchar('\n');
+}
+#endif
+
 #ifdef GROUND109
 //	C++ Primer Plus 5ed 588
 //	getline() discard '\n'
