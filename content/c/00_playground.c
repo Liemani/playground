@@ -5,6 +5,11 @@
 //	display bits of float value
 //	exponent bit가 전부 1이고 mantissa bit가 전부 0이면 inf이다.
 //	exponent bit가 전부 1이고 mantissa bit 중 1이 존재하면 nan이다.
+//	  01001011 00000000 00000000 00000000
+//	+ 00111111 10000000 00000000 00000000
+//	= 01001011 00000000 00000000 00000001
+//	2 ^ 23 + 2 ^ 0 은 더하기가 된다.
+//	2 ^ 24 + 2 ^ 0 은 더해지지 않는다.
 #include <math.h>
 
 #define BIG_ENDIAN		0
@@ -15,7 +20,7 @@
 // #define STRING	" 01111111 01111111 11111111 11111111"
 // #define STRING	" 00000000 00000000 00000000 00000001"
 // #define STRING	" 00000000 10000000 00000000 00000000"
-#define STRING	" 00111111 10000000 00000000 00000001"
+#define STRING	" 01001011 00000000 00000000 00000000"
 #endif
 
 #ifndef NUMBER
@@ -40,16 +45,20 @@ typedef union ClearFloat{
 } ClearFloat;
 
 int main(void) {
-	char bits[33];
+	char bits[32];
 	float number = NUMBER;
 
 	setFloatToStr(&number);
-	floatToBit(number, bits);
-	bits[32] = '\0';
+	++number;
+	while (1) {
+		floatToBit(number, bits);
 
-	describeBit(bits);
-	printf("number: %0.20f\n", number);
-	printf("number: %0.20e\n", number);
+		describeBit(bits);
+		printf("number: %0.20f\n", number);
+		printf("number: %0.20e\n", number);
+		break;
+		++number;
+	}
 
 	return 0;
 }
