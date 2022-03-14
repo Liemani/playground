@@ -1,6 +1,52 @@
 #include <iostream>
 
-#define GROUND110
+#define GROUND111
+#ifdef GROUND111
+//	C++ Primer Plus 5ed 595
+//	type1 + type2 = type3가 가능하다.
+class Type {
+private:
+	int value;
+public:
+	Type(int value = 0);
+
+	int getValue(void) const;
+	void setValue(int value);
+
+	Type operator+(const Type& rhs) const;
+};
+
+Type::Type(int value)
+: value(value) {
+}
+
+int Type::getValue(void) const {
+	return this->value;
+}
+
+void Type::setValue(int value) {
+	this->value = value;
+}
+
+Type Type::operator+(const Type& rhs) const {
+	Type result;
+
+	result.setValue(this->getValue() + rhs.getValue());
+
+	return result;
+}
+
+int	main(void) {
+	Type instance1 = Type(10);
+	Type instance2 = Type(20);
+	Type instance3 = Type(30);
+
+	instance1 + instance2 = instance3;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND110
 //	C++ Primer Plus 5ed 139
 //	struct possess at least 4 bytes
