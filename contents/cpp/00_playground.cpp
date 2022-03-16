@@ -1,8 +1,122 @@
 #include <iostream>
 
-#define GROUND111
+#define GROUND114
+//	다이아몬드 상속에서 base class는 value로 저장될까 address로 저장될까?
+#ifdef GROUND114
+//	C++ Primer Plus 5ed 722p
+//	protected derivation을 했을 때 base class의 reference가 가리키는 derived class instance는 virtual method를 어떻게 호출할까?
+//
+//	결과:
+//	derived class의 외부에서는 implicit type cast가 되지 않는다.
+//	derived class의 내부에서는 implicit type cast가 된다.
+//	하지만 derived class의 내부에서 implicit type cast는 private inheritance일 때도 된다.
+
+using std::cout;
+using std::endl;
+
+class BaseClass {
+public:
+	virtual const BaseClass& print(const BaseClass& baseClass) {
+		cout << "BaseClass print is called" << endl;
+		return baseClass;
+	};
+};
+
+class DerivedClass: protected BaseClass {
+public:
+	void test(void) {
+		cout << "DeerivedClass test is called" << endl;
+		this->print(*this);
+	};
+};
+
+int	main(void) {
+	DerivedClass derivedClass = DerivedClass();
+	derivedClass.test();
+
+// 	BaseClass& baseClass = derivedClass;	// 	00_playground.cpp:31:24: error: cannot cast 'const DerivedClass' to its protected base class 'const BaseClass'
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND113
+//	C++ Primer Plus 5ed 666p
+//	derived class에서 virtual 함수를 signature가 다른 함수로 overriede하여 기존 base class의 함수를 hide하면 해당 함수를 호출할 수 있을까?
+//	method hiding은 clang++의 -Werror option에 걸린다.
+//	하지만 default에서는 warning이나 error를 출력하지 않는다.
+//	또한 다른 signature의 함수를 선언함으로써 base class에 있는 같은 이름의 함수는 hide되기 때문에 implicit하게 호출하는 것이 불가능하다.
+
+using std::cout;
+using std::endl;
+
+class BaseClass {
+public:
+	virtual void print(int value) {cout << "BaseClass: " << value << endl; };
+};
+
+class DerivedClass: public BaseClass {
+public:
+	virtual void print(int value, int times) {cout << "DerivedClass: " << value * times << endl; };
+};
+
+int	main(void) {
+	BaseClass instanceOfBaseClass = BaseClass();
+	DerivedClass instanceOfDerivedClass = DerivedClass();
+
+	instanceOfBaseClass.print(42);
+	instanceOfDerivedClass.print(42, 2);
+// 	instanceOfDerivedClass.print(42);
+
+	BaseClass& referenceOfBaseClass = instanceOfDerivedClass;
+	referenceOfBaseClass.print(42);
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND112
+//	C++ Primer Plus 5ed 663p
+//	virtual keyword를 사용하면 class의 size가 virtual method table의 address의 크기만큼 증가할까?
+//	증가한다!
+
+using std::cout;
+using std::endl;
+
+class DefaultClass {
+private:
+	int* value;
+public:
+	int* getValue(void) const { return this->value; };
+	void setValue(int* value) { this->value = value; };
+};
+
+class BaseClass {
+private:
+	int value;
+	int value2;
+public:
+	virtual ~BaseClass(void) {};
+
+	int getValue(void) const { return this->value; };
+	void setValue(int value) { this->value = value; };
+	int getValue2(void) const { return this->value2; };
+	void setValue2(int value) { this->value2 = value; };
+};
+
+int	main(void) {
+	DefaultClass instanceOfDefaultClass = DefaultClass();
+	BaseClass instanceOfBaseClass = BaseClass();
+
+	cout << "sizeof(instanceOfDefaultClass): " << sizeof(instanceOfDefaultClass) << endl;
+	cout << "sizeof(instanceOfBaseClass): " << sizeof(instanceOfBaseClass) << endl;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND111
-//	C++ Primer Plus 5ed 595
+//	C++ Primer Plus 5ed 595p
 //	type1 + type2 = type3가 가능하다.
 class Type {
 private:
@@ -48,7 +162,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND110
-//	C++ Primer Plus 5ed 139
+//	C++ Primer Plus 5ed 139p
 //	struct possess at least 4 bytes
 
 using std::cout;
@@ -127,7 +241,7 @@ void describeBit(char bits[32]) {
 #endif
 
 #ifdef GROUND109
-//	C++ Primer Plus 5ed 588
+//	C++ Primer Plus 5ed 588p
 //	getline() discard '\n'
 void cinDescribe(void) {
 	std::cout << (std::cin ? "NORMAL" : "ERROR") << " / " << (std::cin.eof() ? "EOF" : "NOT EOF") << std::endl;
@@ -233,7 +347,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND106
-//	C++ Primer Plus 5ed 489
+//	C++ Primer Plus 5ed 489p
 //
 //	기본적으로는 class declaration에서 private section에 static const double type을 초기화하는 것을 지원하지 않는다.
 class Type {
@@ -255,7 +369,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND105
-//	C++ Primer Plus 5ed 458
+//	C++ Primer Plus 5ed 458p
 //
 //	instance method implementation에서 qualified name으로 private member variable에 접근하기
 class Type {
@@ -294,7 +408,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND104
-//	C++ Primer Plus 5ed 442/Programming Exercises/4
+//	C++ Primer Plus 5ed 442p/Programming Exercises/4
 #include "06_programming_exercise_9_4.hpp"
 
 int	main(void) {
@@ -313,7 +427,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND103
-//	C++ Primer Plus 5ed 442/Programming Exercises/3
+//	C++ Primer Plus 5ed 442p/Programming Exercises/3
 struct chaff
 {
 	char	dross[20];
@@ -342,7 +456,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND102
-//	C++ Primer Plus 5ed 442/Programming Exercises/2
+//	C++ Primer Plus 5ed 442p/Programming Exercises/2
 void	strcount(const char* str);
 
 int	main(void) {
@@ -382,7 +496,7 @@ void	strcount(const char* str)
 #endif
 
 #ifdef GROUND101
-//	C++ Primer Plus 5ed 441/Programming Exercises/1
+//	C++ Primer Plus 5ed 441p/Programming Exercises/1
 #include "05_programming_exercise_9_1.hpp"
 
 int	main(void) {
@@ -404,7 +518,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND100
-//	C++ Primer Plus 5ed 439/Review Questions/4
+//	C++ Primer Plus 5ed 439p/Review Questions/4
 int	main(void) {
 	using std::cin;
 	using std::cout;
@@ -426,7 +540,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND099
-//	C++ Primer Plus 5ed 439/Review Questions/3
+//	C++ Primer Plus 5ed 439p/Review Questions/3
 int	main(void) {
 	double	x;
 
@@ -444,7 +558,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND098
-//	C++ Primer Plus 5ed 406
+//	C++ Primer Plus 5ed 406p
 //	함수 안에서 선언된 static variable은 declaration statement가 실행된 후 함수가 호출됐을 때 함수의 실행과 동시에 come into scope할까?
 //
 //	결과: 항상 declaration statement가 실행된 시점부터 come into scope한다.
@@ -471,7 +585,7 @@ void	printVar(void) {
 #endif
 
 #ifdef GROUND097
-//	C++ Primer Plus 5ed 391/Programming Exercises/7
+//	C++ Primer Plus 5ed 391p/Programming Exercises/7
 template <typename T>
 T	ShowArray(T arr[], int n);
 
@@ -529,7 +643,7 @@ T	ShowArray(T* arr[], int n) {
 #endif
 
 #ifdef GROUND096
-//	C++ Primer Plus 5ed 391/Programming Exercises/6
+//	C++ Primer Plus 5ed 391p/Programming Exercises/6
 template <typename T>
 T& maxn(T array[], int count) {
 	T*	biggest = &array[0];
@@ -575,7 +689,7 @@ const char*&	maxn<const char*>(const char* array[], int count) {
 #endif
 
 #ifdef GROUND095
-//	C++ Primer Plus 5ed 391/Programming Exercises/5
+//	C++ Primer Plus 5ed 391p/Programming Exercises/5
 template <typename T>
 T&	max5(T array[5]) {
 	T*	biggest = &array[0];
@@ -598,7 +712,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND094
-//	C++ Primer Plus 5ed 390/Programming Exercises/4
+//	C++ Primer Plus 5ed 390p/Programming Exercises/4
 using namespace std;
 #include <cstring>
 struct stringy {
@@ -646,7 +760,7 @@ void	show(const char* str, int count) {
 #endif
 
 #ifdef GROUND093
-//	C++ Primer Plus 5ed 390/Programming Exercises/3
+//	C++ Primer Plus 5ed 390p/Programming Exercises/3
 void	string_toupper(std::string& string);
 
 int	main(void) {
@@ -675,7 +789,7 @@ void	string_toupper(std::string& string) {
 #endif
 
 #ifdef GROUND092
-//	C++ Primer Plus 5ed 390/Programming Exercises/2
+//	C++ Primer Plus 5ed 390p/Programming Exercises/2
 struct CandyBar {
 	std::string	brandName;
 	double	weight;
@@ -720,7 +834,7 @@ void	CandyBar_describe(const CandyBar& bar) {
 #endif
 
 #ifdef GROUND091
-//	C++ Primer Plus 5ed 390/Programming Exercises/1
+//	C++ Primer Plus 5ed 390p/Programming Exercises/1
 void	str_print(const char* str, int attr = 0);
 
 int	main(void) {
@@ -748,7 +862,7 @@ void	str_print(const char* str, int attr) {
 #endif
 
 #ifdef GROUND090
-//	C++ Primer Plus 5ed 390/Review Questions/7
+//	C++ Primer Plus 5ed 390p/Review Questions/7
 struct box {
 	char	maker[40];
 	float	height;
@@ -816,7 +930,7 @@ box&	larger<box>(box& lhs, box& rhs) {
 #endif
 
 #ifdef GROUND089
-//	C++ Primer Plus 5ed 389/Review Questions/4
+//	C++ Primer Plus 5ed 389p/Review Questions/4
 struct box {
 	char	maker[40];
 	float	height;
@@ -861,7 +975,7 @@ void	boxSetVolume(box& box1) {
 #endif
 
 #ifdef GROUND088
-//	C++ Primer Plus 5ed 389/Review Questions/3
+//	C++ Primer Plus 5ed 389p/Review Questions/3
 void	iquote(int number);
 void	iquote(double number);
 void	iquote(std::string string);
@@ -897,7 +1011,7 @@ void	iquote(std::string string) {
 #endif
 
 #ifdef GROUND087
-//	C++ Primer Plus 5ed 371
+//	C++ Primer Plus 5ed 371p
 template <class T>
 void swap(T& lhs, T& rhs);
 
@@ -929,7 +1043,7 @@ void swap(T& lhs, T& rhs) {
 #endif
 
 #ifdef GROUND086
-//	C++ Primer Plus 5ed 351/8.6
+//	C++ Primer Plus 5ed 351p/8.6
 using namespace std;
 struct sysop {
 	char	name[26];
@@ -968,7 +1082,7 @@ const sysop&	use(sysop& sysopref) {
 #endif
 
 #ifdef GROUND085
-//	C++ Primer Plus 5ed 336/Programming Exercises/9
+//	C++ Primer Plus 5ed 336p/Programming Exercises/9
 double	calculate(double lhs, double rhs, double (*operation)(double, double)) {
 	return operation(lhs, rhs);
 }
@@ -1017,7 +1131,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND084
-//	C++ Primer Plus 5ed 335/Programming Exercises/8
+//	C++ Primer Plus 5ed 335p/Programming Exercises/8
 using namespace std;
 
 const int	SLEN = 30;
@@ -1099,7 +1213,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND083
-//	C++ Primer Plus 5ed 335/Programming Exercises/7
+//	C++ Primer Plus 5ed 335p/Programming Exercises/7
 const int	Max = 5;
 
 double*	fill_array(double* start, double* end) {
@@ -1156,7 +1270,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND082
-//	C++ Primer Plus 5ed 335/Programming Exercises/6
+//	C++ Primer Plus 5ed 335p/Programming Exercises/6
 int	Fill_array(double array[], int size) {
 	using std::cout;
 	using std::endl;
@@ -1202,7 +1316,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND081
-//	C++ Primer Plus 5ed 334/Programming Exercises/5
+//	C++ Primer Plus 5ed 334p/Programming Exercises/5
 long	getFactorial(int number) {
 	if (number > 0)
 		return number * getFactorial(number - 1);
@@ -1228,7 +1342,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND080
-//	C++ Primer Plus 5ed 334/Programming Exercises/3
+//	C++ Primer Plus 5ed 334p/Programming Exercises/3
 #include <cstring>
 
 struct Box {
@@ -1276,7 +1390,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND079
-//	C++ Primer Plus 5ed 334/Programming Exercises/2
+//	C++ Primer Plus 5ed 334p/Programming Exercises/2
 int	setGolfScoreArray(int golfScoreArray[], int arraySize) {
 	using std::cout;
 	using std::endl;
@@ -1330,7 +1444,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND078
-//	C++ Primer Plus 5ed 334/Programming Exercises/1
+//	C++ Primer Plus 5ed 334p/Programming Exercises/1
 double	harmonicMean(double number1, double number2) {
 	return (2.0 * number1 * number2 / (number1 + number2));
 }
@@ -1356,7 +1470,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND077
-//	C++ Primer Plus 5ed 321/LISTING 7.13
+//	C++ Primer Plus 5ed 321p/LISTING 7.13
 #include <cmath>
 
 struct PlaneCoordinate {
@@ -1517,7 +1631,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND072
-//	C++ Primer Plus 5ed 278/Programming Exercises/9
+//	C++ Primer Plus 5ed 278p/Programming Exercises/9
 #include <fstream>
 
 struct Contributor {
@@ -1623,7 +1737,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND071
-//	C++ Primer Plus 5ed 278/Programming Exercises/8
+//	C++ Primer Plus 5ed 278p/Programming Exercises/8
 #include <fstream>
 
 int	main(void) {
@@ -1645,7 +1759,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND070
-//	C++ Primer Plus 5ed 278/Programming Exercises/7
+//	C++ Primer Plus 5ed 278p/Programming Exercises/7
 bool	getWord_shouldLoop(std::string& string) {
 	if (!(std::cin >> string))
 		return false;
@@ -1702,7 +1816,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND069
-//	C++ Primer Plus 5ed 277/Programming Exercises/6
+//	C++ Primer Plus 5ed 277p/Programming Exercises/6
 struct Contributor {
 	std::string	name;
 	double		contribution;
@@ -1806,7 +1920,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND068
-//	C++ Primer Plus 5ed 277/Programming Exercises/5
+//	C++ Primer Plus 5ed 277p/Programming Exercises/5
 const int	tax0 = 5000;
 const int	tax1 = 15000;
 const int	tax2 = 35000;
@@ -1854,7 +1968,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND067
-//	C++ Primer Plus 5ed 276/Programming Exercises/4
+//	C++ Primer Plus 5ed 276p/Programming Exercises/4
 const int	strSize = 80;
 const int	bopArray_count = 3;
 
@@ -1920,7 +2034,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND066
-//	C++ Primer Plus 5ed 276/Programming Exercises/3
+//	C++ Primer Plus 5ed 276p/Programming Exercises/3
 int	main(void) {
 	std::cout << "Please enter one of the following choices:" << std::endl
 		<< "c) carnivore	p)pianist" << std::endl
@@ -1955,7 +2069,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND065
-//	C++ Primer Plus 5ed 276/Programming Exercises/2
+//	C++ Primer Plus 5ed 276p/Programming Exercises/2
 const int	donationsCount = 10;
 
 bool	getDonation_isValid(double* donations, int index) {
@@ -1994,7 +2108,7 @@ int	main(void) {
 #endif
 
 #ifdef GROUND064
-//	C++ Primer Plus 5ed 276/Programming Exercises/1
+//	C++ Primer Plus 5ed 276p/Programming Exercises/1
 int	main(void) {
 	char	ch;
 	char	outputCh;
