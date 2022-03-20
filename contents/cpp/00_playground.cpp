@@ -1,7 +1,60 @@
 #include <iostream>
 
-#define GROUND114
 //	다이아몬드 상속에서 base class는 value로 저장될까 address로 저장될까?
+
+#define GROUND115
+#ifdef GROUND115
+//	같은 signature를 갖는 template function의 explicit specialization과 explicit instantiation을 모두 두면 어떤 error가 발생할까?
+//	결과:
+//	둘이 같이 존재하면 제대로 error가 발생한다.
+//	자세한 내용은 코드의 주석 참고
+using std::cout;
+using std::endl;
+
+// MARK:- interface
+template <typename T>
+void describe(T what);
+
+template <>
+void describe<int>(int what);
+
+// template void describe<int>(int what);
+// error: explicit instantiation of 'describe<int>' that occurs after an explicit specialization has no effect [-Werror,-Winstantiation-after-specialization]
+
+template void describe<double>(double what);
+
+// MARK:- implementation
+// template <>
+// void describe<double>(double what);
+// error: explicit specialization of 'describe<double>' after instantiation
+
+template <typename T>
+void describe(T what) {
+	cout << "T: " << what << endl;
+}
+
+template <>
+void describe<int>(int what) {
+	cout << "int: " << what << endl;
+}
+
+// template <>
+// void describe<double>(double what) {
+// 	cout << "double: " << what << endl;
+// }
+
+// MARK:- main
+int	main(void) {
+	int number1 = 1;
+	double number2 = 2.3;
+
+	describe(number1);
+	describe(number2);
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND114
 //	C++ Primer Plus 5ed 722p
 //	protected derivation을 했을 때 base class의 reference가 가리키는 derived class instance는 virtual method를 어떻게 호출할까?
