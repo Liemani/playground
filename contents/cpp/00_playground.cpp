@@ -2,9 +2,109 @@
 
 //	다이아몬드 상속에서 base class는 value로 저장될까 address로 저장될까?
 
-#define GROUND115
+#define GROUND117
+#ifdef GROUND117
+//	C++ Primer Plus 5ed 163p
+//	placement new로 int array를 할당하면 기존에 존재하던 데이터가 삭제될까?
+
+using std::cout;
+using std::endl;
+
+int main(void) {
+	int array[1] = { 1 };
+
+	cout << array[0] << endl;
+
+	int* ptr = new int[3];
+
+	cout << ptr[0] << ptr[1] << ptr[2] << endl;
+
+	for (int i = 0; i < 3; ++i)
+		ptr[i] = i;
+
+	cout << ptr[0] << ptr[1] << ptr[2] << endl;
+
+	delete [] ptr;
+
+	ptr = new int[3]();
+
+	cout << ptr[0] << ptr[1] << ptr[2] << endl;
+
+	for (int i = 0; i < 3; ++i)
+		ptr[i] = i;
+
+	cout << ptr[0] << ptr[1] << ptr[2] << endl;
+
+	delete [] ptr;
+
+	int i = int();
+
+	cout << i << endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND116
+//	C++ Primer Plus 5ed 765p
+//	template <typename T, typename U> class className<T1, T2, T2> { ... }; 가 있을 때
+//	ClassName<TypeName1, TypeName2>인 object가 위와 같은 partial specialization으로 생성될까?
+//
+//	결과:
+//	아니다, 이것은 책이 잘못됐다.
+//	type argument를 3 개 전달받는 tamplate에 대한 partial specialization을 선언하는 경우 이 partial specialization을 사용하는 object를 생성하기 위해서는 type argument를 3개 전달해야 한다.
+//	인자를 2 개만 전달한다면 compliler가 아래 코드의 주석과 같은 error를 출력할 수 있다.
+using std::cout;
+using std::endl;
+
+template <typename T, typename U, typename V/* = char*/>
+class Type {
+private:
+	T t;
+	U u;
+	V v;
+public:
+	void describe(void) const;
+};
+
+template <typename T, typename U, typename V>
+void Type<T, U, V>::describe(void) const {
+	cout << this->t << this->u << this->v << endl;
+}
+
+template <typename T, typename U>
+class Type<T, U, U> {
+private:
+	T t;
+	U u;
+	U v;
+public:
+	void describe(void) const;
+};
+
+template <typename T, typename U>
+void Type<T, U, U>::describe(void) const {
+	cout << this->t << this->u << this->v << endl;
+}
+
+int main(void) {
+	Type<char, int, double> type1 = Type<char, int, double>();
+	Type<int, char, char> type2 = Type<int, char, char>();
+// 	Type<int, char> type3 = Type<int, char>();
+// 	error: too few template arguments for class template 'Type'
+
+	type1.describe();
+	type2.describe();
+// 	type3.describe();
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND115
+//	C++ Primer Plus 5ed 381p
 //	같은 signature를 갖는 template function의 explicit specialization과 explicit instantiation을 모두 두면 어떤 error가 발생할까?
+//
 //	결과:
 //	둘이 같이 존재하면 제대로 error가 발생한다.
 //	자세한 내용은 코드의 주석 참고
