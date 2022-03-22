@@ -2,7 +2,34 @@
 
 //	다이아몬드 상속에서 base class는 value로 저장될까 address로 저장될까?
 
-#define GROUND117
+#define GROUND119
+#ifdef GROUND119
+//	what happen if i don't catch exception?
+//
+//	result:
+//	zsh: abort      ./a.out
+void myFunc(void) throw(int) {
+	throw 42;
+}
+int main(void) {
+	myFunc();
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND118
+//	what happen if i call abort()?
+//
+//	result:
+//	zsh: abort      ./a.out
+int main(void) {
+	abort();
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND117
 //	C++ Primer Plus 5ed 163p
 //	placement new로 int array를 할당하면 기존에 존재하던 데이터가 삭제될까?
