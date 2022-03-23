@@ -2,8 +2,93 @@
 
 //	다이아몬드 상속에서 base class는 value로 저장될까 address로 저장될까?
 
-#define GROUND119
+#define GROUND122
+#ifdef GROUND122
+//	std::string::find()가 substring을 발견하지 못하면 std::string::npos를 반환한다고 한다. 확인해보자.
+using namespace std;
+
+int main(void) {
+	string str = string("This is apple.");
+
+	cout << str.find("is", 6) << endl;
+	cout << str.npos << endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND121
+//	C++ Primer Plus 5ed 850p
+//	const_cast에 잘못된 const type으로 cast하면 exception이 발생할까?
+//
+//	결과:
+//	const type은 runtime으로 추적하지 않기 때문에 실제 type의 const 여부와 관계 없이 cast가 가능하다.
+//	cast의 의도가 const를 위한 것이라는 것을 명시하는 용도로 사용하면 될 것 같다.
+//	그리고 실제 값이 수정되는 것을 막아준다.
+int main(void) {
+	const int ci = 42;
+	const int* pci = &ci;
+	int* pi = const_cast<int*> (pci);
+
+	std::cout << "*pi: " << *pi << std::endl;
+	std::cout << "ci: " << ci << std::endl;
+	*pi = 21;
+	std::cout << "*pi: " << *pi << std::endl;
+	std::cout << "ci: " << ci << std::endl;
+
+	int& i = const_cast<int&> (ci);
+	i = 21;
+
+	std::cout << "i: " << i << std::endl;
+	std::cout << "ci: " << ci << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND120
+//	C++ Primer Plus 5ed 845p
+//	typeid(funcName).name()을 하면 어떻게 될까?
+//
+//	결과:
+//	함수의 return type과 argument list에 대한 정보를 담은 문자열을 반환한다.
+//	하지만 const나 throw type등의 정보는 이 문자열에 담겨 있지 않은 것 같다.
+using std::cout;
+using std::endl;
+
+class Type {
+private:
+	int a;
+public:
+	const int& getA(void) const { return a; };
+};
+
+void myFunc1(void) {
+	cout << "In myfunc1" << endl;
+}
+
+int myFunc2(int a, int b, Type type) {
+	(void)a;
+	(void)b;
+	(void)type;
+	cout << "In myfunc2" << endl;
+	return 0;
+}
+
+int main(void) {
+	const int& (Type::*pt)(void);
+
+	cout << "typeid(myFunc1).name(): " << typeid(myFunc1).name() << endl;
+	cout << "typeid(myFunc2).name(): " << typeid(myFunc2).name() << endl;
+	cout << "typeid(pt).name(): " << typeid(pt).name() << endl;
+	cout << "typeid(myFunc1) == typeid(myFunc2): " << (typeid(myFunc1) == typeid(myFunc2)) << endl;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND119
+//	C++ Primer Plus 5ed 834p
 //	what happen if i don't catch exception?
 //
 //	result:
@@ -11,6 +96,7 @@
 void myFunc(void) throw(int) {
 	throw 42;
 }
+
 int main(void) {
 	myFunc();
 
@@ -19,6 +105,7 @@ int main(void) {
 #endif
 
 #ifdef GROUND118
+//	C++ Primer Plus 5ed 805p
 //	what happen if i call abort()?
 //
 //	result:
