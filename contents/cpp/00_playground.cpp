@@ -1,9 +1,137 @@
-#include <iostream>
-
+#include <iostream> 
 //	다이아몬드 상속에서 base class는 value로 저장될까 address로 저장될까?
 
-#define GROUND122
+#define GROUND127
+#ifdef GROUND127
+//	C++ Primer Plus 5ed 903p
+//	let's exercise template<typename T> std::back_insert_iterator<T>
+#include <vector>
+#include <iterator>
+
+int main(void) {
+	std::vector<int> v = std::vector<int>(5);
+	std::back_insert_iterator<std::vector<int> > bii = std::back_insert_iterator<std::vector<int> >(v);
+
+	int array[5] = { 1, 2, 3, 4, 5 };
+
+	copy(array, array + 5, bii);
+	copy(v.begin(), v.end(), std::ostream_iterator<int, char>(std::cout, " "));
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND126
+//	C++ Primer Plus 5ed 901p
+//	reverse_iterator는 begin()과 end()이 가리키는 실제 데이터의 주소와는 같지만 type만 다른 것일까?
+#include <vector>
+#include <iterator>
+
+int main(void) {
+	std::vector<int> v = std::vector<int>(5);
+
+	int i = 0;
+	for (std::vector<int>::iterator it = v.begin(); it < v.end(); ++it, ++i)
+		*it = i;
+
+	copy(v.begin(), v.end(), std::ostream_iterator<int, char>(std::cout, " "));
+
+	for(std::vector<int>::reverse_iterator it = v.rbegin(); it < v.rend(); ++it, ++i)
+		*it = i;
+
+	copy(v.begin(), v.end(), std::ostream_iterator<int, char>(std::cout, " "));
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND125
+//	C++ Primer Plus 5ed 900p
+//	let's exercise ostream iterator
+#include <iterator>
+
+int main(void) {
+	std::ostream_iterator<int, char> out_iter = std::ostream_iterator<int, char>(std::cout, " ");
+
+	*out_iter++ = 15;
+	*out_iter++ = 1234567890;
+
+	int array[5] = {2, 4, 6, 8, 10 };
+
+	std::copy(array, array + 5, out_iter);
+	std::copy(std::istream_iterator<int, char>(std::cin),
+			std::istream_iterator<int, char>(),
+			std::ostream_iterator<int, char>(std::cout, " "));
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND124
+//	C++ Primer Plus 5ed 878p
+//	let's print size methods of vector
+#include <vector>
+
+using std::cout;
+using std::endl;
+
+int main(void) {
+	std::vector<int> v = std::vector<int>();
+
+	cout << "v.size(): " << v.size() << endl;
+	cout << "v.capacity(): " << v.capacity() << endl;
+
+	v.push_back(42);
+
+	cout << "v.size(): " << v.size() << endl;
+	cout << "v.capacity(): " << v.capacity() << endl;
+
+	v.reserve(42);
+
+	cout << "v.size(): " << v.size() << endl;
+	cout << "v.capacity(): " << v.capacity() << endl;
+
+	v.reserve(45);
+
+	cout << "v.size(): " << v.size() << endl;
+	cout << "v.capacity(): " << v.capacity() << endl;
+
+	v.push_back(42);
+
+	cout << "v.size(): " << v.size() << endl;
+	cout << "v.capacity(): " << v.capacity() << endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND123
+//	C++ Primer Plus 5ed 768p
+//	how to use template as template type argument on function template?
+using std::cout;
+using std::endl;
+
+template <typename T>
+class ClassName {
+public:
+	T t;
+};
+
+template <template <typename> class Thing, typename T>
+void funcName(Thing<T>& thing, T t) {
+	cout << "thing.t: " << thing.t << ", t:" << t << endl;
+}
+
+int main(void) {
+	ClassName<int> className;
+	funcName(className, 42);
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND122
+//	C++ Primer Plus 5ed 865p
 //	std::string::find()가 substring을 발견하지 못하면 std::string::npos를 반환한다고 한다. 확인해보자.
 using namespace std;
 
