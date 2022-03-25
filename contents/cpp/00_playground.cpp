@@ -1,7 +1,117 @@
 #include <iostream> 
 //	다이아몬드 상속에서 base class는 value로 저장될까 address로 저장될까?
 
-#define GROUND127
+#define GROUND130
+#ifdef GROUND130
+//	C++ Primer Plus 5ed 928p
+//	let's make function object using multiplies()
+#include <vector>
+#include <functional>
+
+template <typename T>
+class UnaryMultiplies {
+private:
+	const T t;
+public:
+	UnaryMultiplies(const T& t): t(t) {};
+	T operator()(const T& t) { return std::multiplies<T>()(this->t, t); };
+};
+
+int main(void) {
+	std::ostream_iterator<int, char> coutIter = std::ostream_iterator<int, char>(std::cout, " ");
+	int array[10] = { 5, 1, 7, 2, 9, 10, 2, 7, 4, 0 };
+
+	std::vector<int> v = std::vector<int>(array, array + 10);
+
+	transform(v.begin(), v.end(), coutIter, UnaryMultiplies<int>(5));
+	std::cout << std::endl;
+
+	transform(v.begin(), v.end(), coutIter, std::bind1st(std::multiplies<int>(), 5));
+	std::cout << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND129
+//	C++ Primer Plus 5ed 920p
+//	let's exercise map
+#include <map>
+#include <iterator>
+
+int main(void) {
+	std::map<std::string, std::string> m;
+
+	std::ostream_iterator<std::string, char> coutIter = std::ostream_iterator<std::string, char>(std::cout, " ");
+	(void)coutIter;
+
+	std::pair<std::string, std::string> p = std::pair<std::string, std::string>("hi", "their");
+	std::cout << "key: " << p.first << ", value: " << p.second << std::endl;
+
+	m.insert(p);
+	m.insert(std::pair<std::string, std::string>("nice to", "meet you"));
+// 	copy(m.begin(), m.end(), coutIter);
+	for (std::map<std::string, std::string>::iterator it = m.begin(); it != m.end(); ++it)
+		std::cout << "key: " << it->first << ", value: " << it->second << std::endl;
+
+	std::multimap<std::string, std::string> multimap;
+
+	multimap.insert(std::pair<std::string, std::string>("hi", "there"));
+	multimap.insert(std::pair<std::string, std::string>("hi", "hello"));
+
+	std::pair<std::multimap<std::string, std::string>::iterator, std::multimap<std::string, std::string>::iterator> keyPair = multimap.equal_range("hi");
+
+	for (; keyPair.first != keyPair.second; ++keyPair.first)
+		std::cout << "key: " << keyPair.first->first << ", value: " << keyPair.first->second << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND128
+//	C++ Primer Plus 5ed 916p
+//	let's exercise set
+#include <set>
+#include <vector>
+#include <iterator>
+
+int main(void) {
+	int array[10] = { 1, 1, 2, 1, 2, 3, 4, 5, 4, 5 };
+	std::vector<int> v = std::vector<int>(array, array + 10);
+	std::ostream_iterator<int, char> coutIterator = std::ostream_iterator<int, char>(std::cout, " ");
+
+	std::set<int> s = std::set<int>(v.rbegin(), v.rend());
+	copy(s.begin(), s.end(), coutIterator);
+	std::cout << std::endl;
+
+	std::multiset<int> ms = std::multiset<int>(v.rbegin(), v.rend());
+	copy(ms.begin(), ms.end(), std::ostream_iterator<int, char>(std::cout, " "));
+	std::cout << std::endl;
+
+	int array2[5] = { 7, 3, 1, -1, 0 };
+	std::set<int> s2 = std::set<int>(array2, array2 + 5);
+	set_union(s.begin(), s.end(), s2.begin(), s2.end(), coutIterator);
+	std::cout << std::endl;
+
+	std::set<int> s3;
+	std::insert_iterator<std::set<int> > s3InsertIterator = std::insert_iterator<std::set<int> >(s3, s3.begin());
+	set_union(s.begin(), s.end(), s2.begin(), s2.end(), s3InsertIterator);
+	copy(s3.begin(), s3.end(), coutIterator);
+	std::cout << std::endl;
+
+	set_intersection(s.begin(), s.end(), s2.begin(), s2.end(), coutIterator);
+	std::cout << std::endl;
+
+	set_difference(s.begin(), s.end(), s2.begin(), s2.end(), coutIterator);
+	std::cout << std::endl;
+
+	copy(s3.lower_bound(0), s3.upper_bound(4), coutIterator);
+	std::cout << std::endl;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND127
 //	C++ Primer Plus 5ed 903p
 //	let's exercise template<typename T> std::back_insert_iterator<T>
