@@ -1,7 +1,58 @@
 #include <iostream> 
 //	다이아몬드 상속에서 base class는 value로 저장될까 address로 저장될까?
 
-#define GROUND130
+#define GROUND131
+#ifdef GROUND131
+//	C++ Primer Plus 5ed 862p
+//	exercise
+using std::cout;
+using std::endl;
+
+int main(void) {
+	char array[11] = "0123456789";
+	array[5] = '\0';
+	cout.put('A').put('\n').write(array, 10);	// ostream.write() print specified number of character
+	cout << std::flush;	// flush the buffer. flush is in fact function
+	cout << endl;	// flush the buffer and put new line character also
+	flush(cout);
+	cout << 1111123.0 << endl;
+	cout << 111112.3f << endl;
+	cout << 11111.23f << endl;
+	cout << 0.0001111123f << endl;
+	cout << 0.00001111123f << endl;
+	cout << std::hex << 15 << std::oct << 15 << std::dec << endl;
+	cout << cout.width(10) << endl;
+	cout << cout.width(0) << endl;
+	cout.width(10);
+	cout << cout.width(0) << endl;
+	cout.fill('*');
+	cout.width(10);
+	cout << -1 << endl;
+	cout.precision(2);
+	cout << 1111123.0 << endl;
+	cout << 111112.3f << endl;
+	cout << 11111.23f << endl;
+	cout << 0.0001111123f << endl;
+	cout << 0.00001111123f << endl;
+	cout.setf(std::ios_base::showpoint);
+	cout << 123.0 << endl;
+	cout << 12.3f << endl;
+	cout << 1.23f << endl;
+	cout << 0.000123f << endl;
+	cout << 0.0000123f << endl;
+	cout << std::hex;
+	cout.setf(std::ios_base::uppercase);
+	cout.setf(std::ios_base::showbase);
+	cout << true << false << true << endl;
+	cout.setf(std::ios_base::boolalpha);
+	cout << true << false << endl;
+	cout.precision(2);
+	cout << 12.3f << endl;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND130
 //	C++ Primer Plus 5ed 928p
 //	let's make function object using multiplies()
