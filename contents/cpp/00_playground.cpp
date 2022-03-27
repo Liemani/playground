@@ -1,10 +1,162 @@
 #include <iostream> 
 //	다이아몬드 상속에서 base class는 value로 저장될까 address로 저장될까?
 
-#define GROUND131
+#define GROUND135
+#ifdef GROUND135
+//	std::getline(std::istream, std::string);이 '\n'를 discard할까?
+int main(void) {
+	std::string string = "hi";
+	getline(std::cin, string);
+	std::cout << "string: " << string << std::endl;
+	std::cout << "string.size(): " << string.size() << std::endl;
+	std::cout << "std::cin.rdstate(): " << std::cin.rdstate() << std::endl;
+	std::cin.clear();
+	std::cout << "next character getline(): " << std::cin.get() << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND134
+//	C++ Primer Plus 5ed 1029p
+#include <cstdio>
+
+int main(void) {
+	char tempName[10] = "hi";
+	mkstemp(tempName);
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND133
+//	C++ Primer Plus 5ed 1000p
+//	peek()가 get()과 putback()을 호출한다면 peek()을 하고 get()을 하는 algorithm과 get()을 하고 putback()을 하는 algorithm 사이에 유의미한 속도 차이가 발생할 것 같다.
+//
+//	결과:
+//	```
+//	% time ./a.out peek-get 00_playground.cpp > .temp
+//	./a.out peek-get 00_playground.cpp > .temp  0.01s user 0.00s system 91% cpu 0.013 total
+//	% time ./a.out get-putback 00_playground.cpp > .temp
+//	./a.out get-putback 00_playground.cpp > .temp  0.01s user 0.00s system 90% cpu 0.013 total
+//	```
+//	둘의 걸리는 시간에서 유의미한 차이는 없었다.
+//	즉, peek()이 get()과 putback()을 호출하지는 않을 것이다.
+#include <fstream>
+
+using std::cin;
+using std::cout;
+
+void peekGet(std::ifstream& ifs) {
+	int ch;
+	char ch2;
+	while ((ch = ifs.peek()) != EOF) {
+		if (ch == '\n') {
+			cout << (char)ch;
+			ifs.get();
+		}
+		else {
+			ifs.get(ch2);
+			cout << ch2;
+		}
+	}
+}
+
+void getPutback(std::ifstream& ifs) {
+	char ch;
+	while (ifs.get(ch)) {
+		if (ch == '\n') {
+			ifs.putback(ch);
+			ifs.get();
+		}
+		else
+			cout << ch;
+	}
+}
+
+int main(int argc, char** argv) {
+	if (argc != 3)
+		return -1;
+
+	std::ifstream ifs;
+	ifs.open(argv[2]);
+	if (!ifs.is_open())
+		return -1;
+
+	if (strcmp(argv[1], "peek-get") == 0)
+		peekGet(ifs);
+	else if (strcmp(argv[1], "get-putback") == 0)
+		getPutback(ifs);
+
+	ifs.close();
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND132
+//	C++ Primer Plus 5ed 988p
+//	let's exercise cin
+using std::cin;
+
+int main(void) {
+	int number;
+
+	cin.exceptions(std::ios_base::failbit);
+	try {
+		cin >> number;
+		std::cout << number << std::endl;
+	}
+	catch(std::exception& e) {
+		std::cout << e.what() << std::endl;
+	}
+	cin.exceptions(std::ios_base::goodbit);
+	std::cout << "cin.gcount(): " << cin.gcount() << std::endl;
+	if (cin.eof())
+		return 0;
+	else if (cin.fail())
+		cin.clear();
+	while (cin.get() != '\n');
+	
+	cin >> number;
+	std::cout << number << std::endl;
+	std::cout << "cin.gcount(): " << cin.gcount() << std::endl;
+	if (cin.eof())
+		return 0;
+	else if (cin.fail())
+		cin.clear();
+	cin.ignore(255, '\n');
+
+	char array[10];
+	cin.getline(array, 10);
+	std::cout << array << std::endl;
+	std::cout << cin.rdstate() << std::endl;
+	std::cout << "cin.gcount(): " << cin.gcount() << std::endl;
+	if (cin.eof())
+		return 0;
+	else if (cin.fail()) {
+		cin.clear();
+		while (cin.get() != '\n');
+	}
+
+	cin.get(array, 10);
+	std::cout << array << std::endl;
+	std::cout << cin.rdstate() << std::endl;
+	std::cout << "cin.gcount(): " << cin.gcount() << std::endl;
+	if (cin.eof())
+		return 0;
+	if (cin.peek() != '\n') {
+		std::cout << "input was too long" << std::endl;
+		while (cin.get() != '\n');
+	}
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND131
 //	C++ Primer Plus 5ed 862p
-//	exercise
+//	let's exercise cout
 using std::cout;
 using std::endl;
 
