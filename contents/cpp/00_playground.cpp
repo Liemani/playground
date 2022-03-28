@@ -1,7 +1,74 @@
 #include <iostream> 
 //	다이아몬드 상속에서 base class는 value로 저장될까 address로 저장될까?
 
-#define GROUND135
+#define GROUND138
+#ifdef GROUND138
+//	exercise reference
+int main(void) {
+	int a = 42;
+	const int& ra = a;
+
+	std::cout << ra + ra << std::endl;
+	std::cout << ra << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND137
+//	exercise bit-field representation
+union Union {
+	int intValue;
+	struct {
+		int first:8;
+		int second:8;
+		int third:8;
+		int fourth:8;
+	} Type;
+};
+
+int main(void) {
+	Union uni = { 0 };
+	int x = 257;
+	uni.Type.first = x;
+
+	std::cout << uni.intValue << std::endl;
+
+// 	int y = 0;
+// 	x = y / y;
+// 	std::cout << x << std::endl;
+	int* z = NULL;
+	std::cout << *z << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND136
+//	exercise pointer to method
+using std::cout;
+using std::endl;
+
+class Type {
+public:
+	void method1(void) { cout << "method1" << endl; };
+	void method2(void) { cout << "method2" << endl; };
+};
+
+int main(void) {
+	Type instance;
+
+	instance.method1();
+	instance.Type::method1();
+// 	instance.*&Type::method1();
+	(instance.*&Type::method1)();
+// 	instance.*(&Type::method1)();
+	(instance.*(&Type::method1))();
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND135
 //	std::getline(std::istream, std::string);이 '\n'를 discard할까?
 int main(void) {
