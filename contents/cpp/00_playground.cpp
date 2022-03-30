@@ -1,7 +1,60 @@
 #include <iostream> 
 //	다이아몬드 상속에서 base class는 value로 저장될까 address로 저장될까?
 
-#define GROUND138
+/*	template
+#ifdef GROUND139
+int main(void) {
+
+	return 0;
+}
+#endif
+*/
+
+#define GROUND140
+#ifdef GROUND140
+//	array를 선언한 후 {}를 사용하여 초기화할 수 있을까?
+//
+//	결론:
+//	error: expected expression
+int main(void) {
+	int array[5];
+
+	array = { 0 };
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND139
+// array type을 class의 constructor의 initializer list에서 초기화할 수 있을까?
+//
+// 결론:
+// error: array initializer must be an initializer list
+class Test {
+private:
+	int array[5];
+public:
+	Test(void);
+
+	void describeArray(void) const;
+};
+
+Test::Test(void)
+: array(5) {
+}
+
+void Test::describeArray(void) const {
+	for (int i = 0; i < 5; ++i)
+		std::cout << this->array[i] << std::endl;
+}
+
+int main(void) {
+	Test test;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND138
 //	exercise reference
 int main(void) {
