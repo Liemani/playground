@@ -10,7 +10,7 @@ int main(void) {
 #endif
 */
 
-#define GROUND140
+#define GROUND131
 #ifdef GROUND140
 //	array를 선언한 후 {}를 사용하여 초기화할 수 있을까?
 //
