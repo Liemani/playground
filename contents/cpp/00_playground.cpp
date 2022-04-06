@@ -8,9 +8,33 @@ int main(void) {
 	return 0;
 }
 #endif
+
 */
 
-#define GROUND131
+#define GROUND141
+#ifdef GROUND141
+int main(void) {
+	float f = NAN;
+	double d = NAN;
+
+	std::cout << f << std::endl;
+	std::cout << isnan(f) << std::endl;
+	std::cout << isnan(d) << std::endl;
+
+	float f2 = f;
+
+	std::cout << f2 << std::endl;
+
+	double d3 = 1e50;
+	float f3 = static_cast<float>(d3);
+
+	std::cout << d3 << std::endl;
+	std::cout << f3 << std::endl;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND140
 //	array를 선언한 후 {}를 사용하여 초기화할 수 있을까?
 //
