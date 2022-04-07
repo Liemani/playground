@@ -11,8 +11,90 @@ int main(void) {
 
 */
 
-#define GROUND141
+#define GROUND145
+#ifdef GROUND145
+
+#include <vector>
+
+//	constainer의 size_type등을 object로부터 사용할 수 있을까?
+//
+//	결과:
+//	안된다 class name을 통해 scope resolution operator를 사용하여 접근해야 한다.
+int main(void) {
+	std::vector<int> vector;
+
+	std::cout << sizeof vector.size_type << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND144
+int main(void) {
+	int* pi = new int[10];
+
+	pi[5] = 42;
+
+	for (int i = 0; i < 10; ++i)
+		std::cout << pi[i] << std::endl;
+
+	delete [] pi;
+	pi = new int[10];
+
+	for (int i = 0; i < 10; ++i)
+		std::cout << pi[i] << std::endl;
+
+	delete [] pi;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND143
+
+#include <vector>
+
+int main(void) {
+	std::vector<int> vector = std::vector<int>(9);
+
+	std::cout << vector.size() << std::endl;
+	std::cout << vector.max_size() << std::endl;
+	std::cout << vector.capacity() << std::endl;
+
+	vector.push_back(10);
+
+	std::cout << vector.size() << std::endl;
+	std::cout << vector.max_size() << std::endl;
+	std::cout << vector.capacity() << std::endl;
+
+	vector.reserve(30);
+
+	std::cout << vector.size() << std::endl;
+	std::cout << vector.max_size() << std::endl;
+	std::cout << vector.capacity() << std::endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND142
+//	int와 unsigned int의 대소 비교
+int main(void) {
+	int i = -1;
+	unsigned int ui = 1;
+
+	std::cout << (i < ui) << std::endl;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND141
+//	isnan() test
+//	float의 최댓값을 넘는 값을 가지는 double로 float 변수 값을 설정해주면 inf가 될까?
+//
+//	결과:
+//	그렇다.
 int main(void) {
 	float f = NAN;
 	double d = NAN;
