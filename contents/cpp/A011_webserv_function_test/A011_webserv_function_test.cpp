@@ -39,5 +39,126 @@
 //	#include <fcntl.h>
 //		int fcntl(int fildes, int cmd, ...);
 
-int main(void) {
+#include <iostream>
+
+using std::cout;
+using std::endl;
+
+#include <arpa/inet.h>	// inet_addr()
+#include <netinet/in.h>	// struct sockaddr_in
+#include <sys/socket.h>	// socket(), accept(), listen(), bind(), connect()
+#include <unistd.h>	// read(),write()
+#include <sys/time.h>
+
+void coutWithTime(const char* str);
+void throwRuntimeError(const char* str);
+
+#ifdef CLIENT
+
+int main(int argc, char* argv[]) {
+	if (argc != 3) {
+		cout << "usage: " << argv[0] << " <server ip> <server port>" << endl;
+		return 0;
+	}
+
+	//	socket()
+	int client = socket(PF_INET, SOCK_STREAM, 0);
+	if (client == -1)
+		throwRuntimeError("fail socket()");
+	else
+		coutWithTime("after socket()");
+
+	//	struct sockaddr_in
+	struct sockaddr_in serverSocketAddress;
+	memset(&serverSocketAddress, 0, sizeof(serverSocketAddress));
+	serverSocketAddress.sin_family = AF_INET;
+	serverSocketAddress.sin_addr.s_addr = inet_addr(argv[1]);
+	serverSocketAddress.sin_port = htons(atoi(argv[2]));
+
+	//	connect()
+	if (connect(client, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress)) == -1)
+		throwRuntimeError("fail connect()");
+	else
+		coutWithTime("after connect()");
+
+	char message[1024];
+	if (read(client, message, sizeof(message) - 1) == -1)
+		throwRuntimeError("fail read()");
+	else
+		coutWithTime("after read()");
+
+	cout << message << endl;
+
+	close(client);
+
+	return 0;
+}
+#endif
+
+#ifdef SERVER
+int lmiBind(int serverSocket, char* argv[]);
+
+int main(int argc, char* argv[]) {
+	if (argc != 2) {
+		cout << "usage: " << argv[0] << " <server port>" << endl;
+		return 0;
+	}
+
+	//	socket()
+	int serverSocket = socket(PF_INET, SOCK_STREAM, 0);
+	if (serverSocket == -1)
+		throwRuntimeError("fail socket()");
+	else
+		coutWithTime("after socket()");
+
+	//	bind()
+	if (lmiBind(serverSocket, argv))
+		throwRuntimeError("fail bind()");
+	else
+		coutWithTime("after bind()");
+
+	//	listen()
+	if (listen(serverSocket, 5) == -1)
+		throwRuntimeError("fail listen()");
+	else
+		coutWithTime("after listen()");
+
+	//	struct sockaddr_in
+	struct sockaddr_in clientAddress;
+	socklen_t clientAddress_size = sizeof(clientAddress);
+	int clientSocket = accept(serverSocket, (struct sockaddr*) &clientAddress, &clientAddress_size);
+	if (clientSocket == -1)
+		throwRuntimeError("fail accept()");
+	else
+		coutWithTime("after accept()");
+
+	char msg[] = "This is plain text representing html document!\n";
+	write(clientSocket, msg, sizeof(msg));
+	coutWithTime("after write()");
+
+	close(clientSocket);
+	close(serverSocket);
+
+	return 0;
+}
+
+int lmiBind(int serverSocket, char* argv[]) {
+	struct sockaddr_in serverSocketAddress;
+	memset(&serverSocketAddress, 0, sizeof(serverSocketAddress));
+	serverSocketAddress.sin_family = AF_INET;
+	serverSocketAddress.sin_addr.s_addr = htonl(INADDR_ANY);
+	serverSocketAddress.sin_port = htons(atoi(argv[1]));
+
+	return bind(serverSocket, (struct sockaddr*) &serverSocketAddress, sizeof(serverSocketAddress));
+}
+#endif
+
+void coutWithTime(const char* str) {
+	timeval tv;
+	gettimeofday(&tv, NULL);
+	cout << "[" << tv.tv_sec << "." << tv.tv_usec << "] " << str << endl;
+}
+
+void throwRuntimeError(const char* str) {
+	throw std::runtime_error(str);
 }
