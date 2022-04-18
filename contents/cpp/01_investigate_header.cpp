@@ -7,7 +7,10 @@
 //	#include <GLFW/glfw3.h>
 //	#include <cctype>
 //	sockaddr_in
+//	sockaddr
 //	socklen_t
+//	fd_set
+//	pollfd
 //	#include <sys/socket.h>
 #include <netinet/in.h>
 

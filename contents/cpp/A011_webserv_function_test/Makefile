@@ -1,7 +1,7 @@
 CLIENT				:= client
 SERVER				:= server
 
-MAIN_FILE			:= A011_webserv_function_test.cpp
+MAIN_FILE			:= A002_webserv_function_test_select.cpp
 
 SRCS				:= \
 					   $(MAIN_FILE)

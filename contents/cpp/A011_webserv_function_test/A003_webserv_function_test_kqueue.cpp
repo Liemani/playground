@@ -49,6 +49,9 @@ using std::endl;
 #include <sys/socket.h>	// socket(), accept(), listen(), bind(), connect()
 #include <unistd.h>	// read(),write()
 #include <sys/time.h>
+#include <fcntl.h>
+#include <sys/select.h>
+#include <errno.h>
 
 void coutWithTime(const char* str);
 void throwRuntimeError(const char* str);
@@ -66,7 +69,7 @@ int main(int argc, char* argv[]) {
 	if (client == -1)
 		throwRuntimeError("fail socket()");
 	else
-		coutWithTime("after socket()");
+		coutWithTime("success socket()");
 
 	//	struct sockaddr_in
 	struct sockaddr_in serverSocketAddress;
@@ -79,15 +82,14 @@ int main(int argc, char* argv[]) {
 	if (connect(client, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress)) == -1)
 		throwRuntimeError("fail connect()");
 	else
-		coutWithTime("after connect()");
+		coutWithTime("success connect()");
 
-	char message[1024];
-	if (read(client, message, sizeof(message) - 1) == -1)
+	const char* message = "Hello, world!";
+	sleep(2);
+	if (write(client, message, sizeof(message) - 1) == -1)
 		throwRuntimeError("fail read()");
 	else
-		coutWithTime("after read()");
-
-	cout << message << endl;
+		coutWithTime("success write()");
 
 	close(client);
 
@@ -96,7 +98,13 @@ int main(int argc, char* argv[]) {
 #endif
 
 #ifdef SERVER
+void describeFDSET(fd_set& set);
 int lmiBind(int serverSocket, char* argv[]);
+
+char msg[1024];
+fd_set readfds;
+fd_set writefds;
+fd_set errorfds;
 
 int main(int argc, char* argv[]) {
 	if (argc != 2) {
@@ -104,42 +112,82 @@ int main(int argc, char* argv[]) {
 		return 0;
 	}
 
+	FD_ZERO(&readfds);
+	FD_ZERO(&writefds);
+	FD_ZERO(&errorfds);
+
 	//	socket()
 	int serverSocket = socket(PF_INET, SOCK_STREAM, 0);
 	if (serverSocket == -1)
 		throwRuntimeError("fail socket()");
 	else
-		coutWithTime("after socket()");
+		coutWithTime("success socket()");
+	fcntl(serverSocket, F_SETFL, O_NONBLOCK);
 
 	//	bind()
 	if (lmiBind(serverSocket, argv))
 		throwRuntimeError("fail bind()");
 	else
-		coutWithTime("after bind()");
+		coutWithTime("success bind()");
 
 	//	listen()
 	if (listen(serverSocket, 5) == -1)
 		throwRuntimeError("fail listen()");
 	else
-		coutWithTime("after listen()");
+		coutWithTime("success listen()");
 
-	//	struct sockaddr_in
-	struct sockaddr_in clientAddress;
-	socklen_t clientAddress_size = sizeof(clientAddress);
-	int clientSocket = accept(serverSocket, (struct sockaddr*) &clientAddress, &clientAddress_size);
-	if (clientSocket == -1)
-		throwRuntimeError("fail accept()");
-	else
-		coutWithTime("after accept()");
+	int clientSocket;
+	int maxSocketCount = 0;
+	struct timeval timeout = { 0, 0 };
+	timeout.tv_sec = 1;
+	while (true) {
+		cout << endl;
 
-	char msg[] = "This is plain text representing html document!\n";
-	write(clientSocket, msg, sizeof(msg));
-	coutWithTime("after write()");
+		//	struct sockaddr_in
+		struct sockaddr_in clientAddress;
+		socklen_t clientAddress_size = sizeof(clientAddress);
+
+		//	accept()
+		clientSocket = accept(serverSocket, (struct sockaddr*) &clientAddress, &clientAddress_size);
+		if (clientSocket == -1) {
+			coutWithTime("fail accept()");
+		}
+		else {
+			coutWithTime("success accept()");
+			FD_SET(clientSocket, &readfds);
+			if (maxSocketCount < clientSocket)
+				maxSocketCount = clientSocket;
+		}
+
+		describeFDSET(readfds);
+
+		int result = select(maxSocketCount + 1, &readfds, &writefds, &errorfds, &timeout);
+		if (result == -1)
+			throwRuntimeError("fail select");
+		else if (result == 0) {
+			cout << "not read for reading" << endl;
+		}
+		else {
+			cout << "result: " << result << endl;
+			if (read(clientSocket, msg, sizeof(msg)) == -1)
+				coutWithTime("fail read");
+			else {
+				coutWithTime("success read()");
+				cout << msg << endl;
+			}
+		}
+	}
 
 	close(clientSocket);
 	close(serverSocket);
 
 	return 0;
+}
+
+void describeFDSET(fd_set& set) {
+	for (int i = 0; i < 16; ++i)
+		cout << set.fds_bits[i] << ' ';
+	cout << endl;
 }
 
 int lmiBind(int serverSocket, char* argv[]) {
