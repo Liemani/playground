@@ -40,6 +40,7 @@
 //		int fcntl(int fildes, int cmd, ...);
 
 #include <iostream>
+#include <iomanip>
 
 using std::cout;
 using std::endl;
@@ -53,8 +54,12 @@ using std::endl;
 #include <sys/select.h>
 #include <errno.h>
 
-void coutWithTime(const char* str);
+template <typename Printable>
+void coutWithTime(Printable str);
 void throwRuntimeError(const char* str);
+
+template <typename T, typename DescribeFunction>
+void describeEvery100000th(T target, int index, DescribeFunction f);
 
 #ifdef CLIENT
 
@@ -84,12 +89,14 @@ int main(int argc, char* argv[]) {
 	else
 		coutWithTime("success connect()");
 
-	const char* message = "Hello, world!";
-//	sleep(2);
-	if (write(server, message, strlen(message)) == -1)
-		throwRuntimeError("fail read()");
-	else
-		coutWithTime("success write()");
+	std::string message;
+	while (true) {
+		std::getline(std::cin, message);
+		if (write(server, message.c_str(), message.size()) == -1)
+			throwRuntimeError("fail write()");
+		else
+			coutWithTime("success write()");
+	}
 
 	close(server);
 
@@ -103,6 +110,7 @@ int lmiBind(int serverSocket, char* argv[]);
 
 char msg[1024];
 fd_set readfds;
+fd_set readfds_temp;
 fd_set writefds;
 fd_set errorfds;
 
@@ -139,10 +147,9 @@ int main(int argc, char* argv[]) {
 	int clientSocket;
 	int maxSocketCount = 0;
 	struct timeval timeout = { 0, 0 };
-	timeout.tv_sec = 1;
+	timeout.tv_usec = 1;
+	int index = 0;
 	while (true) {
-		cout << endl;
-
 		//	struct sockaddr_in
 		struct sockaddr_in clientAddress;
 		socklen_t clientAddress_size = sizeof(clientAddress);
@@ -150,38 +157,50 @@ int main(int argc, char* argv[]) {
 		//	accept()
 		clientSocket = accept(serverSocket, (struct sockaddr*) &clientAddress, &clientAddress_size);
 		if (clientSocket == -1) {
-			coutWithTime("fail accept()");
+			describeEvery100000th("fail accept()", index, coutWithTime<const char*>);
+			clientSocket = maxSocketCount == 0 ? -1 : maxSocketCount;
 		}
 		else {
-			coutWithTime("success accept()");
+			describeEvery100000th("success accept()", index, coutWithTime<const char*>);
 			FD_SET(clientSocket, &readfds);
 			if (maxSocketCount < clientSocket)
 				maxSocketCount = clientSocket;
 		}
 
-		describeFDSET(readfds);
+		describeEvery100000th(readfds, index, describeFDSET);
+		readfds_temp = readfds;
+		int result = select(maxSocketCount + 1, &readfds_temp, &writefds, &errorfds, &timeout);
+		describeEvery100000th(readfds_temp, index, describeFDSET);
 
-		int result = select(maxSocketCount + 1, &readfds, &writefds, &errorfds, &timeout);
+		describeEvery100000th("select result: ", index, coutWithTime<const char*>);
+		describeEvery100000th(result, index, coutWithTime<int>);
 		if (result == -1)
 			throwRuntimeError("fail select");
 		else if (result == 0) {
-			cout << "not read for reading" << endl;
+			describeEvery100000th("no readfd to read", index, coutWithTime<const char*>);
+		}
+
+		result = read(clientSocket, msg, sizeof(msg));
+		describeEvery100000th("read result: ", index, coutWithTime<const char*>);
+		describeEvery100000th(result, index, coutWithTime<int>);
+		if (result == -1) {
+			describeEvery100000th("fail read", index, coutWithTime<const char*>);
+			describeEvery100000th("errno: ", index, coutWithTime<const char*>);
+			describeEvery100000th(errno, index, coutWithTime<int>);
+		}
+		else if (result == 0) {
+			describeEvery100000th("result is 0", index, coutWithTime<const char*>);
 		}
 		else {
-			cout << "result: " << result << endl;
-			if (read(clientSocket, msg, sizeof(msg)) == -1) {
-				coutWithTime("fail read");
-				cout << "errno: " << errno << endl;
-				sleep(100);
-			}
-			else {
-				coutWithTime("success read()");
-				cout << msg << endl;
-			}
+			coutWithTime("success read()");
+			cout << msg << endl;
 		}
+
+		describeEvery100000th("\n", index, coutWithTime<const char*>);
+
+		++index;
 	}
 
-	close(clientSocket);
 	close(serverSocket);
 
 	return 0;
@@ -204,10 +223,17 @@ int lmiBind(int serverSocket, char* argv[]) {
 }
 #endif
 
-void coutWithTime(const char* str) {
+template <typename T, typename DescribeFunction>
+void describeEvery100000th(T target, int index, DescribeFunction f) {
+	if (index % 200000 == 0)
+		f(target);
+}
+
+template <typename Printable>
+void coutWithTime(Printable str) {
 	timeval tv;
 	gettimeofday(&tv, NULL);
-	cout << "[" << tv.tv_sec << "." << tv.tv_usec << "] " << str << endl;
+	cout << "[" << tv.tv_sec << "." << std::setw(6) << tv.tv_usec << "] " << str << endl;
 }
 
 void throwRuntimeError(const char* str) {
