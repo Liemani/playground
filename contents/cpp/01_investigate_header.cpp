@@ -12,8 +12,11 @@
 //	fd_set
 //	pollfd
 //	kevent
+//	timespec
+//	timeval
 //	#include <sys/socket.h>
-#include <netinet/in.h>
+// #include <netinet/in.h>
+#include <time.h>
 
 int	main()
 {

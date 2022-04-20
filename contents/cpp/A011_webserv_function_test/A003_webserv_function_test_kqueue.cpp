@@ -51,8 +51,8 @@ using std::endl;
 #include <unistd.h>	// read(),write()
 #include <sys/time.h>
 #include <fcntl.h>
-#include <sys/select.h>
 #include <errno.h>
+#include <sys/event.h>
 
 template <typename Printable>
 void coutWithTime(Printable str);
@@ -145,21 +145,36 @@ int main(int argc, char* argv[]) {
 		coutWithTime("success listen()");
 
 	int clientSocket;
-	int maxSocketCount = 0;
-	struct timeval timeout = { 0, 0 };
-	timeout.tv_usec = 1;
+	struct sockaddr_in clientSocketAddress;
+	socklen_t clientSocketAddressSize = sizeof(clientSocketAddressSize);
+	struct kevent kev;
+	int kqueueFD = kqueue();
+	struct kevent keventArray[32];
+	int eventCount;
+	char msgBuffer[1024];
+	int index = 0;
+	struct timespec timeout = { 0, 0 };
+	timeout.tv_nsec = 1;
 	while (true) {
-		accept();
-		eventCount = kevent();
-		for (int i = 0; i < eventCount; ++i) {
-			socket = eventVector[i].ident;
+		clientSocket = accept(serverSocket, (struct sockaddr*)&clientSocketAddress, &clientSocketAddressSize);
+		if (clientSocket == -1)
+			describeEvery100000th("fail accept()", index, coutWithTime<const char*>);
+		else {
+			EV_SET(&kev, clientSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
+			kevent(kqueueFD, &kev, 1, NULL, 0, NULL);
+		}
 
-			if (eventVector[i].flag & EV_EOF)
+		eventCount = kevent(kqueueFD, NULL, 0, keventArray, 32, &timeout);
+		for (int i = 0; i < eventCount; ++i) {
+			const int socket = keventArray[i].ident;
+
+			if (keventArray[i].flags & EV_EOF)
 				close(socket);
 
-			recv(socket);
-			cout << readThing << endl;
+			recv(socket, msgBuffer, sizeof(msgBuffer), 0);
+			cout << msgBuffer << endl;
 		}
+		++index;
 	}
 
 	close(serverSocket);

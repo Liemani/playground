@@ -1,7 +1,7 @@
 CLIENT				:= client
 SERVER				:= server
 
-MAIN_FILE			:= A002_webserv_function_test_select.cpp
+MAIN_FILE			:= A003_webserv_function_test_kqueue.cpp
 
 SRCS				:= \
 					   $(MAIN_FILE)
