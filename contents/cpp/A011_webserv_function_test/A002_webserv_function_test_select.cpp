@@ -180,7 +180,7 @@ int main(int argc, char* argv[]) {
 			describeEvery100000th("no readfd to read", index, coutWithTime<const char*>);
 		}
 
-		result = read(clientSocket, msg, sizeof(msg));
+		result = recv(clientSocket, msg, sizeof(msg), MSG_DONTWAIT);
 		describeEvery100000th("read result: ", index, coutWithTime<const char*>);
 		describeEvery100000th(result, index, coutWithTime<int>);
 		if (result == -1) {

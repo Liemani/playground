@@ -14,9 +14,10 @@
 //	kevent
 //	timespec
 //	timeval
-//	#include <sys/socket.h>
+//	pollfd
+#include <sys/socket.h>
 // #include <netinet/in.h>
-#include <time.h>
+// #include <time.h>
 
 int	main()
 {

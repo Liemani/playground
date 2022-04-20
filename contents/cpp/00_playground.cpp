@@ -11,7 +11,16 @@ int main(void) {
 
 */
 
-#define GROUND145
+#define GROUND146
+#ifdef GROUND146
+#include <sys/socket.h>
+
+int main(void) {
+	std::cout << MSG_DONTWAIT << std::endl;
+
+	return 0;
+}
+#endif
 #ifdef GROUND145
 
 #include <vector>

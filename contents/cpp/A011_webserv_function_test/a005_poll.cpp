@@ -48,18 +48,19 @@ using std::endl;
 #include <arpa/inet.h>	// inet_addr()
 #include <netinet/in.h>	// struct sockaddr_in
 #include <sys/socket.h>	// socket(), accept(), listen(), bind(), connect()
-#include <unistd.h>	// read(),write()
 #include <sys/time.h>
 #include <fcntl.h>
+#include <sys/select.h>
 #include <errno.h>
-#include <sys/event.h>
+#include <unistd.h>
+#include <poll.h>
 
 template <typename Printable>
 void coutWithTime(Printable str);
 void throwRuntimeError(const char* str);
 
 template <typename T, typename DescribeFunction>
-void describeEvery100000th(T target, int index, DescribeFunction f);
+void describeEveryNth(T target, int index, DescribeFunction f);
 
 #ifdef CLIENT
 
@@ -92,7 +93,7 @@ int main(int argc, char* argv[]) {
 	std::string message;
 	while (true) {
 		std::getline(std::cin, message);
-		if (write(server, message.c_str(), message.size()) == -1)
+		if (send(server, message.c_str(), message.size(), 0) == -1)
 			throwRuntimeError("fail write()");
 		else
 			coutWithTime("success write()");
@@ -108,21 +109,14 @@ int main(int argc, char* argv[]) {
 void describeFDSET(fd_set& set);
 int lmiBind(int serverSocket, char* argv[]);
 
-char msg[1024];
-fd_set readfds;
-fd_set readfds_temp;
-fd_set writefds;
-fd_set errorfds;
-
 int main(int argc, char* argv[]) {
+	char msg[1024];
+	struct pollfd pollfd[32] = {};
+
 	if (argc != 2) {
 		cout << "usage: " << argv[0] << " <server port>" << endl;
 		return 0;
 	}
-
-	FD_ZERO(&readfds);
-	FD_ZERO(&writefds);
-	FD_ZERO(&errorfds);
 
 	//	socket()
 	int serverSocket = socket(PF_INET, SOCK_STREAM, 0);
@@ -144,40 +138,67 @@ int main(int argc, char* argv[]) {
 	else
 		coutWithTime("success listen()");
 
-	int clientSocket;
-	struct sockaddr_in clientSocketAddress;
-	socklen_t clientSocketAddressSize = sizeof(clientSocketAddressSize);
-	struct kevent kev;
-	int kqueueFD = kqueue();
-	struct kevent keventArray[32];
-	int eventCount;
-	char msgBuffer[1024];
+	int clientSocket = -1;
+	int clientSocketCount = 0;
+	struct timeval timeout = { 0, 0 };
+	timeout.tv_usec = 1;
 	int index = 0;
-	struct timespec timeout = { 0, 0 };
-	timeout.tv_nsec = 1;
+	int result;
 	while (true) {
-		clientSocket = accept(serverSocket, (struct sockaddr*)&clientSocketAddress, &clientSocketAddressSize);
-		if (clientSocket == -1)
-			describeEvery100000th("fail accept()", index, coutWithTime<const char*>);
+		//	struct sockaddr_in
+		struct sockaddr_in clientAddress;
+		socklen_t clientAddress_size = sizeof(clientAddress);
+
+		//	accept()
+		result = accept(serverSocket, (struct sockaddr*) &clientAddress, &clientAddress_size);
+		if (result == -1) {
+			describeEveryNth("fail accept()", index, coutWithTime<const char*>);
+		}
 		else {
-			EV_SET(&kev, clientSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
-			kevent(kqueueFD, &kev, 1, NULL, 0, NULL);
+			pollfd[clientSocketCount].fd = result;
+			pollfd[clientSocketCount].events = POLLRDNORM;
+			++clientSocketCount;
+			describeEveryNth("success accept()", index, coutWithTime<const char*>);
 		}
 
-		eventCount = kevent(kqueueFD, NULL, 0, keventArray, 32, &timeout);
-		for (int i = 0; i < eventCount; ++i) {
-			const int socket = keventArray[i].ident;
+		result = poll(pollfd, 32, 1);
 
-			if (keventArray[i].flags & EV_EOF)
-				close(socket);
-
-			int size;
-			if ((size = recv(socket, msgBuffer, sizeof(msgBuffer), 0)) == -1)
-				continue;
-
-			msgBuffer[size] = '\0';
-			cout << msgBuffer << endl;
+		describeEveryNth("select result: ", index, coutWithTime<const char*>);
+		describeEveryNth(result, index, coutWithTime<int>);
+		if (result == -1)
+			throwRuntimeError("fail select");
+		else if (result == 0) {
+			describeEveryNth("no readfd to read", index, coutWithTime<const char*>);
 		}
+		else {
+			int eventCount = result;
+			for (int i = 0; eventCount > 0 && i < clientSocketCount; ++i) {
+				if (pollfd[i].revents == 0)
+					continue;
+				else if (pollfd[i].revents & POLLRDNORM) {
+					clientSocket = pollfd[i].fd;
+					result = recv(clientSocket, msg, sizeof(msg), 0);
+					describeEveryNth("read result: ", index, coutWithTime<const char*>);
+					describeEveryNth(result, index, coutWithTime<int>);
+					if (result == -1) {
+						describeEveryNth("fail read", index, coutWithTime<const char*>);
+						describeEveryNth("errno: ", index, coutWithTime<const char*>);
+						describeEveryNth(errno, index, coutWithTime<int>);
+					}
+					else if (result == 0) {
+						describeEveryNth("result is 0", index, coutWithTime<const char*>);
+					}
+					else {
+						coutWithTime("success read()");
+						cout << msg << endl;
+					}
+					--eventCount;
+				}
+			}
+		}
+
+		describeEveryNth("\n", index, coutWithTime<const char*>);
+
 		++index;
 	}
 
@@ -204,8 +225,8 @@ int lmiBind(int serverSocket, char* argv[]) {
 #endif
 
 template <typename T, typename DescribeFunction>
-void describeEvery100000th(T target, int index, DescribeFunction f) {
-	if (index % 200000 == 0)
+void describeEveryNth(T target, int index, DescribeFunction f) {
+	if (index % 2000 == 0)
 		f(target);
 }
 
