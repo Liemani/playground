@@ -1,6 +1,32 @@
 #include <stdio.h>
 
-#define GROUND000
+// template
+// #ifdef GROUND000
+// int main(void) {
+//
+// 	return 0;
+// }
+// #endif
+//
+
+#define GROUND001
+#ifdef GROUND001
+void functionStaticVariable(int number);
+
+int main(void) {
+	while (1) {
+		functionStaticVariable(10);
+	}
+
+	return 0;
+}
+
+void functionStaticVariable(int number) {
+	static int i = number;
+	++i;
+}
+#endif
+
 #ifdef GROUND000
 //	display bits of float value
 //	exponent bit가 전부 1이고 mantissa bit가 전부 0이면 inf이다.
