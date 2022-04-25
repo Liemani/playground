@@ -11,7 +11,21 @@ int main(void) {
 
 */
 
-#define GROUND146
+#define GROUND147
+#ifdef GROUND147
+
+#include <vector>
+
+int main(void) {
+	std::vector<int> v { 1, 2, 3 };
+	// vector의 intialier list를 인자로 받는 constructor는 c++11라고 한다.
+
+	std::copy(v.begin(), v.end(), ostream_iterator(std::cout));
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND146
 #include <sys/socket.h>
 
