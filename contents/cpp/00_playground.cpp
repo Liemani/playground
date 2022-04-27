@@ -11,9 +11,64 @@ int main(void) {
 
 */
 
-#define GROUND147
-#ifdef GROUND147
+#define GROUND148
+#ifdef GROUND148
+//	map에 같은 key에 value를 넣으면 어떻게 될까?
 
+#include <map>
+
+using std::cin;
+using std::cout;
+using std::endl;
+
+void printMenu(void);
+
+int main(void) {
+	typedef std::map<std::string, std::string> StringMap;
+
+	StringMap map;
+	char ch;
+	std::string key;
+	std::string value;
+
+	printMenu();
+	while (cin >> ch && ch != 'q') {
+		switch (ch) {
+		case 'i':
+			cout << "enter key: ";
+			cin >> key;
+			cout << "enter value: ";
+			cin >> value;
+			map[key] = value;
+			break;
+		case 'p':
+			for (StringMap::iterator it = map.begin(); it != map.end(); ++it)
+				cout << "pair: { key: [" << it->first << "], value: [" << it->second << "] }" << endl;
+			break;
+		case 'q':
+			break;
+		default:
+			break;
+		}
+
+		if (ch == 'q')
+			break;
+
+		printMenu();
+	}
+
+	cout << "Terminating program" << endl;
+
+	return 0;
+}
+
+void printMenu(void) {
+	cout << endl;
+	cout << "i) insert, p) print, q) quit: ";
+}
+#endif
+
+#ifdef GROUND147
 #include <vector>
 
 int main(void) {
@@ -35,8 +90,8 @@ int main(void) {
 	return 0;
 }
 #endif
-#ifdef GROUND145
 
+#ifdef GROUND145
 #include <vector>
 
 //	constainer의 size_type등을 object로부터 사용할 수 있을까?

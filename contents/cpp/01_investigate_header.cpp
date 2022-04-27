@@ -15,9 +15,12 @@
 //	timespec
 //	timeval
 //	pollfd
-#include <sys/socket.h>
+// #include <sys/socket.h>
 // #include <netinet/in.h>
 // #include <time.h>
+//	#include <map>
+// #include <stack>
+#include <string>
 
 int	main()
 {
