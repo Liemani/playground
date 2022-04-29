@@ -1,4 +1,6 @@
-//	#include <iostream>
+// ifstream
+// rdbuf
+// #include <iostream>
 //	#include <algorithm>
 //	#include <iomanip>
 //	#include <fstream>
@@ -20,7 +22,8 @@
 // #include <time.h>
 //	#include <map>
 // #include <stack>
-#include <string>
+// #include <string>
+#include <sstream>
 
 int	main()
 {
