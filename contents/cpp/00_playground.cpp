@@ -11,7 +11,36 @@ int main(void) {
 
 */
 
-#define GROUND148
+#define GROUND149
+#ifdef GROUND149
+// print string.max_size()
+// let's contain this file to a string and print it
+
+#include <fstream>
+
+int main(void) {
+	std::string temp;
+
+	std::cout << temp.max_size() << std::endl;
+	std::cout << std::hex << std::showbase << temp.max_size() << std::endl;
+
+	std::ifstream fin("00_playground.cpp");
+	if (!fin.is_open()) {
+		std::cout << "fail open file!" << std::endl;
+		return -1;
+	}
+
+	std::string total;
+	while (fin >> temp) {
+		total += temp + ' ';
+	}
+
+	std::cout << total << std::endl;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND148
 //	map에 같은 key에 value를 넣으면 어떻게 될까?
 
