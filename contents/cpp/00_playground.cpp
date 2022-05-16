@@ -11,7 +11,93 @@ int main(void) {
 
 */
 
-#define GROUND149
+#define GROUND150
+#ifdef GROUND150
+
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <sys/event.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
+
+using std::cout;
+using std::endl;
+
+int openSocket(const char* ipAddressString, uint16_t portNumber);
+void mainLoop(int serverSock);
+void addEvent(int sock, int kqueueFD, int16_t filter, void* udata);
+
+int main(int argc, char** argv) {
+    if (argc != 3) {
+        cout << "argc: [" << argc << "]" << endl;
+        cout << "usage: " << argv[0] << " <ip address> <port number>" << endl;
+        return 0;
+    }
+    int serverSock = openSocket(argv[1], atoi(argv[2]));
+
+    mainLoop(serverSock);
+
+	return 0;
+}
+
+int openSocket(const char* ipAddressString, uint16_t portNumber) {
+    int sock = socket(PF_INET, SOCK_STREAM, 0);
+
+    struct sockaddr_in address;
+    uint32_t ipAddress;
+    inet_pton(AF_INET, ipAddressString, &ipAddress);
+
+    memset(&address, 0, sizeof(address));
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = ipAddress;
+//     address.sin_addr.s_addr = htonl(INADDR_ANY);
+    address.sin_port = htons(portNumber);
+
+    if (bind(sock, (struct sockaddr*) &address, sizeof(address)) != -1)
+        cout << "[success bind()]" << endl;
+    else
+        cout << "[fail bind()]" << endl;
+
+    cout << errno << endl;
+
+    fcntl(sock, F_SETFL, O_NONBLOCK);
+
+    listen(sock, 5);
+
+    return sock;
+}
+
+void mainLoop(int serverSock) {
+    const int arraySize = 10;
+    int queue = kqueue();
+    addEvent(queue, serverSock, EVFILT_READ, NULL);
+    int eventCount;
+    struct kevent eventArray[arraySize];
+
+    while (true) {
+        eventCount = kevent(queue, NULL, 0, eventArray, arraySize, NULL);
+        for (int i = 0; i < eventCount; ++i) {
+            struct kevent& event = eventArray[i];
+
+            int serverSock = event.ident;
+            struct sockaddr clientAddress;
+            socklen_t clientAddressSize = sizeof(clientAddress);
+            int clientSock = accept(serverSock, &clientAddress, &clientAddressSize);
+            send(clientSock, "response", strlen("response"), 0);
+            close(clientSock);
+        }
+    }
+}
+
+void addEvent(int sock, int kqueueFD, int16_t filter, void* udata) {
+    struct kevent event;
+    EV_SET(&event, sock, filter, EV_ADD, 0, 0, udata);
+    kevent(kqueueFD, &event, 1, NULL, 0, NULL);
+}
+
+#endif
+
 #ifdef GROUND149
 // print string.max_size()
 // let's contain this file to a string and print it
