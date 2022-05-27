@@ -2,19 +2,17 @@
 #include <sstream>
 #include <fstream>
 #include <map>
-
-// TODO remove unused header file
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
-#include <stdbool.h>
-#include <signal.h>
+#include <unistd.h>
 
 using std::cin;
 using std::cout;
 using std::endl;
 
 static void lmi_getline(std::istream& istream, std::string& line);
+static void print16Bytes(const std::string& bytes);
 
 class Program {
 private:
@@ -26,7 +24,7 @@ private:
 
     uint16_t portNumber;
     int serverSocketFD;
-    int clientSocket;
+    int clientSocketFD;
 
     static void describeMethodCommand(void);
 
@@ -35,11 +33,14 @@ private:
     void listen(void);
     void acceptClient(void);
     void describeSocketOption(void);
-    void sendLargeFile(void);
+    void sendBigString(void);
     void closeServerSocket(void);
+    void closeClientSocket(void);
+    void close(void);
+    void recv(void);
 
 public:
-    Program(void): portNumber(0) {};
+    Program(void): portNumber(0), serverSocketFD(-1), clientSocketFD(-1) {};
 
     void mainLoop(void);
 };
@@ -50,30 +51,34 @@ const Program::MethodMap Program::methodMap = {
     { "listen", &Program::listen },
     { "accept", &Program::acceptClient },
     { "describe socket", &Program::describeSocketOption },
-    { "send large file", &Program::sendLargeFile },
+    { "send big string", &Program::sendBigString },
     { "close server socket", &Program::closeServerSocket },
+    { "close client socket", &Program::closeClientSocket },
+    { "close", &Program::close },
+    { "recv", &Program::recv },
 };
 
 void Program::describe(void) {
     cout << "port number: " << this->portNumber << endl;
+    cout << "server socket fd: " << this->serverSocketFD << endl;
+    cout << "client socket fd: " << this->clientSocketFD << endl;
 }
 
 void Program::setPort(void) {
-    cout << "Enter port number: ";
+    cout << "current port number: " << this->portNumber << endl;
+    cout << "enter new port number: ";
     std::string line;
     lmi_getline(cin, line);
     std::istringstream inputStringStream(line);
     inputStringStream >> this->portNumber;
     if (!inputStringStream)
-        throw "fail get port number";
+        throw "fail getting port number";
     else
         cout << "port number: " << this->portNumber << endl;
 }
 
 void Program::listen(void) {
-    if (this->portNumber == 0) {
-        cout << "wrong port number: " << this->portNumber << endl;
-    }
+    this->setPort();
 
     this->serverSocketFD = socket(PF_INET, SOCK_STREAM, 0);
     fcntl(this->serverSocketFD, F_SETFL, O_NONBLOCK);
@@ -84,37 +89,83 @@ void Program::listen(void) {
     serverSocketAddress.sin_port = htons(this->portNumber);
     serverSocketAddress.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    bind(this->serverSocketFD, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress));
+    if (bind(this->serverSocketFD, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress)) == -1)
+        throw "failed binding";
+
     ::listen(this->serverSocketFD, 5);
+
+    cout << "listening " << this->portNumber << endl;
 }
 
 void Program::acceptClient(void) {
+    if (this->clientSocketFD != -1)
+        throw "No sit, sorry";
+
     struct sockaddr clientSocketAddress;
     socklen_t clientSocketAddressSize = sizeof(clientSocketAddress);
-    this->clientSocket = accept(this->serverSocketFD, &clientSocketAddress, &clientSocketAddressSize);
-    if (this->clientSocket == -1)
+    this->clientSocketFD = accept(this->serverSocketFD, &clientSocketAddress, &clientSocketAddressSize);
+    if (this->clientSocketFD == -1)
         cout << "fail accept" << endl;
+    else
+        cout << "success accept" << endl;
 }
 
 void Program::describeSocketOption(void) {
     int optionValue;
     socklen_t optionLength = sizeof(optionValue);
 
-    getsockopt(this->clientSocket, SOL_SOCKET, SO_SNDBUF, &optionValue, &optionLength);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_SNDBUF, &optionValue, &optionLength);
 
     cout << "SO_SNDBUF: " << optionValue << ", size: " << optionLength << endl;
 }
 
-void Program::sendLargeFile(void) {
-    
+void Program::sendBigString(void) {
+    std::string bigString = std::string(10, '1');
+    ssize_t sendSize = send(this->clientSocketFD, bigString.c_str(), 10, 0);
+    if (sendSize == -1)
+        cout << "send error has occured" << endl;
+    else
+        cout << "sended big string" << endl;
 }
 
 void Program::closeServerSocket(void) {
-    close(this->serverSocketFD);
+    ::close(this->serverSocketFD);
+    this->serverSocketFD = -1;
+
+    cout << "closed server socket" << endl;
+}
+
+void Program::closeClientSocket(void) {
+    ::close(this->clientSocketFD);
+    this->clientSocketFD = -1;
+
+    cout << "closed client socket" << endl;
+}
+
+void Program::close(void) {
+    this->closeClientSocket();
+    this->closeServerSocket();
+}
+
+void Program::recv(void) {
+    char buf[1024 + 1];
+    ssize_t recvSize = ::recv(this->clientSocketFD, buf, 1024, 0);
+    if (recvSize == -1)
+        throw "recv error has occured";
+    else if (recvSize == 0)
+        throw "no data";
+
+    buf[recvSize] = '\0';
+
+    cout << "received size: " << recvSize << endl;
+    for (int index = 0; index < recvSize; index += 16) {
+        print16Bytes(std::string(buf + index, buf + index + 16));
+    }
 }
 
 
 
+// MARK: - program
 void Program::mainLoop(void) {
     std::string line;
 
@@ -140,15 +191,39 @@ void Program::mainLoop(void) {
 
 void Program::describeMethodCommand(void) {
     for (MethodMap::const_iterator iter = Program::methodMap.begin(); iter != Program::methodMap.end(); ++iter)
-        cout << iter->first << endl;
+        cout << "\t" << iter->first << endl;
 }
 
+
+
+// MARK: - static
 static void lmi_getline(std::istream& istream, std::string& line) {
     std::getline(istream, line);
     if (!istream)
         throw "failed getline";
 }
 
+static void print16Bytes(const std::string& bytes) {
+    for (int i = 0; i < 16; ++i) {
+        if (i % 8 == 0)
+            cout << "  ";
+        else if (i % 2 == 0)
+            cout << " ";
+        cout << std::hex << std::setfill('0') << std::setw(2) << (int)(unsigned char)bytes[i];
+    }
+
+    cout << "   ";
+    for (int i = 0; i < 16; ++i) {
+        const char ch = bytes[i];
+        cout << (std::isprint(ch) ? ch : '.');
+    }
+
+    cout << endl;
+}
+
+
+
+// MARK: - main
 int main(void) {
     Program program;
 
