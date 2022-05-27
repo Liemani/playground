@@ -40,7 +40,7 @@ private:
     void recv(void);
 
 public:
-    Program(void): portNumber(0), serverSocketFD(-1), clientSocketFD(-1) {};
+    Program(void): portNumber(0), serverSocketFD(-1), clientSocketFD(-1) { };
 
     void mainLoop(void);
 };

@@ -23,7 +23,10 @@
 //	#include <map>
 // #include <stack>
 // #include <string>
-#include <sstream>
+// dirent
+// Dir
+// #include <sstream>
+#include <dirent.h>
 
 int	main()
 {
