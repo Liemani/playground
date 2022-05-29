@@ -13,39 +13,61 @@ using std::endl;
 
 static void lmi_getline(std::istream& istream, std::string& line);
 static void print16Bytes(const std::string& bytes);
+static void sockaddr_in_describe(struct sockaddr_in& socketAddress);
+
+const int BUF_SIZE = 8192;
+
+template <typename T, typename U>
+struct Pair {
+    T command;
+    U method;
+};
 
 class Program {
 private:
-    typedef void (Program::*Method)(void);
-    typedef std::pair<std::string, Method> MethodMapElementType;
-    typedef std::map<std::string, Method> MethodMap;
-
-    static const MethodMap methodMap;
+    typedef void* (Program::*Method)(void);
+    typedef Pair<const char*, Method> MethodPair;
 
     uint16_t portNumber;
     int serverSocketFD;
     int clientSocketFD;
 
+    int remoteServerSocketFD;
+	struct sockaddr_in remoteServerSocketAddress;
+
     static void describeMethodCommand(void);
 
-    void describe(void);
-    void setPort(void);
-    void listen(void);
-    void acceptClient(void);
-    void describeSocketOption(void);
-    void sendBigString(void);
-    void closeServerSocket(void);
-    void closeClientSocket(void);
-    void close(void);
-    void recv(void);
+    void* describe(void);
+    void* setPort(void);
+    void* listen(void);
+    void* acceptClient(void);
+    void* describeSocketOption(void);
+    void* sendBigString(void);
+    void* closeServerSocket(void);
+    void* closeClientSocket(void);
+    void* close(void);
+    void* recv(void);
+    void* send(void);
+    void* connectRemote(void);
+    void* sendRemote(void);
+    void* recvRemote(void);
+    void* closeRemote(void);
+
+    static const MethodPair methodDictionary[];
 
 public:
-    Program(void): portNumber(0), serverSocketFD(-1), clientSocketFD(-1) { };
+    Program(void)
+        : portNumber(0)
+        , serverSocketFD(-1)
+        , clientSocketFD(-1)
+        , remoteServerSocketFD(-1)
+        , remoteServerSocketAddress()
+    { };
 
     void mainLoop(void);
 };
 
-const Program::MethodMap Program::methodMap = {
+const Program::MethodPair Program::methodDictionary[] = {
     { "describe", &Program::describe },
     { "set port", &Program::setPort },
     { "listen", &Program::listen },
@@ -56,15 +78,25 @@ const Program::MethodMap Program::methodMap = {
     { "close client socket", &Program::closeClientSocket },
     { "close", &Program::close },
     { "recv", &Program::recv },
+    { "send", &Program::send },
+    { "connect remote", &Program::connectRemote },
+    { "send remote", &Program::sendRemote },
+    { "recv remote", &Program::recvRemote },
+    { "close remote", &Program::closeRemote },
 };
 
-void Program::describe(void) {
+void* Program::describe(void) {
     cout << "port number: " << this->portNumber << endl;
     cout << "server socket fd: " << this->serverSocketFD << endl;
     cout << "client socket fd: " << this->clientSocketFD << endl;
+    cout << endl;
+    cout << "this->remoteServerSocketFD: "<< this->remoteServerSocketFD << endl;
+    sockaddr_in_describe(this->remoteServerSocketAddress);
+
+    return NULL;
 }
 
-void Program::setPort(void) {
+void* Program::setPort(void) {
     cout << "current port number: " << this->portNumber << endl;
     cout << "enter new port number: ";
     std::string line;
@@ -75,9 +107,11 @@ void Program::setPort(void) {
         throw "fail getting port number";
     else
         cout << "port number: " << this->portNumber << endl;
+
+    return NULL;
 }
 
-void Program::listen(void) {
+void* Program::listen(void) {
     this->setPort();
 
     this->serverSocketFD = socket(PF_INET, SOCK_STREAM, 0);
@@ -95,9 +129,11 @@ void Program::listen(void) {
     ::listen(this->serverSocketFD, 5);
 
     cout << "listening " << this->portNumber << endl;
+
+    return NULL;
 }
 
-void Program::acceptClient(void) {
+void* Program::acceptClient(void) {
     if (this->clientSocketFD != -1)
         throw "No sit, sorry";
 
@@ -108,48 +144,60 @@ void Program::acceptClient(void) {
         cout << "fail accept" << endl;
     else
         cout << "success accept" << endl;
+
+    return NULL;
 }
 
-void Program::describeSocketOption(void) {
+void* Program::describeSocketOption(void) {
     int optionValue;
     socklen_t optionLength = sizeof(optionValue);
 
     getsockopt(this->clientSocketFD, SOL_SOCKET, SO_SNDBUF, &optionValue, &optionLength);
 
     cout << "SO_SNDBUF: " << optionValue << ", size: " << optionLength << endl;
+
+    return NULL;
 }
 
-void Program::sendBigString(void) {
+void* Program::sendBigString(void) {
     std::string bigString = std::string(10, '1');
-    ssize_t sendSize = send(this->clientSocketFD, bigString.c_str(), 10, 0);
+    ssize_t sendSize = ::send(this->clientSocketFD, bigString.c_str(), 10, 0);
     if (sendSize == -1)
         cout << "send error has occured" << endl;
     else
         cout << "sended big string" << endl;
+
+    return NULL;
 }
 
-void Program::closeServerSocket(void) {
+void* Program::closeServerSocket(void) {
     ::close(this->serverSocketFD);
     this->serverSocketFD = -1;
 
     cout << "closed server socket" << endl;
+
+    return NULL;
 }
 
-void Program::closeClientSocket(void) {
+void* Program::closeClientSocket(void) {
     ::close(this->clientSocketFD);
     this->clientSocketFD = -1;
 
     cout << "closed client socket" << endl;
+
+    return NULL;
 }
 
-void Program::close(void) {
+void* Program::close(void) {
     this->closeClientSocket();
     this->closeServerSocket();
+
+    return NULL;
 }
 
-void Program::recv(void) {
-    char buf[1024 + 1];
-    ssize_t recvSize = ::recv(this->clientSocketFD, buf, 1024, 0);
+void* Program::recv(void) {
+    char buf[BUF_SIZE + 1];
+    ssize_t recvSize = ::recv(this->clientSocketFD, buf, BUF_SIZE, 0);
     if (recvSize == -1)
         throw "recv error has occured";
     else if (recvSize == 0)
@@ -161,6 +209,111 @@ void Program::recv(void) {
     for (int index = 0; index < recvSize; index += 16) {
         print16Bytes(std::string(buf + index, buf + index + 16));
     }
+
+    return NULL;
+}
+
+void* Program::send(void) {
+    cout << "enter line to send: ";
+    std::string line;
+    lmi_getline(cin, line);
+    line += "\r\n";
+    ssize_t result = ::send(this->clientSocketFD, line.c_str(), line.length(), 0);
+    if (result <= 0)
+        throw "result of send <= 0";
+    cout << "succeeded send" << endl;
+
+    return NULL;
+}
+
+void* Program::connectRemote(void) {
+    int serverSocketFD;
+	struct sockaddr_in serverSocketAddress;
+    std::string serverInetAddressString;
+    unsigned long serverInetAddress;
+    std::string serverPortNumberString;
+    uint16_t serverPortNumber;
+    int result;
+
+    serverSocketFD = socket(PF_INET, SOCK_STREAM, 0);
+	if (serverSocketFD == -1)
+		throw "fail socket()";
+	else
+		cout << "success socket()" << endl;
+
+    cout << "enter inet address of server: ";
+    lmi_getline(cin, serverInetAddressString);
+    serverInetAddress = inet_addr(serverInetAddressString.c_str());
+
+    cout << "enter port number of server: ";
+    lmi_getline(cin, serverPortNumberString);
+    serverPortNumber = htons(atoi(serverPortNumberString.c_str()));
+
+	//	struct sockaddr_in
+	memset(&serverSocketAddress, 0, sizeof(serverSocketAddress));
+	serverSocketAddress.sin_family = AF_INET;
+	serverSocketAddress.sin_addr.s_addr = serverInetAddress;
+	serverSocketAddress.sin_port = serverPortNumber;
+
+	//	connect()
+	result = connect(serverSocketFD, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress));
+    fcntl(serverSocketFD, F_SETFL, O_NONBLOCK);
+    if (result == -1)
+		throw "fail connect()";
+	else
+		cout << "success connect()" << endl;
+
+    this->remoteServerSocketFD = serverSocketFD;
+    this->remoteServerSocketAddress = serverSocketAddress;
+
+    return NULL;
+}
+
+void* Program::sendRemote(void) {
+    while (true) {
+        cout << "enter line to send: ";
+        std::string line;
+        lmi_getline(cin, line);
+        line += "\r\n";
+        ssize_t result = ::send(this->remoteServerSocketFD, line.c_str(), line.length(), 0);
+        if (result <= 0)
+            throw "result of send <= 0";
+        cout << "succeeded send" << endl;
+        if (line == "\r\n")
+            break;
+    }
+
+    return NULL;
+}
+
+void* Program::recvRemote(void) {
+    char buf[BUF_SIZE + 1];
+    ssize_t recvSize = ::recv(this->remoteServerSocketFD, buf, BUF_SIZE, 0);
+    if (recvSize == -1)
+        throw "recv error has occured";
+    else if (recvSize == 0)
+        throw "no data";
+
+    buf[recvSize] = '\0';
+
+    cout << "received size: " << recvSize << endl;
+    for (int index = 0; index < recvSize; index += 16) {
+        print16Bytes(std::string(buf + index, buf + index + 16));
+    }
+
+    return NULL;
+}
+
+void* Program::closeRemote(void) {
+    if (this->remoteServerSocketFD == -1)
+        throw "no remote server socket to close";
+    ::close(this->remoteServerSocketFD);
+    this->remoteServerSocketFD = -1;
+    this->remoteServerSocketAddress = sockaddr_in();
+
+    cout << "closed remote server socket" << endl;
+
+    return NULL;
 }
 
 
@@ -170,33 +323,44 @@ void Program::mainLoop(void) {
     std::string line;
 
     while (true) {
-        cout << endl << "Enable command list:" << endl;
+        cout << endl << "enable command list:" << endl;
         Program::describeMethodCommand();
-        cout << "Enter command: ";
+        cout << "--------------" << endl;
+        cout << "enter command: ";
 
         lmi_getline(cin, line);
 
-        Program::MethodMap::const_iterator iter = Program::methodMap.find(line);
-        if (iter == Program::methodMap.end()) {
+        unsigned long i;
+        for (i = 0; i < sizeof(methodDictionary) / sizeof(MethodPair); ++i) {
+            const MethodPair* pair = &methodDictionary[i];
+
+            if (line == pair->command)
+                break;
+        }
+        if (i == sizeof(methodDictionary) / sizeof(MethodPair)) {
             cout << "not found: [" << line << "]" << endl;
             continue;
         }
         try {
-            (this->*(iter->second))();
+            const MethodPair* pair = &methodDictionary[i];
+            (this->*(pair->method))();
         } catch(const char* string) {
-            cout << string << ": [" << line << "]" << endl;
+            cout << line << ": " << string << endl;
         }
     }
-}
-
-void Program::describeMethodCommand(void) {
-    for (MethodMap::const_iterator iter = Program::methodMap.begin(); iter != Program::methodMap.end(); ++iter)
-        cout << "\t" << iter->first << endl;
 }
 
 
 
 // MARK: - static
+void Program::describeMethodCommand(void) {
+    for (unsigned long i = 0; i < sizeof(methodDictionary) / sizeof(MethodPair); ++i) {
+        const MethodPair& pair = methodDictionary[i];
+
+        cout << "\t" << pair.command << endl;
+    }
+}
+
 static void lmi_getline(std::istream& istream, std::string& line) {
     std::getline(istream, line);
     if (!istream)
@@ -219,6 +383,16 @@ static void print16Bytes(const std::string& bytes) {
     }
 
     cout << endl;
+}
+
+static void sockaddr_in_describe(struct sockaddr_in& socketAddress) {
+	cout << "socketAddress.sin_len: " << socketAddress.sin_len << endl;
+	cout << "socketAddress.sin_family: " << std::hex << std::setfill('0') << std::setw(2) << (int)(unsigned char)socketAddress.sin_family << endl;
+	cout << "socketAddress.sin_port: " << socketAddress.sin_port << endl;
+	cout << "socketAddress.sin_addr: " << socketAddress.sin_addr.s_addr << endl;
+    std::string sin_zero = std::string(socketAddress.sin_zero, socketAddress.sin_zero + 7);
+	cout << "socketAddress.sin_zero: " << sin_zero << endl;
+    print16Bytes(sin_zero);
 }
 
 

@@ -18,13 +18,13 @@ struct Pair {
 
 class Program {
 private:
+    typedef void* (Program::*Method)(void);
+    typedef Pair<const char*, Method> MethodPair;
+
     std::string inputPath;
     std::string outputPath;
     std::ifstream input;
     std::ofstream output;
-
-    typedef void* (Program::*Method)(void);
-    typedef Pair<const char*, Method> MethodPair;
 
     static void describeMethodCommand(void);
 
@@ -224,7 +224,7 @@ void* Program:: writeLine(void) {
 
 
 
-// MARK: - static
+// MARK: - program
 void Program::mainLoop(void) {
     std::string line;
 
@@ -256,6 +256,7 @@ void Program::mainLoop(void) {
     }
 }
 
+// MARK: - static
 void Program::describeMethodCommand(void) {
     for (unsigned long i = 0; i < sizeof(methodDictionary) / sizeof(MethodPair); ++i) {
         const MethodPair& pair = methodDictionary[i];
