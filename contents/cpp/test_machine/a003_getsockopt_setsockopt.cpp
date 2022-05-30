@@ -270,18 +270,20 @@ void* Program::connectRemote(void) {
 }
 
 void* Program::sendRemote(void) {
+    cout << "enter line to send[exit: q]:" << endl;
+    std::string requestMessage;
     while (true) {
-        cout << "enter line to send: ";
         std::string line;
         lmi_getline(cin, line);
-        line += "\r\n";
-        ssize_t result = ::send(this->remoteServerSocketFD, line.c_str(), line.length(), 0);
-        if (result <= 0)
-            throw "result of send <= 0";
-        cout << "succeeded send" << endl;
-        if (line == "\r\n")
+        if (line == "q")
             break;
+        requestMessage += line + "\r\n";
     }
+
+    ssize_t result = ::send(this->remoteServerSocketFD, requestMessage.c_str(), requestMessage.length(), 0);
+    if (result <= 0)
+        throw "result of send <= 0";
+    cout << "succeeded send" << endl;
 
     return NULL;
 }

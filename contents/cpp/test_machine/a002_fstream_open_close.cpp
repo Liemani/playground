@@ -41,6 +41,7 @@ private:
     void* remove(void);
     void* readLine(void);
     void* writeLine(void);
+    void* clear(void);
     void* custom(void);
 
     static const MethodPair methodDictionary[];
@@ -59,6 +60,7 @@ const Program::MethodPair Program::methodDictionary[] = {
     { "remove", &Program::remove },
     { "read line", &Program::readLine },
     { "write line", &Program::writeLine },
+    { "clear", &Program::clear },
     { "custom", &Program::custom },
 };
 
@@ -222,6 +224,14 @@ void* Program:: writeLine(void) {
     return NULL;
 }
 
+void* Program::clear(void) {
+    this->input.clear();
+    this->output.clear();
+    cout << "cleared input" << endl;
+    cout << "cleared output" << endl;
+
+    return NULL;
+}
 
 
 // MARK: - program
