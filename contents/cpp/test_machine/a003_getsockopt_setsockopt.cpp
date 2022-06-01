@@ -52,6 +52,7 @@ private:
     void* sendRemote(void);
     void* recvRemote(void);
     void* closeRemote(void);
+    void* reconnectRemote(void);
 
     static const MethodPair methodDictionary[];
 
@@ -83,6 +84,7 @@ const Program::MethodPair Program::methodDictionary[] = {
     { "send remote", &Program::sendRemote },
     { "recv remote", &Program::recvRemote },
     { "close remote", &Program::closeRemote },
+    { "reconnect remote", &Program::reconnectRemote },
 };
 
 void* Program::describe(void) {
@@ -238,8 +240,6 @@ void* Program::connectRemote(void) {
     serverSocketFD = socket(PF_INET, SOCK_STREAM, 0);
 	if (serverSocketFD == -1)
 		throw "fail socket()";
-	else
-		cout << "success socket()" << endl;
 
     cout << "enter inet address of server: ";
     lmi_getline(cin, serverInetAddressString);
@@ -249,19 +249,17 @@ void* Program::connectRemote(void) {
     lmi_getline(cin, serverPortNumberString);
     serverPortNumber = htons(atoi(serverPortNumberString.c_str()));
 
-	//	struct sockaddr_in
 	memset(&serverSocketAddress, 0, sizeof(serverSocketAddress));
 	serverSocketAddress.sin_family = AF_INET;
 	serverSocketAddress.sin_addr.s_addr = serverInetAddress;
 	serverSocketAddress.sin_port = serverPortNumber;
 
-	//	connect()
 	result = connect(serverSocketFD, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress));
-    fcntl(serverSocketFD, F_SETFL, O_NONBLOCK);
+    fcntl(serverSocketFD, F_SETFL, O_NONBLOCK); // connect 전에 non-blocking으로 만들면 connect 에러가 발생한다 ㅎㅎ
     if (result == -1)
 		throw "fail connect()";
-	else
-		cout << "success connect()" << endl;
+
+    cout << "success connect()" << endl;
 
     this->remoteServerSocketFD = serverSocketFD;
     this->remoteServerSocketAddress = serverSocketAddress;
@@ -314,6 +312,37 @@ void* Program::closeRemote(void) {
     this->remoteServerSocketAddress = sockaddr_in();
 
     cout << "closed remote server socket" << endl;
+
+    return NULL;
+}
+
+void* Program::reconnectRemote(void) {
+    int serverSocketFD;
+	struct sockaddr_in serverSocketAddress;
+    std::string serverInetAddressString;
+    std::string serverPortNumberString;
+    int result;
+
+    if (this->remoteServerSocketFD == -1)
+        return this->connectRemote();
+
+    serverSocketAddress = this->remoteServerSocketAddress;
+
+    this->closeRemote();
+
+    serverSocketFD = socket(PF_INET, SOCK_STREAM, 0);
+	if (serverSocketFD == -1)
+		throw "fail socket()";
+
+	result = connect(serverSocketFD, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress));
+    fcntl(serverSocketFD, F_SETFL, O_NONBLOCK); // connect 전에 non-blocking으로 만들면 connect 에러가 발생한다 ㅎㅎ
+    if (result == -1)
+		throw "fail connect()";
+
+    cout << "success reconnect()" << endl;
+
+    this->remoteServerSocketFD = serverSocketFD;
+    this->remoteServerSocketAddress = serverSocketAddress;
 
     return NULL;
 }
