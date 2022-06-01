@@ -1,0 +1,56 @@
+# GET simple
+GET / HTTP/1.1
+Host: localhost
+
+# POST short
+POST /.temp HTTP/1.1
+Host: localhost
+Content-Length: 20
+
+aaaaaaaa
+aaaaaaaa
+
+# POST long 413
+POST /.temp HTTP/1.1
+Host: localhost
+Content-Length: 30
+
+aaaaaaaa
+aaaaaaaa
+aaaaaaaa
+
+# POST no length header field 411
+POST /.temp HTTP/1.1
+Host: localhost
+
+aaaaaaaa
+
+# POST chunked body
+POST /.temp HTTP/1.1
+Host: localhost
+Transfer-Encoding: chunked
+
+f
+aaaaaa
+aaaaaaa
+4
+bbbb
+0
+
+# POST chunked body wrong format 400
+POST /.temp HTTP/1.1
+Host: localhost
+Transfer-Encoding: chunked
+
+f
+aaaaaa
+aaaaaaa
+
+4
+bbbb
+0
+
+# DELETE simple test
+DELETE /.temp HTTP/1.1
+Host: localhost
+
