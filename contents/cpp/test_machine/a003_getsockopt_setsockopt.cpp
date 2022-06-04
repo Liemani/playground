@@ -216,11 +216,17 @@ void* Program::recv(void) {
 }
 
 void* Program::send(void) {
-    cout << "enter line to send: ";
-    std::string line;
-    lmi_getline(cin, line);
-    line += "\r\n";
-    ssize_t result = ::send(this->clientSocketFD, line.c_str(), line.length(), 0);
+    cout << "enter line to send[exit: q]:" << endl;
+    std::string requestMessage;
+    while (true) {
+        std::string line;
+        lmi_getline(cin, line);
+        if (line == "q")
+            break;
+        requestMessage += line + "\r\n";
+    }
+
+    ssize_t result = ::send(this->clientSocketFD, requestMessage.c_str(), requestMessage.length(), 0);
     if (result <= 0)
         throw "result of send <= 0";
     cout << "succeeded send" << endl;
