@@ -41,6 +41,7 @@ private:
     void* setPort(void);
     void* listen(void);
     void* acceptClient(void);
+    void* setSockOpt(void);
     void* describeSocketOption(void);
     void* sendBigString(void);
     void* closeServerSocket(void);
@@ -73,6 +74,7 @@ const Program::MethodPair Program::methodDictionary[] = {
     { "set port", &Program::setPort },
     { "listen", &Program::listen },
     { "accept", &Program::acceptClient },
+    { "set socket", &Program::setSockOpt },
     { "describe socket", &Program::describeSocketOption },
     { "send big string", &Program::sendBigString },
     { "close server socket", &Program::closeServerSocket },
@@ -151,12 +153,117 @@ void* Program::acceptClient(void) {
 }
 
 void* Program::describeSocketOption(void) {
-    int optionValue;
+    long long optionValue;
     socklen_t optionLength = sizeof(optionValue);
 
-    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_SNDBUF, &optionValue, &optionLength);
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_DEBUG, &optionValue, &optionLength);
+    cout << "SO_DEBUG: " << optionValue << ", size: " << optionLength << endl;
 
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_REUSEADDR, &optionValue, &optionLength);
+    cout << "SO_REUSEADDR: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_REUSEPORT, &optionValue, &optionLength);
+    cout << "SO_REUSEPORT: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_KEEPALIVE, &optionValue, &optionLength);
+    cout << "SO_KEEPALIVE: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_DONTROUTE, &optionValue, &optionLength);
+    cout << "SO_DONTROUTE: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_LINGER, &optionValue, &optionLength);
+    cout << "SO_LINGER: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_BROADCAST, &optionValue, &optionLength);
+    cout << "SO_BROADCAST: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_OOBINLINE, &optionValue, &optionLength);
+    cout << "SO_OOBINLINE: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_SNDBUF, &optionValue, &optionLength);
     cout << "SO_SNDBUF: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_RCVBUF, &optionValue, &optionLength);
+    cout << "SO_RCVBUF: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_SNDLOWAT, &optionValue, &optionLength);
+    cout << "SO_SNDLOWAT: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_RCVLOWAT, &optionValue, &optionLength);
+    cout << "SO_RCVLOWAT: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_SNDTIMEO, &optionValue, &optionLength);
+    cout << "SO_SNDTIMEO: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_RCVTIMEO, &optionValue, &optionLength);
+    cout << "SO_RCVTIMEO: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_TYPE, &optionValue, &optionLength);
+    cout << "SO_TYPE: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_ERROR, &optionValue, &optionLength);
+    cout << "SO_ERROR: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_NOSIGPIPE, &optionValue, &optionLength);
+    cout << "SO_NOSIGPIPE: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_NREAD, &optionValue, &optionLength);
+    cout << "SO_NREAD: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_NWRITE, &optionValue, &optionLength);
+    cout << "SO_NWRITE: " << optionValue << ", size: " << optionLength << endl;
+
+    optionValue = 0;
+    optionLength = sizeof(optionValue);
+    getsockopt(this->clientSocketFD, SOL_SOCKET, SO_LINGER_SEC, &optionValue, &optionLength);
+    cout << "SO_LINGER_SEC: " << optionValue << ", size: " << optionLength << endl;
+
+    return NULL;
+}
+
+void* Program::setSockOpt(void) {
+    long long optionValue = 1;
+    socklen_t optionLength = sizeof(optionValue);
+    setsockopt(this->clientSocketFD, SOL_SOCKET, SO_DEBUG, &optionValue, optionLength);
+    cout << "SO_DEBUG: " << optionValue << ", size: " << optionLength << endl;
 
     return NULL;
 }
