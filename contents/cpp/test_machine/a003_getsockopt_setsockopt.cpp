@@ -490,6 +490,7 @@ void Program::mainLoop(void) {
             (this->*(pair->method))();
         } catch(const char* string) {
             cout << line << ": " << string << endl;
+            cout << "errno: " << errno << endl;
         }
     }
 }
