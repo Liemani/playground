@@ -4,10 +4,13 @@
 #include <map>
 #include <cstdio>
 #include <unistd.h>
+#include <fcntl.h>
 
 using std::cin;
 using std::cout;
 using std::endl;
+
+const int BUF_SIZE = 1024;
 
 static void lmi_getline(std::istream& istream, std::string& line);
 
@@ -27,6 +30,11 @@ private:
     std::ifstream input;
     std::ofstream output;
 
+    std::string inputFDPath;
+    std::string outputFDPath;
+    int inputFD;
+    int outputFD;
+
     static void describeMethodCommand(void);
 
     void* describe(void);
@@ -36,6 +44,8 @@ private:
     bool isOutputOpen(void);
     void* openInput(void);
     void* openOutput(void);
+    void* openInputFD(void);
+    void* openOutputFD(void);
     void* close(void);
     void* closeInput(void);
     void* closeOutput(void);
@@ -43,12 +53,19 @@ private:
     void* unlink(void);
     void* readLine(void);
     void* writeLine(void);
+    void* readFDLine(void);
+    void* writeFDLine(void);
     void* clear(void);
     void* custom(void);
 
     static const MethodPair methodDictionary[];
 
 public:
+    Program()
+    : inputFD(-1)
+    , outputFD(-1)
+    { }
+
     void mainLoop(void);
 };
 
@@ -56,6 +73,8 @@ const Program::MethodPair Program::methodDictionary[] = {
     { "describe", &Program::describe },
     { "open input", &Program::openInput },
     { "open output", &Program::openOutput },
+    { "open input fd", &Program::openInputFD },
+    { "open output fd", &Program::openOutputFD },
     { "close", &Program::close },
     { "close input", &Program::closeInput },
     { "close output", &Program::closeOutput },
@@ -63,6 +82,8 @@ const Program::MethodPair Program::methodDictionary[] = {
     { "unlink", &Program::unlink },
     { "read line", &Program::readLine },
     { "write line", &Program::writeLine },
+    { "read fd line", &Program::readFDLine },
+    { "write fd line", &Program::writeFDLine },
     { "clear", &Program::clear },
     { "custom", &Program::custom },
 };
@@ -143,8 +164,48 @@ void* Program::openOutput(void) {
     return NULL;
 }
 
+void* Program::openInputFD(void) {
+    if (this->inputFD != -1)
+        throw "input fd is already  open!";
+
+    cout << "current input fd path: " << this->inputFDPath << endl;
+    cout << "enter new input file path: ";
+
+    lmi_getline(cin, this->inputFDPath);
+    this->inputFD = open(this->inputFDPath.c_str(), O_RDONLY);
+    if (this->inputFD != -1)
+        cout << "succeeded opening: " << this->inputFDPath << endl;
+    else {
+        cout << "failed opening: " << this->inputFDPath << endl;
+        this->inputFDPath.clear();
+    }
+
+    return NULL;
+}
+
+void* Program::openOutputFD(void) {
+    if (this->outputFD != -1)
+        throw "output fd is already  open!";
+
+    cout << "current output fd path: " << this->outputFDPath << endl;
+    cout << "enter new output file path: ";
+
+    lmi_getline(cin, this->outputFDPath);
+    this->outputFD = open(this->outputFDPath.c_str(), O_WRONLY | O_CREAT | O_TRUNC);
+    if (this->outputFD != -1)
+        cout << "succeeded opening: " << this->outputFDPath << endl;
+    else {
+        cout << "failed opening: " << this->outputFDPath << endl;
+        this->outputFDPath.clear();
+    }
+
+    return NULL;
+}
+
 void* Program::close(void) {
     this->closeInput();
+    this->closeOutput();
+    this->closeInputFD();
     this->closeOutput();
 
     return NULL;
@@ -170,6 +231,32 @@ void* Program::closeOutput(void) {
     this->output.close();
 
     cout << "output is closed" << endl;
+
+    return NULL;
+}
+
+void* Program::closeInputFD(void) {
+    if (this->inputFD == -1)
+        throw "no file to close";
+
+    this->inputFDPath.clear();
+    ::close(this->inputFD);
+    this->inputFD = -1;
+
+    cout << "input fd is closed" << endl;
+
+    return NULL;
+}
+
+void* Program::closeOutputFD(void) {
+    if (this->outputFD == -1)
+        throw "no file to close";
+
+    this->outputPath.clear();
+    ::close(this->outputFD);
+    this->outputFD = -1;
+
+    cout << "output fd is closed" << endl;
 
     return NULL;
 }
@@ -228,7 +315,7 @@ void* Program::readLine(void) {
     return NULL;
 }
 
-void* Program:: writeLine(void) {
+void* Program::writeLine(void) {
     if (!this->isOutputOpen())
         throw "no file to write";
 
@@ -236,6 +323,33 @@ void* Program:: writeLine(void) {
     lmi_getline(cin, line);
     this->output << line << endl;
     cout << "write succeeded" << endl;
+
+    return NULL;
+}
+
+void* Program::readFDLine(void) {
+    char line[BUF_SIZE];
+    if (this->inputFD == -1)
+        throw "no file to read";
+
+    ssize_t readByteCount;
+    readByteCount = read(this->inputFD, line, BUF_SIZE - 1);
+    line[readByteCount] = '\0';
+    cout << "line: " << line << endl;
+    cout << "read byte count: " << readByteCount << endl;
+
+    return NULL;
+}
+
+void* Program::writeFDLine(void) {
+    if (this->outputFD == -1)
+        throw "no file to write";
+
+    std::string line;
+    lmi_getline(cin, line);
+    ssize_t writeByteCount;
+    writeByteCount = write(this->outputFD, line.c_str(), line.length());
+    cout << "write byte count: " << writeByteCount << endl;
 
     return NULL;
 }

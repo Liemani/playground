@@ -11,7 +11,27 @@ int main(void) {
 
 */
 
-#define GROUND150
+#define GROUND151
+#ifdef GROUND151
+struct Giant {
+    double array[0x1 << 30];
+};
+
+int main(void) {
+    Giant* array;
+
+    try {
+        array = new Giant[0x1 << 20];
+        std::cout << "array: " << array << std::endl;
+    }
+    catch(const std::exception& e) {
+        std::cout << "failed: " << e.what() << std::endl;
+    }
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND150
 
 #include <sys/socket.h>

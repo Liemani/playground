@@ -69,6 +69,9 @@ public:
     void mainLoop(void);
 };
 
+
+
+// MARK: - method
 const Program::MethodPair Program::methodDictionary[] = {
     { "describe", &Program::describe },
     { "set port", &Program::setPort },
