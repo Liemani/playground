@@ -28,7 +28,8 @@
 // #include <sstream>
 // #include <dirent.h>
 // #include <sys/stat.h>
-#include <time.h>
+// #include <time.h>
+#include <iterator>
 
 int	main()
 {

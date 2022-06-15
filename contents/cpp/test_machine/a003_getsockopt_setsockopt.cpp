@@ -3,6 +3,7 @@
 #include <fstream>
 #include <map>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -12,6 +13,8 @@ using std::cout;
 using std::endl;
 
 static void lmi_getline(std::istream& istream, std::string& line);
+static void lmi_getSingleLine(std::istream& istream, const char* prompt, std::string& line);
+static void lmi_getMultiLine(std::istream& istream, const char* prompt, std::string& line, const char* delimiter);
 static void print16Bytes(const std::string& bytes);
 static void sockaddr_in_describe(struct sockaddr_in& socketAddress);
 
@@ -54,6 +57,7 @@ private:
     void* recvRemote(void);
     void* closeRemote(void);
     void* reconnectRemote(void);
+    void* sendFileToRemote(void);
 
     static const MethodPair methodDictionary[];
 
@@ -90,6 +94,7 @@ const Program::MethodPair Program::methodDictionary[] = {
     { "recv remote", &Program::recvRemote },
     { "close remote", &Program::closeRemote },
     { "reconnect remote", &Program::reconnectRemote },
+    { "send file to remote", &Program::sendFileToRemote },
 };
 
 void* Program::describe(void) {
@@ -105,9 +110,8 @@ void* Program::describe(void) {
 
 void* Program::setPort(void) {
     cout << "current port number: " << this->portNumber << endl;
-    cout << "enter new port number: ";
     std::string line;
-    lmi_getline(cin, line);
+    lmi_getSingleLine(cin,  "enter new port number: ", line);
     std::istringstream inputStringStream(line);
     inputStringStream >> this->portNumber;
     if (!inputStringStream)
@@ -463,6 +467,28 @@ void* Program::reconnectRemote(void) {
     return NULL;
 }
 
+void* Program::sendFileToRemote(void) {
+    std::string fileName;
+    struct stat buf;
+
+    lmi_getSingleLine(cin,  "enter file name to send: ", fileName);
+    
+    if (stat(fileName.c_str(), &buf) == -1)
+        throw "fail stat()";
+
+    if (!S_ISREG(buf.s_mode))
+        throw "not a regular file";
+
+    off_t fileSize = buf.st_size;
+
+    std::string header;
+    lmi_getMultiLine(cin, "enter header", header, "q");
+
+    int fileFD = open(fileName.c_str(), O_RDONLY);
+
+    return NULL;
+}
+
 
 
 // MARK: - program
@@ -473,9 +499,7 @@ void Program::mainLoop(void) {
         cout << endl << "enable command list:" << endl;
         Program::describeMethodCommand();
         cout << "--------------" << endl;
-        cout << "enter command: ";
-
-        lmi_getline(cin, line);
+        lmi_getline(cin, "enter command: ", line);
 
         unsigned long i;
         for (i = 0; i < sizeof(methodDictionary) / sizeof(MethodPair); ++i) {
@@ -515,6 +539,27 @@ static void lmi_getline(std::istream& istream, std::string& line) {
         throw "failed getline";
 }
 
+static void lmi_getSingleLine(std::istream& istream, const char* prompt, std::string& line) {
+    cout << prompt;
+    lmi_getline(istream, line);
+}
+
+static void lmi_getMultiLine(std::istream& istream, const char* prompt, std::string& line, const char* delimiter) {
+    std::string tempLine;
+
+    cout << prompt << ", enter [" << delimiter << "] to quit: " << endl;
+
+    line.clear();
+    while (true) {
+        lmi_getline(isream, tempLine);
+        if (tempLine == delimiter)
+            break;
+        else
+            line += tempLine;
+        cout << prompt;
+    }
+}
+
 static void print16Bytes(const std::string& bytes) {
     for (int i = 0; i < 16; ++i) {
         if (i % 8 == 0)
@@ -541,6 +586,16 @@ static void sockaddr_in_describe(struct sockaddr_in& socketAddress) {
     std::string sin_zero = std::string(socketAddress.sin_zero, socketAddress.sin_zero + 7);
 	cout << "socketAddress.sin_zero: " << sin_zero << endl;
     print16Bytes(sin_zero);
+}
+
+static void nltocr(std::string& string) {
+    std::string tempString;
+
+    tempString.reserve(string.length() * 2 + 1);
+
+    while (true) {
+        std::string::size_type position string.find('\n');
+    }
 }
 
 
