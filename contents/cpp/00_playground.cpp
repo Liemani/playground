@@ -1,4 +1,8 @@
 #include <iostream> 
+
+using std::cout;
+using std::endl;
+
 //	다이아몬드 상속에서 base class는 value로 저장될까 address로 저장될까?
 
 /*	template
@@ -11,7 +15,54 @@ int main(void) {
 
 */
 
-#define GROUND151
+#define GROUND153
+#ifdef GROUND153
+#include <unistd.h>
+#include <sys/wait.h>
+
+int main(int argc, char* argv[], char* envp[]) {
+    (void)argc;
+    pid_t pid;
+
+    int pipeFD[2];
+    int resultPipeFD[2];
+
+    pipe(pipeFD);
+    pipe(resultPipeFD);
+
+    pid = fork();
+    if (pid == 0) { // child
+        cout << "pid == 0" << endl;
+        dup2(resultPipeFD[1], STDOUT_FILENO);
+        execve("test", argv, envp);
+    }
+
+    wait(NULL);
+
+    char buf[1024];
+    ssize_t readByteCount = read(resultPipeFD[0], buf, 1023);
+    buf[readByteCount] = '\0';
+
+    cout << "read thing: " << buf << endl;
+
+	return 0;
+}
+#endif
+
+#ifdef GROUND152
+int main(void) {
+    std::string string;
+
+    cout << string.capacity() << endl;
+
+    string.reserve(50);
+
+    cout << string.capacity() << endl;
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND151
 struct Giant {
     double array[0x1 << 30];
