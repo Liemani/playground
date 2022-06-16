@@ -1,21 +1,9 @@
 #include <iostream>
-#include <sstream>
-#include <fstream>
-#include <map>
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
-#include <unistd.h>
+#include "util.hpp"
 
 using std::cin;
 using std::cout;
 using std::endl;
-
-static void lmi_getline(std::istream& istream, std::string& line);
-static void lmi_getSingleLine(std::istream& istream, const char* prompt, std::string& line);
-
-// const int BUF_SIZE = 8192;
 
 template <typename T, typename U>
 struct Pair {
@@ -23,48 +11,82 @@ struct Pair {
     U method;
 };
 
+
+
 class Program {
 private:
-    // variables
-    std::string string;
-
-    // instance methods
-    void* describe(void);
-
-    // class members
-    typedef void* (Program::*Method)(void);
+    typedef void (Program::*Method)(void);
     typedef Pair<const char*, Method> MethodPair;
 
+private:
+    // instance variables
+    std::string string;
+
+    // class members
     static const MethodPair methodDictionary[];
     static void describeMethodCommand(void);
+
+    // instance methods
+    void describe(void);
+    void reserve(void);
+    void memcpy(void);
+    void append(void);
 
 public:
     Program(void): string() { };
 
     void mainLoop(void);
-};
+};  // class Program
+
+
 
 // class variables
 const Program::MethodPair Program::methodDictionary[] = {
     { "describe", &Program::describe },
+    { "reserve", &Program::reserve },
+    { "memcpy", &Program::memcpy },
+    { "append", &Program::append },
 };
 
 
 
 // MARK: - instance methods
-void* Program::describe(void) {
+void Program::describe(void) {
     cout << "string: \"" << this->string << "\"" << endl;
     cout << "this->string.empty(): " << this->string.empty() << endl;
     cout << "this->string.size(): " << this->string.size() << endl;
     cout << "this->string.length(): " << this->string.length() << endl;
     cout << "this->string.max_size(): " << this->string.max_size() << endl;
     cout << "this->string.capacity(): " << this->string.capacity() << endl;
-
-    return NULL;
+    cout << "(void*)this->string.c_str(): " << (void*)this->string.c_str() << endl;
+    cout << "this->string.c_str(): \"" << this->string.c_str() << "\"" << endl;
+    cout << "(void*)this->string.data(): " << (void*)this->string.data() << endl;
+    cout << "this->string.data(): \"" << this->string.data() << "\"" << endl;
+    cout << "(void*)&this->string[0]: " << (void*)&this->string[0] << endl;
+    cout << "&this->string[0]: \"" << &this->string[0] << "\"" << endl;
 }
 
-void* Program::reserve(void) {
+void Program::reserve(void) {
+    unsigned long size;
 
+    getUnsingedLong(cin, "enter size to reserve: ", size);
+    this->string.reserve(size);
+}
+
+void Program::memcpy(void) {
+    std::string stringToCopy;
+
+    getSingleLine(cin, "enter string to memcpy(): ", stringToCopy);
+    std::memcpy(&this->string[0], stringToCopy.data(), stringToCopy.length() + 1);
+    printSuccessMessage("memcpy()");
+}
+
+void Program::append(void) {
+    std::string stringToAppend;
+
+    getSingleLine(cin, "enter string to append(): ", stringToAppend);
+    this->string.append(stringToAppend);
+    printSuccessMessage("this->string.append()");
 }
 
 
@@ -77,7 +99,7 @@ void Program::mainLoop(void) {
         cout << endl << "enable command list:" << endl;
         Program::describeMethodCommand();
         cout << "--------------" << endl;
-        lmi_getSingleLine(cin, "enter command: ", line);
+        getSingleLine(cin, "enter command: ", line);
 
         unsigned long i;
         for (i = 0; i < sizeof(methodDictionary) / sizeof(MethodPair); ++i) {
@@ -109,18 +131,6 @@ void Program::describeMethodCommand(void) {
 
         cout << "\t" << pair.command << endl;
     }
-}
-
-// MARK: - static
-static void lmi_getline(std::istream& istream, std::string& line) {
-    std::getline(istream, line);
-    if (!istream)
-        throw "failed getline";
-}
-
-static void lmi_getSingleLine(std::istream& istream, const char* prompt, std::string& line) {
-    cout << prompt;
-    lmi_getline(istream, line);
 }
 
 

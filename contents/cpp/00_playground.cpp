@@ -15,7 +15,20 @@ int main(void) {
 
 */
 
-#define GROUND153
+#define GROUND154
+#ifdef GROUND154
+int main(void) {
+    try {
+        throw std::domain_error("not open file");
+    }
+    catch (const std::exception& e) {
+        cout << "e.what(): " << e.what() << endl;
+    }
+
+	return 0;
+}
+#endif
+
 #ifdef GROUND153
 #include <unistd.h>
 #include <sys/wait.h>

@@ -7,18 +7,11 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include "util.hpp"
 
 using std::cin;
 using std::cout;
 using std::endl;
-
-static void lmi_getline(std::istream& istream, std::string& line);
-static void lmi_getSingleLine(std::istream& istream, const char* prompt, std::string& line);
-static void lmi_getMultiLine(std::istream& istream, const char* prompt, std::string& line, const char* delimiter);
-static void print16Bytes(const std::string& bytes);
-static void sockaddr_in_describe(struct sockaddr_in& socketAddress);
-
-const int BUF_SIZE = 8192;
 
 template <typename T, typename U>
 struct Pair {
@@ -28,7 +21,7 @@ struct Pair {
 
 class Program {
 private:
-    typedef void* (Program::*Method)(void);
+    typedef void (Program::*Method)(void);
     typedef Pair<const char*, Method> MethodPair;
 
     uint16_t portNumber;
@@ -40,24 +33,24 @@ private:
 
     static void describeMethodCommand(void);
 
-    void* describe(void);
-    void* setPort(void);
-    void* listen(void);
-    void* acceptClient(void);
-    void* setSockOpt(void);
-    void* describeSocketOption(void);
-    void* sendBigString(void);
-    void* closeServerSocket(void);
-    void* closeClientSocket(void);
-    void* close(void);
-    void* recv(void);
-    void* send(void);
-    void* connectRemote(void);
-    void* sendRemote(void);
-    void* recvRemote(void);
-    void* closeRemote(void);
-    void* reconnectRemote(void);
-    void* sendFileToRemote(void);
+    void describe(void);
+    void setPort(void);
+    void listen(void);
+    void acceptClient(void);
+    void setSockOpt(void);
+    void describeSocketOption(void);
+    void sendBigString(void);
+    void closeServerSocket(void);
+    void closeClientSocket(void);
+    void close(void);
+    void recv(void);
+    void send(void);
+    void connectRemote(void);
+    void sendRemote(void);
+    void recvRemote(void);
+    void closeRemote(void);
+    void reconnectRemote(void);
+    void sendFileToRemote(void);
 
     static const MethodPair methodDictionary[];
 
@@ -97,32 +90,28 @@ const Program::MethodPair Program::methodDictionary[] = {
     { "send file to remote", &Program::sendFileToRemote },
 };
 
-void* Program::describe(void) {
+void Program::describe(void) {
     cout << "port number: " << this->portNumber << endl;
     cout << "server socket fd: " << this->serverSocketFD << endl;
     cout << "client socket fd: " << this->clientSocketFD << endl;
     cout << endl;
     cout << "this->remoteServerSocketFD: "<< this->remoteServerSocketFD << endl;
     sockaddr_in_describe(this->remoteServerSocketAddress);
-
-    return NULL;
 }
 
-void* Program::setPort(void) {
+void Program::setPort(void) {
     cout << "current port number: " << this->portNumber << endl;
     std::string line;
-    lmi_getSingleLine(cin,  "enter new port number: ", line);
+    getSingleLine(cin,  "enter new port number: ", line);
     std::istringstream inputStringStream(line);
     inputStringStream >> this->portNumber;
     if (!inputStringStream)
-        throw "fail getting port number";
+        throw "getting port number";
     else
         cout << "port number: " << this->portNumber << endl;
-
-    return NULL;
 }
 
-void* Program::listen(void) {
+void Program::listen(void) {
     this->setPort();
 
     this->serverSocketFD = socket(PF_INET, SOCK_STREAM, 0);
@@ -135,16 +124,14 @@ void* Program::listen(void) {
     serverSocketAddress.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(this->serverSocketFD, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress)) == -1)
-        throw "failed binding";
+        throw "binding";
 
     ::listen(this->serverSocketFD, 5);
 
     cout << "listening " << this->portNumber << endl;
-
-    return NULL;
 }
 
-void* Program::acceptClient(void) {
+void Program::acceptClient(void) {
     if (this->clientSocketFD != -1)
         throw "No sit, sorry";
 
@@ -152,14 +139,12 @@ void* Program::acceptClient(void) {
     socklen_t clientSocketAddressSize = sizeof(clientSocketAddress);
     this->clientSocketFD = accept(this->serverSocketFD, &clientSocketAddress, &clientSocketAddressSize);
     if (this->clientSocketFD == -1)
-        cout << "fail accept" << endl;
+        cout << "accept" << endl;
     else
-        cout << "success accept" << endl;
-
-    return NULL;
+        printSuccessMessage("accept()");
 }
 
-void* Program::describeSocketOption(void) {
+void Program::describeSocketOption(void) {
     long long optionValue;
     socklen_t optionLength = sizeof(optionValue);
 
@@ -262,56 +247,44 @@ void* Program::describeSocketOption(void) {
     optionLength = sizeof(optionValue);
     getsockopt(this->clientSocketFD, SOL_SOCKET, SO_LINGER_SEC, &optionValue, &optionLength);
     cout << "SO_LINGER_SEC: " << optionValue << ", size: " << optionLength << endl;
-
-    return NULL;
 }
 
-void* Program::setSockOpt(void) {
+void Program::setSockOpt(void) {
     long long optionValue = 1;
     socklen_t optionLength = sizeof(optionValue);
     setsockopt(this->clientSocketFD, SOL_SOCKET, SO_DEBUG, &optionValue, optionLength);
     cout << "SO_DEBUG: " << optionValue << ", size: " << optionLength << endl;
-
-    return NULL;
 }
 
-void* Program::sendBigString(void) {
+void Program::sendBigString(void) {
     std::string bigString = std::string(10, '1');
     ssize_t sendSize = ::send(this->clientSocketFD, bigString.c_str(), 10, 0);
     if (sendSize == -1)
         cout << "send error has occured" << endl;
     else
         cout << "sended big string" << endl;
-
-    return NULL;
 }
 
-void* Program::closeServerSocket(void) {
+void Program::closeServerSocket(void) {
     ::close(this->serverSocketFD);
     this->serverSocketFD = -1;
 
     cout << "closed server socket" << endl;
-
-    return NULL;
 }
 
-void* Program::closeClientSocket(void) {
+void Program::closeClientSocket(void) {
     ::close(this->clientSocketFD);
     this->clientSocketFD = -1;
 
     cout << "closed client socket" << endl;
-
-    return NULL;
 }
 
-void* Program::close(void) {
+void Program::close(void) {
     this->closeClientSocket();
     this->closeServerSocket();
-
-    return NULL;
 }
 
-void* Program::recv(void) {
+void Program::recv(void) {
     char buf[BUF_SIZE + 1];
     ssize_t recvSize = ::recv(this->clientSocketFD, buf, BUF_SIZE, 0);
     if (recvSize == -1)
@@ -325,16 +298,14 @@ void* Program::recv(void) {
     for (int index = 0; index < recvSize; index += 16) {
         print16Bytes(std::string(buf + index, buf + index + 16));
     }
-
-    return NULL;
 }
 
-void* Program::send(void) {
+void Program::send(void) {
     cout << "enter line to send[exit: q]:" << endl;
     std::string requestMessage;
     while (true) {
         std::string line;
-        lmi_getline(cin, line);
+        getline(cin, line);
         if (line == "q")
             break;
         requestMessage += line + "\r\n";
@@ -344,11 +315,9 @@ void* Program::send(void) {
     if (result <= 0)
         throw "result of send <= 0";
     cout << "succeeded send" << endl;
-
-    return NULL;
 }
 
-void* Program::connectRemote(void) {
+void Program::connectRemote(void) {
     int serverSocketFD;
 	struct sockaddr_in serverSocketAddress;
     std::string serverInetAddressString;
@@ -359,14 +328,14 @@ void* Program::connectRemote(void) {
 
     serverSocketFD = socket(PF_INET, SOCK_STREAM, 0);
 	if (serverSocketFD == -1)
-		throw "fail socket()";
+		throw "socket()";
 
     cout << "enter inet address of server: ";
-    lmi_getline(cin, serverInetAddressString);
+    getline(cin, serverInetAddressString);
     serverInetAddress = inet_addr(serverInetAddressString.c_str());
 
     cout << "enter port number of server: ";
-    lmi_getline(cin, serverPortNumberString);
+    getline(cin, serverPortNumberString);
     serverPortNumber = htons(atoi(serverPortNumberString.c_str()));
 
 	memset(&serverSocketAddress, 0, sizeof(serverSocketAddress));
@@ -377,36 +346,67 @@ void* Program::connectRemote(void) {
 	result = connect(serverSocketFD, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress));
     fcntl(serverSocketFD, F_SETFL, O_NONBLOCK); // connect 전에 non-blocking으로 만들면 connect 에러가 발생한다 ㅎㅎ
     if (result == -1)
-		throw "fail connect()";
+		throw "connect()";
 
-    cout << "success connect()" << endl;
+    printSuccessMessage("connect()");
 
     this->remoteServerSocketFD = serverSocketFD;
     this->remoteServerSocketAddress = serverSocketAddress;
-
-    return NULL;
 }
 
-void* Program::sendRemote(void) {
-    cout << "enter line to send[exit: q]:" << endl;
-    std::string requestMessage;
-    while (true) {
-        std::string line;
-        lmi_getline(cin, line);
-        if (line == "q")
-            break;
-        requestMessage += line + "\r\n";
-    }
+void Program::sendRemote(void) {
+    std::string data;
+    getMultiLine(cin, "enter line to send: ", data, "q", "\r\n");
 
-    ssize_t result = ::send(this->remoteServerSocketFD, requestMessage.c_str(), requestMessage.length(), 0);
+    ssize_t result = ::send(this->remoteServerSocketFD, data.c_str(), data.length(), 0);
     if (result <= 0)
         throw "result of send <= 0";
-    cout << "succeeded send" << endl;
-
-    return NULL;
+    printSuccessMessage("send() to remote");
 }
 
-void* Program::recvRemote(void) {
+void Program::sendFileToRemote(void) {
+    std::string fileName;
+    struct stat fileStatus;
+    ssize_t result;
+
+    getSingleLine(cin,  "enter file name to send: ", fileName);
+
+    if (stat(fileName.c_str(), &fileStatus) == -1)
+        throw "stat()";
+
+    if (!S_ISREG(fileStatus.st_mode))
+        throw "not a regular file";
+
+    off_t fileSize = fileStatus.st_size;
+    cout << "file size: " << fileSize << endl;
+
+    std::string header;
+    getMultiLine(cin, "enter header", header, "q", "\r\n");
+    result = ::send(this->remoteServerSocketFD, header.c_str(), header.length(), 0);
+    if (result <= 0)
+        throw "result of send <= 0";
+
+    int fileFD = open(fileName.c_str(), O_RDONLY);
+    char buf[BUF_SIZE];
+    while (true) {
+        result = ::read(fileFD, buf, BUF_SIZE - 1);
+        if (result == -1)
+            throw "read() file";
+        else if (result == 0)
+            break;
+        else {
+            result = ::send(this->remoteServerSocketFD, buf, result, 0);
+            if (result == -1)
+                throw "send() remote";
+            else if (result == 0)
+                throw "connection closed from remote";
+            cout << "sended byte count: " << result << endl;
+        }
+    }
+    printSuccessMessage("send() to remote");
+}
+
+void Program::recvRemote(void) {
     char buf[BUF_SIZE + 1];
     ssize_t recvSize = ::recv(this->remoteServerSocketFD, buf, BUF_SIZE, 0);
     if (recvSize == -1)
@@ -420,31 +420,29 @@ void* Program::recvRemote(void) {
     for (int index = 0; index < recvSize; index += 16) {
         print16Bytes(std::string(buf + index, buf + index + 16));
     }
-
-    return NULL;
 }
 
-void* Program::closeRemote(void) {
+void Program::closeRemote(void) {
     if (this->remoteServerSocketFD == -1)
         throw "no remote server socket to close";
     ::close(this->remoteServerSocketFD);
     this->remoteServerSocketFD = -1;
     this->remoteServerSocketAddress = sockaddr_in();
 
-    cout << "closed remote server socket" << endl;
-
-    return NULL;
+    printSuccessMessage("close() remote socket");
 }
 
-void* Program::reconnectRemote(void) {
+void Program::reconnectRemote(void) {
     int serverSocketFD;
 	struct sockaddr_in serverSocketAddress;
     std::string serverInetAddressString;
     std::string serverPortNumberString;
     int result;
 
-    if (this->remoteServerSocketFD == -1)
-        return this->connectRemote();
+    if (this->remoteServerSocketFD == -1) {
+        this->connectRemote();
+        return;
+    }
 
     serverSocketAddress = this->remoteServerSocketAddress;
 
@@ -452,41 +450,17 @@ void* Program::reconnectRemote(void) {
 
     serverSocketFD = socket(PF_INET, SOCK_STREAM, 0);
 	if (serverSocketFD == -1)
-		throw "fail socket()";
+		throw "socket()";
 
 	result = connect(serverSocketFD, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress));
     fcntl(serverSocketFD, F_SETFL, O_NONBLOCK); // connect 전에 non-blocking으로 만들면 connect 에러가 발생한다 ㅎㅎ
     if (result == -1)
-		throw "fail connect()";
+		throw "connect()";
 
-    cout << "success reconnect()" << endl;
+    printSuccessMessage("connect()");
 
     this->remoteServerSocketFD = serverSocketFD;
     this->remoteServerSocketAddress = serverSocketAddress;
-
-    return NULL;
-}
-
-void* Program::sendFileToRemote(void) {
-    std::string fileName;
-    struct stat buf;
-
-    lmi_getSingleLine(cin,  "enter file name to send: ", fileName);
-    
-    if (stat(fileName.c_str(), &buf) == -1)
-        throw "fail stat()";
-
-    if (!S_ISREG(buf.s_mode))
-        throw "not a regular file";
-
-    off_t fileSize = buf.st_size;
-
-    std::string header;
-    lmi_getMultiLine(cin, "enter header", header, "q");
-
-    int fileFD = open(fileName.c_str(), O_RDONLY);
-
-    return NULL;
 }
 
 
@@ -499,7 +473,7 @@ void Program::mainLoop(void) {
         cout << endl << "enable command list:" << endl;
         Program::describeMethodCommand();
         cout << "--------------" << endl;
-        lmi_getline(cin, "enter command: ", line);
+        getSingleLine(cin, "enter command: ", line);
 
         unsigned long i;
         for (i = 0; i < sizeof(methodDictionary) / sizeof(MethodPair); ++i) {
@@ -516,7 +490,8 @@ void Program::mainLoop(void) {
             const MethodPair* pair = &methodDictionary[i];
             (this->*(pair->method))();
         } catch(const char* string) {
-            cout << line << ": " << string << endl;
+            cout << line << ": ";
+            printFailMessage(string);
             cout << "errno: " << errno << endl;
         }
     }
@@ -530,71 +505,6 @@ void Program::describeMethodCommand(void) {
         const MethodPair& pair = methodDictionary[i];
 
         cout << "\t" << pair.command << endl;
-    }
-}
-
-static void lmi_getline(std::istream& istream, std::string& line) {
-    std::getline(istream, line);
-    if (!istream)
-        throw "failed getline";
-}
-
-static void lmi_getSingleLine(std::istream& istream, const char* prompt, std::string& line) {
-    cout << prompt;
-    lmi_getline(istream, line);
-}
-
-static void lmi_getMultiLine(std::istream& istream, const char* prompt, std::string& line, const char* delimiter) {
-    std::string tempLine;
-
-    cout << prompt << ", enter [" << delimiter << "] to quit: " << endl;
-
-    line.clear();
-    while (true) {
-        lmi_getline(isream, tempLine);
-        if (tempLine == delimiter)
-            break;
-        else
-            line += tempLine;
-        cout << prompt;
-    }
-}
-
-static void print16Bytes(const std::string& bytes) {
-    for (int i = 0; i < 16; ++i) {
-        if (i % 8 == 0)
-            cout << "  ";
-        else if (i % 2 == 0)
-            cout << " ";
-        cout << std::hex << std::setfill('0') << std::setw(2) << (int)(unsigned char)bytes[i];
-    }
-
-    cout << "   ";
-    for (int i = 0; i < 16; ++i) {
-        const char ch = bytes[i];
-        cout << (std::isprint(ch) ? ch : '.');
-    }
-
-    cout << endl;
-}
-
-static void sockaddr_in_describe(struct sockaddr_in& socketAddress) {
-	cout << "socketAddress.sin_len: " << socketAddress.sin_len << endl;
-	cout << "socketAddress.sin_family: " << std::hex << std::setfill('0') << std::setw(2) << (int)(unsigned char)socketAddress.sin_family << endl;
-	cout << "socketAddress.sin_port: " << socketAddress.sin_port << endl;
-	cout << "socketAddress.sin_addr: " << socketAddress.sin_addr.s_addr << endl;
-    std::string sin_zero = std::string(socketAddress.sin_zero, socketAddress.sin_zero + 7);
-	cout << "socketAddress.sin_zero: " << sin_zero << endl;
-    print16Bytes(sin_zero);
-}
-
-static void nltocr(std::string& string) {
-    std::string tempString;
-
-    tempString.reserve(string.length() * 2 + 1);
-
-    while (true) {
-        std::string::size_type position string.find('\n');
     }
 }
 
