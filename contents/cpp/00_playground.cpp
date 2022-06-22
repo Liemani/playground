@@ -1,4 +1,4 @@
-#include <iostream> 
+#include "iostream"
 
 using std::cout;
 using std::endl;
@@ -18,19 +18,67 @@ int main(void) {
 #define GROUND155
 #ifdef GROUND155
 template <typename T>
-void function1(T t) {
-    (void)t;
-    cout << "first function, sizeof t: " << sizeof t << endl;
-}
+void swap(T& lhs, T& rhs);
+
+template <typename T>
+void swap(T lhs[], T rhs[], int count);
 
 int main(void) {
-    int typeInt = 1;
-    char typechar = 'a';
+    int int1 = 4;
+    int int2 = 2;
+    cout << "int1: " << int1 << endl;
+    cout << "int2: " << int2 << endl;
+    swap(int1, int2);
+    cout << "int1: " << int1 << endl;
+    cout << "int2: " << int2 << endl;
+    cout << endl;
 
-    function1(typeInt);
-    function1(typechar);
+    double double1 = 4.1;
+    double double2 = 2.1;
+    cout << "double1: " << double1 << endl;
+    cout << "double2: " << double2 << endl;
+    swap(double1, double2);
+    cout << "double1: " << double1 << endl;
+    cout << "double2: " << double2 << endl;
+    cout << endl;
+
+    int intArray1[] = { 4, 2 };
+    int intArray2[] = { 2, 4 };
+    cout << "int1Array: " << intArray1[0] << intArray1[1] << endl;
+    cout << "intArray2: " << intArray2[0] << intArray2[1] << endl;
+    swap(intArray1, intArray2, sizeof(intArray1) / sizeof(int));
+    cout << "int1Array: " << intArray1[0] << intArray1[1] << endl;
+    cout << "intArray2: " << intArray2[0] << intArray2[1] << endl;
+    cout << endl;
+
+    double doubleArray1[] = { 4.1, 2.1 };
+    double doubleArray2[] = { 2.2, 4.2 };
+    cout << "double1Array: " << doubleArray1[0] << doubleArray1[1] << endl;
+    cout << "doubleArray2: " << doubleArray2[0] << doubleArray2[1] << endl;
+    swap(doubleArray1, doubleArray2, sizeof(doubleArray1) / sizeof(double));
+    cout << "double1Array: " << doubleArray1[0] << doubleArray1[1] << endl;
+    cout << "doubleArray2: " << doubleArray2[0] << doubleArray2[1] << endl;
+    cout << endl;
 
     return 0;
+}
+
+template <typename T>
+void swap(T& lhs, T& rhs) {
+    cout << "void swap(T& lhs, T& rhs)" << endl;
+
+    T temp;
+    temp = lhs;
+    lhs = rhs;
+    rhs = temp;
+}
+
+template <typename T>
+void swap(T lhs[], T rhs[], int count) {
+    cout << "void swap(T& lhs, T& rhs, int count)" << endl;
+
+    for (int i = 0; i < count; ++i)
+        swap(lhs[i], rhs[i]);
 }
 #endif
 
