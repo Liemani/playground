@@ -91,7 +91,7 @@ let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
 silent tabonly
-cd ~/git/playground/contents/cpp/test_machine
+cd ~/git/playground/cpp/test_machine
 if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
@@ -367,7 +367,7 @@ exe s:l
 normal! zt
 67
 normal! 0
-lcd ~/git/playground/contents/cpp/test_machine
+lcd ~/git/playground/cpp/test_machine
 wincmd w
 argglobal
 terminal ++curwin ++cols=121 ++rows=96 
@@ -621,11 +621,11 @@ exe 'vert 2resize ' . ((&columns * 121 + 182) / 364)
 exe 'vert 3resize ' . ((&columns * 121 + 182) / 364)
 exe 'vert 4resize ' . ((&columns * 120 + 182) / 364)
 tabnext 1
-badd +22 ~/git/playground/contents/cpp/test_machine/a003_getsockopt_setsockopt.cpp
-badd +1 ~/git/playground/contents/cpp/test_machine/test_case.txt
-badd +1 ~/git/playground/contents/cpp/test_machine/sampleMessage.txt
-badd +41 ~/git/playground/contents/cpp/test_machine/a004_readdir.cpp
-badd +0 ~/git/playground/contents/cpp/test_machine/a005_string.cpp
+badd +22 ~/git/playground/cpp/test_machine/a003_getsockopt_setsockopt.cpp
+badd +1 ~/git/playground/cpp/test_machine/test_case.txt
+badd +1 ~/git/playground/cpp/test_machine/sampleMessage.txt
+badd +41 ~/git/playground/cpp/test_machine/a004_readdir.cpp
+badd +0 ~/git/playground/cpp/test_machine/a005_string.cpp
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif
