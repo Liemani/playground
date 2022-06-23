@@ -2,43 +2,22 @@ name: 'My first github action'
 
 on: push
 
-env:
-    WORKFLOW_LEVEL: 'THIS VALUE COMES FROM THE WORKFLOW LEVEL'
-
 jobs:
   first-job:
     name: 'first job'
 
     runs-on: ubuntu-latest
 
-    env:
-        JOB_LEVEL_1: 'THIS COMES FROM JOB LEVEL 1'
-
     steps:
-    - name: Say Hello World 1
-      shell: bash
-      env:
-        STEP_LEVEL_1: "THIS COMES FORM STEP LEVEL 1"
-      run: |
-        echo "Hello World from step 1"
-        echo "STEP_VALUE_1='THIS IS SET BY STEP 1'" >>  $GITHUB_ENV
+    - name: set output value
+        id: first
+        shell: bash
+        run: |
+            first_value="This is the first output value"
 
-    - name: Say Hello World 2
-      shell: pwsh
-      env:
-        STEP_LEVEL_2: "THIS COMES FORM STEP LEVEL 2"
-      run: |
-        echo "Hello World from step 2"
-        echo "$env:STEP_VALUE_1"
-        echo "VALUE: $env:STEP_VALUE_1"
-        echo "VALUE: ${{ env.STEP_VALUE_1 }}"
+            echo "::set-output name=my_first_value::$first_value"
 
-    - name: Say Hello World 3
-      shell: bash
-      env:
-        STEP_LEVEL_2: "THIS COMES FORM STEP LEVEL 3"
-      run: |
-        echo "Hello World from step 3"
-        echo "$env:STEP_VALUE_1"
-        echo "VALUE: $env:STEP_VALUE_1"
-        echo "VALUE: ${{ env.STEP_VALUE_1 }}"
+    - name: get output value
+        shell: bash
+        run: |
+            echo ${{ steps.first.outputs.my_first_value }}
