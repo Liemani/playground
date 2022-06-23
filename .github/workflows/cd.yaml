@@ -27,11 +27,11 @@ jobs:
         pushd artifacts/api
         zip -qq -r ${{ inputs.artifact_name }}.zip .
         popd
-        mv artifacts/api/apiapp.zip artifacts/apiapp.zip
+        mv artifacts/api/${{ inputs.artifact_name }}.zip artifacts/${{ inputs.artifact_name }}.zip
     - name: Release FunctionApp artifact to GitHub
       uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
         files: |
-          artifacts/apiapp.zip
+          artifacts/${{ inputs.artifact_name }}.zip
