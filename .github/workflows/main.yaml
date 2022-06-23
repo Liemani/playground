@@ -36,9 +36,9 @@ jobs:
     - name: Say Hello World 3
       shell: bash
       env:
-        STEP_LEVEL_2: "THIS COMES FORM STEP LEVEL 2"kkkkkkkkkkkkk
+        STEP_LEVEL_2: "THIS COMES FORM STEP LEVEL 3"
       run: |
-        echo "Hello World from step 2"
+        echo "Hello World from step 3"
         echo "$env:STEP_VALUE_1"
         echo "VALUE: $env:STEP_VALUE_1"
         echo "VALUE: ${{ env.STEP_VALUE_1 }}"
