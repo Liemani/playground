@@ -16,7 +16,108 @@ int main(void) {
 
 */
 
-#define GROUND155
+#define GROUND156
+#ifdef GROUND158
+template <class T>
+void do_stuff(...) {
+    cout << "general do_stuff" << endl;
+}
+
+template <class T>
+void do_stuff(typename std::enable_if<std::is_integral<T>::value>::type* = 0) {
+    cout << "integral do_stuff" << endl;
+}
+
+//  error: default template arguments for a function template are a C++11 extension [-Werror,-Wc++11-extensions] 
+//  template <class T, typename std::enable_if<std::is_integral<T>::value, T>::type* = nullptr>
+//  void do_stuff(T& t) {
+//      cout << "do_stuff integral" << endl;
+//  }
+
+int main(void) {
+    do_stuff<int>(NULL);
+    do_stuff<double>();
+
+    return 0;
+}
+#endif
+
+#ifdef GROUND157
+struct SomeStructure {
+  typedef int foo;
+};
+
+template <typename T>
+void has_foo_function(typename T::foo) {}  // Definition #1
+
+template <typename T>
+void has_foo_function(T) {}  // Definition #2
+
+int main() {
+  has_foo_function<SomeStructure>(10);  // Call #1.
+  has_foo_function<int>(10);   // Call #2. Without error (even though there is no int::foo)
+                // thanks to SFINAE.
+}
+#endif
+
+#ifdef GROUND156
+//  test SFINAE
+
+struct HaveFoo {
+    typedef int foo;
+};  // struct HaveFoo
+
+struct FooAsMemberVariable {
+    int foo;
+};  // struct FooAsMemberVariable
+
+
+
+template <typename T>
+struct has_foo {
+    typedef char TrueType[1];
+    typedef char FalseType[2];
+
+    typedef void* value_type;
+
+    // general test() template
+    template <typename U>
+    static FalseType& test(...) {}
+
+    // test() template when U::foo is member type
+    template <typename U>
+    static TrueType& test(typename std::__void_t<typename U::foo>::type*) {}
+
+    static const bool value = sizeof(test<T>(NULL)) == sizeof(TrueType);
+};  // struct has_foo
+
+
+
+template <typename T>
+void has_foo_function(typename T::foo) {
+    cout << "yes have" << endl;
+}
+
+template <typename T>
+void has_foo_function(...) {
+    cout << "dont have" << endl;
+}
+
+
+
+int main(void) {
+    cout << has_foo<HaveFoo>::value << endl;
+    cout << has_foo<int>::value << endl;
+    cout << has_foo<FooAsMemberVariable>::value << endl;
+
+    has_foo_function<HaveFoo>(10);
+    has_foo_function<int>(10);
+    has_foo_function<FooAsMemberVariable>(10);
+
+    return 0;
+}
+#endif
+
 #ifdef GROUND155
 template <typename T>
 void swap(T& lhs, T& rhs);
