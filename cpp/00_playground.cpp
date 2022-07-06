@@ -16,7 +16,29 @@ int main(void) {
 
 */
 
-#define GROUND156
+#define GROUND159
+#ifdef GROUND159
+void test(std::size_t) {
+    cout << "first function" << endl;
+}
+
+template <typename T>
+void test(...) {
+    cout << "general template function" << endl;
+}
+
+template <typename T>
+void test(typename std::enable_if<!std::is_integral<T>::value, T>::type) {
+    cout << "second function" << endl;
+}
+
+int main(void) {
+    test<int>(1.0);
+
+    return 0;
+}
+#endif
+
 #ifdef GROUND158
 template <class T>
 void do_stuff(...) {
