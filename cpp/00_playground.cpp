@@ -16,7 +16,61 @@ int main(void) {
 
 */
 
-#define GROUND159
+#define GROUND161
+#ifdef GROUND161
+template <typename T>
+class Test {
+private:
+    T   value_;
+
+public:
+    const T& value() const;
+};  // class Test
+
+template <typename T>
+void hello(const Test<T>& test) {
+    cout << "hello: " << test.value() << endl;
+}
+
+int main(void) {
+    Test<int> test;
+
+//      test.hello();
+//      이렇게는 호출할 수 없다.
+//      non-member function은 반드시 인자를 argument list로 전달받아야 한다.
+    hello(test);
+
+    return 0;
+}
+#endif
+
+#ifdef GROUND160
+template <typename T>
+class Test {
+private:
+    T   value;
+
+public:
+    void hello() const;
+};  // class Test
+
+template <typename T>
+void Test<T>::hello() const {
+    cout << "hello: " << this->value << endl;
+}
+
+int main(void) {
+    Test<int> test;
+
+    test.hello();
+//      hello(test);
+//      이렇게는 호출할 수 없다.
+//      멤버 함수는 반드시 instance 객체가 invoke해야 한다.
+
+    return 0;
+}
+#endif
+
 #ifdef GROUND159
 void test(std::size_t) {
     cout << "first function" << endl;
