@@ -36,42 +36,49 @@ struct bst_node {
 public:
     typedef T           value_type;
 
-    enum link_index {
-        LI_LEFT,
-        LI_RIGHT,
-        LI_PARENT,
-    };  // enum link
+    enum Direction {
+        D_LEFT,
+        D_RIGHT,
+        D_PARENT,
+    };  // enum Direction
 
-    bst_node*   link[3];
-    value_type  value;
+    bst_node*   link_[3];
+    value_type  value_;
 
-    bst_node(void): value() { bzero(this->link, sizeof(bst_node*) * 3); }
-    bst_node(const value_type& value): value(value) { bzero(this->link, sizeof(bst_node*) * 3); }
+    bst_node(void): value_() { bzero(this->link_, sizeof(bst_node*) * 3); }
+    bst_node(const value_type& value): value_(value) { bzero(this->link_, sizeof(bst_node*) * 3); }
+
+    bst_node*& parent() { return this->link_[D_PARENT]; }
+    bst_node*& leftChild() { return this->link_[D_LEFT]; }
+    bst_node*& rightChild() { return this->link_[D_RIGHT]; }
+    const bst_node* parent() const { return this->link_[D_PARENT]; }
+    const bst_node* leftChild() const { return this->link_[D_LEFT]; }
+    const bst_node* rightChild() const { return this->link_[D_RIGHT]; }
 
     void transform_up() {
         int direction;
 
-        bst_node* const parent = this->link[LI_PARENT];
+        bst_node* const parent = this->parent();
 
         if (!(parent != NULL))
             return;
 
-        bst_node* const grandParent = parent->link[LI_PARENT];
+        bst_node* const grandParent = parent->parent();
 
-        this->link[LI_PARENT] = grandParent;
+        this->parent() = grandParent;
         if (grandParent != NULL) {
-            direction = grandParent->link[LI_RIGHT] == parent;
-            grandParent->link[direction] = this;
+            direction = grandParent->rightChild() == parent;
+            grandParent->link_[direction] = this;
         }
 
-        direction = parent->link[LI_RIGHT] == this;
-        bst_node* const child = this->link[!direction];
-        parent->link[direction] = child;
+        direction = parent->rightChild() == this;
+        bst_node* const child = this->link_[!direction];
+        parent->link_[direction] = child;
         if (child != NULL)
-            child->link[LI_PARENT] = parent;
+            child->parent() = parent;
 
-        this->link[!direction] = parent;
-        parent->link[LI_PARENT] = this;
+        this->link_[!direction] = parent;
+        parent->parent() = this;
     }
 
     std::string debugDescription(void) const {
@@ -80,18 +87,18 @@ public:
         std::ostringstream oss;
 
         description += "{";
-        description += "\"value\":";
-        description += LMI::debugDescription(this->value);
+        description += "\"value_\":";
+        description += LMI::debugDescription(this->value_);
         description += ",";
-        description += "\"link[ft::bst_node<T>::LI_LEFT]\":";
-        bst_node* const leftChild = this->link[ft::bst_node<T>::LI_LEFT];
+        description += "\"leftChild()\":";
+        const bst_node* const leftChild = this->leftChild();
         if (leftChild == NULL)
             description += LMI::debugDescription(leftChild);
         else
             description += LMI::debugDescription(*leftChild);
         description += ",";
-        description += "\"link[ft::bst_node<T>::LI_RIGHT]\":";
-        bst_node* const rightChild = this->link[ft::bst_node<T>::LI_RIGHT];
+        description += "\"rightChild()\":";
+        const bst_node* const rightChild = this->rightChild();
         if (rightChild == NULL)
             description += LMI::debugDescription(rightChild);
         else
@@ -125,34 +132,58 @@ public:
     }
 
     node_type* search(const T& value) {
-        node_type* p;
-
-        for (p = this->root_; p != NULL;)
-            if (this->value_compare_(value, p->value_)) p = p->link[node_type::LI_LEFT];
-            else if (this->value_compare_(p->value_, value)) p = p->link[node_type::LI_RIGHT];
+        node_type* p = this->root_;
+        while (p != NULL) {
+            if (this->value_compare_(value, p->value_)) p = p->leftChild();
+            else if (this->value_compare_(p->value_, value)) p = p->rightChild();
             else return p;
+        }
+
+        return NULL;
+    }
+
+    const node_type* search(const T& value) const {
+        node_type* searchingNode = this->root_;
+        while (searchingNode != NULL) {
+            if (this->value_compare_(value, searchingNode->value_))
+                searchingNode = searchingNode->leftChild();
+            else if (this->value_compare_(searchingNode->value_, value))
+                searchingNode = searchingNode->rightChild();
+            else
+                return searchingNode;
+        }
 
         return NULL;
     }
 
     node_type* insert(const T& value) {
-        node_type* o;
-        node_type* p;
-        int direction;
+        node_type* searchingNode = this->root_;
+        typename node_type::Direction direction;
 
-        for (o = NULL, p = root_; p != NULL; o = p, p = p->link[direction])
-            if (value_compare_(value, p->value)) direction = node_type::LI_LEFT;
-            else if (value_compare_(p->value, value)) direction = node_type::LI_RIGHT;
-            else return p;
+        node_type* parent = NULL;
+        while (searchingNode != NULL) {
+            if (this->value_compare_(value, searchingNode->value_))
+                direction = node_type::D_LEFT;
+            else if (this->value_compare_(searchingNode->value_, value))
+                direction = node_type::D_RIGHT;
+            else
+                break;
+            parent = searchingNode;
+            searchingNode = searchingNode->link_[direction];
+        }
+
+        if (searchingNode != NULL)
+            return searchingNode;
 
         node_type* new_node = allocator_.allocate(1);
         allocator_.construct(new_node, node_type(value));
 
-        if (o != NULL) {
-            o->link[direction] = new_node;
-            new_node->link[bst_node<T>::LI_PARENT] = o;
+        if (parent != NULL) {
+            parent->link_[direction] = new_node;
+            new_node->parent() = parent;
         }
-        else root_ = new_node;
+        else
+            root_ = new_node;
 
         ++node_count_;
 
@@ -161,10 +192,26 @@ public:
 
     void root_insert(const T& value) {
         node_type* new_node = insert(value);
-        while (new_node->link[bst_node<T>::LI_PARENT] != NULL)
+        while (new_node->parent() != NULL)
             new_node->transform_up();
         root_ = new_node;
     }
+
+//      void remove(const T& value) {
+//          node_type* removingNode = this->search(value);
+//  
+//          if (removingNode == NULL)
+//              return;
+//  
+//          node_type* const rightChild = removingNode->rightChild();
+//          if (rightChild == NULL) {
+//              node_type* const parent = 
+//              typename node_type::Direction const direction = getDirectionFromParent(*removingNode);
+//              
+//          }
+//          else if (rightChild->leftChild() == NULL)
+//          else
+//      }
 
     std::string debugDescription(void) const {
         std::string description;
