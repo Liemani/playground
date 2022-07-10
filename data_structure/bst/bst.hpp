@@ -109,6 +109,14 @@ public:
     }
 };  // struct bst_node
 
+template <class T>
+void makeLinkToChild(bst_node<T>* currentNode, typename bst_node<T>::Direction directionToChild, bst_node<T>* childNode) {
+    if (currentNode != NULL)
+        currentNode->link_[directionToChild] = childNode;
+    if (childNode != NULL)
+        childNode->parent() = currentNode;
+}
+
 
 
 //  MARK: - bst
@@ -132,11 +140,14 @@ public:
     }
 
     node_type* search(const T& value) {
-        node_type* p = this->root_;
-        while (p != NULL) {
-            if (this->value_compare_(value, p->value_)) p = p->leftChild();
-            else if (this->value_compare_(p->value_, value)) p = p->rightChild();
-            else return p;
+        node_type* searchingNode = this->root_;
+        while (searchingNode != NULL) {
+            if (this->value_compare_(value, searchingNode->value_))
+                searchingNode = searchingNode->leftChild();
+            else if (this->value_compare_(searchingNode->value_, value))
+                searchingNode = searchingNode->rightChild();
+            else
+                return searchingNode;
         }
 
         return NULL;
@@ -156,11 +167,9 @@ public:
         return NULL;
     }
 
-    node_type* insert(const T& value) {
-        node_type* searchingNode = this->root_;
-        typename node_type::Direction direction;
-
-        node_type* parent = NULL;
+    void searchVector(const T& value, node_type*& parent, typename node_type::Direction& direction, node_type*& searchingNode) {
+        searchingNode = this->root_;
+        parent = NULL;
         while (searchingNode != NULL) {
             if (this->value_compare_(value, searchingNode->value_))
                 direction = node_type::D_LEFT;
@@ -171,6 +180,13 @@ public:
             parent = searchingNode;
             searchingNode = searchingNode->link_[direction];
         }
+    }
+
+    node_type* insert(const T& value) {
+        node_type* searchingNode;
+        typename node_type::Direction direction;
+        node_type* parent;
+        searchVector(value, parent, direction, searchingNode);
 
         if (searchingNode != NULL)
             return searchingNode;
@@ -197,21 +213,53 @@ public:
         root_ = new_node;
     }
 
-//      void remove(const T& value) {
-//          node_type* removingNode = this->search(value);
-//  
-//          if (removingNode == NULL)
-//              return;
-//  
-//          node_type* const rightChild = removingNode->rightChild();
-//          if (rightChild == NULL) {
-//              node_type* const parent = 
-//              typename node_type::Direction const direction = getDirectionFromParent(*removingNode);
-//              
-//          }
-//          else if (rightChild->leftChild() == NULL)
-//          else
-//      }
+    void remove(const T& value) {
+        node_type* removingNode = this->search(value);
+        typename node_type::Direction direction;
+        node_type* parent;
+        searchVector(value, parent, direction, removingNode);
+        node_type* replaceNode;
+
+        if (removingNode == NULL)
+            return;
+
+        node_type*& rightChild = removingNode->rightChild();
+        node_type*& leftChild = removingNode->leftChild();
+        if (rightChild == NULL) {
+            replaceNode = leftChild;
+            makeLinkToChild(parent, direction, replaceNode);
+        }
+        else if (rightChild->leftChild() == NULL) {
+            replaceNode = rightChild;
+            makeLinkToChild(parent, direction, replaceNode);
+            makeLinkToChild(replaceNode, node_type::D_LEFT, leftChild);
+        }
+        else {
+            node_type* leftestOfRightSubtree;
+            leftestOfRightSubtree = rightChild->leftChild();
+            node_type*& leftestNode = leftestOfRightSubtree;
+            while (leftestNode->leftChild() != NULL)
+                leftestNode = leftestNode->leftChild();
+            makeLinkToChild(
+                    leftestOfRightSubtree->parent(),
+                    node_type::D_LEFT,
+                    leftestOfRightSubtree->rightChild()
+                    );
+
+            replaceNode = leftestOfRightSubtree;
+            makeLinkToChild(parent, direction, replaceNode);
+            makeLinkToChild(replaceNode, node_type::D_LEFT, removingNode->leftChild());
+            makeLinkToChild(replaceNode, node_type::D_RIGHT, removingNode->rightChild());
+        }
+
+        if (parent == NULL)
+            this->root_ = replaceNode;
+
+        allocator_.destroy(removingNode);
+        allocator_.deallocate(removingNode, 1);
+
+        --node_count_;
+    }
 
     std::string debugDescription(void) const {
         std::string description;

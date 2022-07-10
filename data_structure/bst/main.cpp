@@ -15,7 +15,33 @@ int main(void) {
 
 */
 
-#define GROUND001
+#define GROUND003
+#ifdef GROUND003
+int main(void) {
+    cout << "[remove test]" << endl;
+
+    ft::bst<int> bst;
+
+    bst.insert(5);
+    bst.insert(2);
+    bst.insert(1);
+    bst.insert(3);
+    bst.insert(4);
+    bst.insert(9);
+    bst.insert(8);
+    bst.insert(6);
+    bst.insert(7);
+
+    bst.remove(8);
+    bst.remove(2);
+    bst.remove(5);
+
+    LMI::JSONDescriber::describe(cout, LMI::debugDescription(bst));
+
+    return 0;
+}
+#endif
+
 #ifdef GROUND002
 int main(void) {
     cout << "[insert test]" << endl;
