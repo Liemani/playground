@@ -116,11 +116,11 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 1 + 50) / 100)
-exe 'vert 1resize ' . ((&columns * 181 + 182) / 364)
-exe '2resize ' . ((&lines * 96 + 50) / 100)
-exe 'vert 2resize ' . ((&columns * 181 + 182) / 364)
-exe 'vert 3resize ' . ((&columns * 182 + 182) / 364)
+exe '1resize ' . ((&lines * 96 + 50) / 100)
+exe 'vert 1resize ' . ((&columns * 89 + 90) / 180)
+exe '2resize ' . ((&lines * 1 + 50) / 100)
+exe 'vert 2resize ' . ((&columns * 89 + 90) / 180)
+exe 'vert 3resize ' . ((&columns * 90 + 90) / 180)
 argglobal
 setlocal autoindent
 setlocal backupcopy=
@@ -236,12 +236,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 0) / 1)
+let s:l = 41 - ((40 * winheight(0) + 48) / 96)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
-normal! 0
+41
+normal! 05|
 wincmd w
 argglobal
 if bufexists("bst.hpp") | buffer bst.hpp | else | edit bst.hpp | endif
@@ -360,16 +360,20 @@ setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
 58,82fold
-84,109fold
-let s:l = 237 - ((38 * winheight(0) + 48) / 96)
+84,93fold
+95,120fold
+283,298fold
+84
+normal! zo
+let s:l = 281 - ((0 * winheight(0) + 0) / 1)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-237
-normal! 020|
+281
+normal! 05|
 wincmd w
 argglobal
-terminal ++curwin ++cols=182 ++rows=98 
+terminal ++curwin ++cols=90 ++rows=98 
 setlocal autoindent
 setlocal backupcopy=
 setlocal nobinary
@@ -490,12 +494,11 @@ normal! zt
 1
 normal! 0
 wincmd w
-2wincmd w
-exe '1resize ' . ((&lines * 1 + 50) / 100)
-exe 'vert 1resize ' . ((&columns * 181 + 182) / 364)
-exe '2resize ' . ((&lines * 96 + 50) / 100)
-exe 'vert 2resize ' . ((&columns * 181 + 182) / 364)
-exe 'vert 3resize ' . ((&columns * 182 + 182) / 364)
+exe '1resize ' . ((&lines * 96 + 50) / 100)
+exe 'vert 1resize ' . ((&columns * 89 + 90) / 180)
+exe '2resize ' . ((&lines * 1 + 50) / 100)
+exe 'vert 2resize ' . ((&columns * 89 + 90) / 180)
+exe 'vert 3resize ' . ((&columns * 90 + 90) / 180)
 tabnext 1
 badd +58 main.cpp
 badd +0 bst.hpp

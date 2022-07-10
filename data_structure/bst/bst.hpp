@@ -81,6 +81,17 @@ public:
         parent->parent() = this;
     }
 
+    template <class UnaryFunction>
+    void traverse(UnaryFunction action) {
+        bst_node* leftChild = this->leftChild();
+        bst_node* rightChild = this->rightChild();
+        if (leftChild != NULL)
+            this->leftChild()->traverse(action);
+        action(value_);
+        if (rightChild != NULL)
+            this->rightChild()->traverse(action);
+    }
+
     std::string debugDescription(void) const {
         std::string description;
 
@@ -111,10 +122,10 @@ public:
 
 template <class T>
 void makeLinkToChild(bst_node<T>* currentNode, typename bst_node<T>::Direction directionToChild, bst_node<T>* childNode) {
-    if (currentNode != NULL)
-        currentNode->link_[directionToChild] = childNode;
     if (childNode != NULL)
         childNode->parent() = currentNode;
+    if (currentNode != NULL)
+        currentNode->link_[directionToChild] = childNode;
 }
 
 
@@ -231,8 +242,8 @@ public:
         }
         else if (rightChild->leftChild() == NULL) {
             replaceNode = rightChild;
-            makeLinkToChild(parent, direction, replaceNode);
             makeLinkToChild(replaceNode, node_type::D_LEFT, leftChild);
+            makeLinkToChild(parent, direction, replaceNode);
         }
         else {
             node_type* leftestOfRightSubtree;
@@ -247,9 +258,9 @@ public:
                     );
 
             replaceNode = leftestOfRightSubtree;
-            makeLinkToChild(parent, direction, replaceNode);
             makeLinkToChild(replaceNode, node_type::D_LEFT, removingNode->leftChild());
             makeLinkToChild(replaceNode, node_type::D_RIGHT, removingNode->rightChild());
+            makeLinkToChild(parent, direction, replaceNode);
         }
 
         if (parent == NULL)
@@ -259,6 +270,14 @@ public:
         allocator_.deallocate(removingNode, 1);
 
         --node_count_;
+    }
+
+    template <class UnaryFunction>
+    void walk(UnaryFunction action) {
+        if (root_ == NULL)
+            return;
+
+        root_->traverse(action);
     }
 
     std::string debugDescription(void) const {

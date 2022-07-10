@@ -15,7 +15,35 @@ int main(void) {
 
 */
 
-#define GROUND003
+#define GROUND004
+#ifdef GROUND004
+template <class T>
+void printNodeValue(T value) {
+    cout << "value: " << value << endl;
+}
+
+int main(void) {
+    cout << "[traverse test]" << endl;
+
+    ft::bst<int> bst;
+
+    bst.insert(5);
+    bst.insert(2);
+    bst.insert(1);
+    bst.insert(3);
+    bst.insert(4);
+    bst.insert(9);
+    bst.insert(8);
+    bst.insert(6);
+    bst.insert(7);
+
+    LMI::JSONDescriber::describe(cout, LMI::debugDescription(bst));
+    bst.walk(printNodeValue<int>);
+
+    return 0;
+}
+#endif
+
 #ifdef GROUND003
 int main(void) {
     cout << "[remove test]" << endl;
