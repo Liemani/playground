@@ -17,7 +17,36 @@ int main(void) {
 
 */
 
-#define GROUND006
+#define GROUND009
+#ifdef GROUND009
+int main(void) {
+    cout << "[bst_traverser test]" << endl;
+
+    ft::bst<int> bst;
+
+    bst.insert(5);
+    bst.insert(2);
+    bst.insert(1);
+    bst.insert(3);
+    bst.insert(4);
+    bst.insert(9);
+    bst.insert(8);
+    bst.insert(6);
+    bst.insert(7);
+
+    LMI::JSONDescriber::describe(cout, LMI::debugDescription(bst));
+
+    ft::bst<int>::traverser trav;
+    int* item;
+    for (item = bst.begin_traverser(trav); item != NULL; item = trav.next_item())
+        cout << *item << endl;
+    for (item = trav.prev_item(); item != NULL; item = trav.prev_item())
+        cout << *item << endl;
+
+    return 0;
+}
+#endif
+
 #ifdef GROUND008
 int main(void) {
     cout << "[copy constructor test]" << endl;

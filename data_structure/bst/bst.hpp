@@ -6,6 +6,7 @@
 #include <string>
 #include <memory>
 #include <iterator>
+#include "LMI.hpp"
 
 
 
@@ -333,6 +334,118 @@ public:
 
 
 
+//  MARK: - bst_traverser
+template <class T>
+class bst_traverser {
+private:
+    typedef T           node_value_type;
+    typedef bst_node<T> node_type;
+
+    node_type*          root_;
+    node_type*          node_;
+    node_type*          stack_[node_type::MAX_HEIGHT];
+    std::size_t         height_;
+
+    node_type* get_value_node() {
+        if (node_ == NULL) {
+            if (height_ == 0)
+                return root_ != NULL ? root_->max() : NULL;
+            else
+                return stack_[height_ - 1]->left()->max();
+        }
+        return node_->parent();
+    }
+
+public:
+    bst_traverser()
+    : root_(NULL)
+    , node_(NULL)
+    , height_(0) {
+    }
+
+    bst_traverser(node_type* root)
+    : root_(root)
+    , node_(root_)
+    , height_(0) {
+    }
+
+    bool operator==(const bst_traverser& rhs) {
+        return node_ == rhs.node_ && height_ == rhs.height_;
+    }
+
+    bool operator!=(const bst_traverser& rhs) {
+        return !(*this == rhs);
+    }
+
+    T& operator*() {
+        return node_->value_;
+    }
+
+    T* next_item() {
+        while (node_ != NULL) {
+            stack_[height_++] = node_;
+            node_ = node_->left();
+        }
+
+        if (height_ == 0)
+            return NULL;
+
+        node_ = stack_[--height_];
+        T* value_ptr = &node_->value_;
+        node_ = node_->right();
+
+        return value_ptr;
+    }
+
+    T* prev_item() {
+        if (node_ == NULL) {
+            node_ = this->get_value_node();
+            if (node_ == NULL)
+                return NULL;
+        }
+        else {
+            if (node_->parent() == NULL)
+                return NULL;
+            node_ = node_->parent();
+        }
+
+        T* value_ptr = &node_->value_;
+
+        if (node_->left() != NULL) {
+            stack_[height_++] = node_;
+            node_ = node_->left()->max()->right();
+        }
+        else if (node_->parent() == NULL) {
+            return NULL;
+        }
+        else {
+            while (height_ > 0 && node_->parent() == stack_[height_ - 1])
+                node_ = stack_[--height_];
+        }
+
+        return value_ptr;
+    }
+
+    std::string debugDescription(void) const {
+        std::string description;
+
+        description += "{";
+        description += "\"node_\":";
+        if (node_ == NULL)
+            description += LMI::debugDescription(node_);
+        else
+            description += LMI::debugDescription(*node_);
+        description += ",";
+        description += "\"height_\":";
+        description += LMI::debugDescription(height_);
+        description += "}";
+
+        return description;
+    }
+};  // class bst_traverser
+
+
+
 //  MARK: - bst
 template <class T, class Compare = std::less<T>, class Allocator = std::allocator<bst_node<T> > >
 class bst {
@@ -341,18 +454,29 @@ public:
     typedef bst_node<value_type>    node_type;
     typedef Compare                 value_compare;
     typedef Allocator               allocator_type;
+    typedef bst_traverser<T>        traverser;
+    typedef const bst_traverser<T>  const_traverser;
     typedef bst_iterator<T>         iterator;
     typedef bst_iterator<const T>   const_iterator;
 
 private:
+    node_type*      root_;
+    node_type*      begin_node_;
+    node_type*      end_node_;
     allocator_type  allocator_;
     value_compare   value_compare_;
-    node_type*      root_;
     std::size_t     node_count_;
+
+    bst& operator=(const bst& rhs);
 
 public:
     bst(const value_compare& compare = value_compare(), const allocator_type& allocator = allocator_type())
-    : allocator_(allocator), value_compare_(compare), root_(NULL), node_count_() {
+    : root_(NULL)
+    , begin_node_(NULL)
+    , end_node_(NULL)
+    , allocator_(allocator)
+    , value_compare_(compare)
+    , node_count_() {
     }
 
     node_type* search(const T& value) {
@@ -413,9 +537,13 @@ public:
         if (parent != NULL) {
             parent->link_[direction] = new_node;
             new_node->parent() = parent;
+            if (parent == begin_node_ && direction == node_type::D_LEFT)
+                begin_node_ = new_node;
         }
-        else
+        else {
             root_ = new_node;
+            begin_node_ = new_node;
+        }
 
         ++node_count_;
 
@@ -469,7 +597,10 @@ public:
         }
 
         if (parent == NULL)
-            this->root_ = replaceNode;
+            root_ = replaceNode;
+
+        if (removingNode == begin_node_)
+            begin_node_ = root_->min();
 
         allocator_.destroy(removingNode);
         allocator_.deallocate(removingNode, 1);
@@ -486,6 +617,15 @@ public:
 
     iterator end() {
         return iterator();
+    }
+
+    T* begin_traverser(traverser& trav) {
+        trav = traverser(root_);
+        return trav.next_item();
+    }
+
+    T* end_traverser() {
+        return NULL;
     }
 
     template <class UnaryFunction>
