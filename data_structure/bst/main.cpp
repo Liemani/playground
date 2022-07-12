@@ -1,4 +1,6 @@
 #define TRAVERSE_ITERATIVE5
+#define BST_NODE_COPY_RECURSIVE
+#define BST_NODE_CLONE_ITERATIVE4
 
 #include <iostream>
 #include "LMI.hpp"
@@ -17,7 +19,59 @@ int main(void) {
 
 */
 
-#define GROUND009
+#define GROUND011
+#ifdef GROUND011
+int main(void) {
+    cout << "[bst_node_copy_iterative() test]" << endl;
+
+    ft::bst<int> bst;
+
+    bst.insert(5);
+    bst.insert(2);
+    bst.insert(1);
+    bst.insert(3);
+    bst.insert(4);
+    bst.insert(9);
+    bst.insert(8);
+    bst.insert(6);
+    bst.insert(7);
+
+    LMI::JSONDescriber::describe(cout, LMI::debugDescription(bst));
+
+    ft::bst_node<int> dst;
+    ft::bst_node_copy_iterative(&dst, bst.getRoot());
+    LMI::JSONDescriber::describe(cout, LMI::debugDescription(dst));
+
+    return 0;
+}
+#endif
+
+#ifdef GROUND010
+int main(void) {
+    cout << "[bst_node_copy_recursive() test]" << endl;
+
+    ft::bst<int> bst;
+
+    bst.insert(5);
+    bst.insert(2);
+    bst.insert(1);
+    bst.insert(3);
+    bst.insert(4);
+    bst.insert(9);
+    bst.insert(8);
+    bst.insert(6);
+    bst.insert(7);
+
+    LMI::JSONDescriber::describe(cout, LMI::debugDescription(bst));
+
+    ft::bst_node<int> dst;
+    bst_node_copy_recursive(dst, *bst.getRoot());
+    LMI::JSONDescriber::describe(cout, LMI::debugDescription(dst));
+
+    return 0;
+}
+#endif
+
 #ifdef GROUND009
 int main(void) {
     cout << "[bst_traverser test]" << endl;
@@ -40,7 +94,7 @@ int main(void) {
     int* item;
     for (item = bst.begin_traverser(trav); item != NULL; item = trav.next_item())
         cout << *item << endl;
-    for (item = trav.prev_item(); item != NULL; item = trav.prev_item())
+    for (item = trav.previous_item(); item != NULL; item = trav.previous_item())
         cout << *item << endl;
 
     return 0;

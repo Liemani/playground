@@ -46,11 +46,16 @@ public:
 
     static const std::size_t MAX_HEIGHT = 32;
 
-    bst_node*   link_[3];
-    value_type  value_;
+    bst_node*       link_[3];
+    value_type      value_;
 
     bst_node(void): value_() { bzero(link_, sizeof(bst_node*) * 3); }
     bst_node(const value_type& value): value_(value) { bzero(link_, sizeof(bst_node*) * 3); }
+    bst_node(const bst_node& rhs): value_(rhs.value_) {}
+
+//      bst_node& operator=(const bst_node& rhs) {
+//          new bst_node(rhs->value_);
+//      }
 
     bst_node*& parent() { return link_[D_PARENT]; }
     bst_node*& left() { return link_[D_LEFT]; }
@@ -126,6 +131,9 @@ public:
         std::ostringstream oss;
 
         description += "{";
+        description += "\"address\":";
+        description += LMI::debugDescription(this);
+        description += ",";
         description += "\"value_\":";
         description += LMI::debugDescription(this->value_);
         description += ",";
@@ -147,6 +155,212 @@ public:
         return description;
     }
 };  // struct bst_node
+
+#ifdef BST_NODE_CLONE_RECURSIVE1
+template <class T>
+bst_node<T>* bst_node_clone_recursive(const bst_node<T>* const node) {
+    if (node == NULL)
+        return NULL;
+
+    bst_node<T>* clone = new bst_node<T>(node->value_);
+
+    clone->left() = bst_node<T>_clone_recursive(node->left());
+    clone->right() = bst_node<T>_clone_recursive(node->right());
+
+    return clone;
+}
+#endif  // BST_NODE_CLONE_RECURSIVE1
+
+#ifdef BST_NODE_CLONE_RECURSIVE2
+template <class T>
+bst_node<T>* bst_node_clone_recursive(const bst_node<T>* node) {
+    bst_node<T>* clone = new bst_node<T>(node->value_);
+
+    if (node->left() == NULL)
+        clone->left() = NULL;
+    else
+        clone->left() = bst_node_clone_recursive(clone->left());
+
+    if (node->right() == NULL)
+        clone->right() = NULL;
+    else
+        clone->right() = bst_node_clone_recursive(clone->right());
+
+    return clone;
+}
+#endif  // BST_NODE_CLONE_RECURSIVE2
+
+#ifdef BST_NODE_COPY_RECURSIVE
+template <class T>
+void bst_node_copy_recursive(bst_node<T>& dst, const bst_node<T>& src) {
+    dst.value_ = src.value_;
+
+    if (src.left() != NULL) {
+        dst.left() = std::allocator<bst_node<T> >().allocate(1);
+        bst_node_copy_recursive(*dst.left(), *src.left());
+    }
+    else
+        dst.left() = NULL;
+
+    if (src.right() != NULL) {
+        dst.right() = std::allocator<bst_node<T> >().allocate(1);
+        bst_node_copy_recursive(*dst.right(), *src.right());
+    }
+    else
+        dst.right() = NULL;
+}
+#endif  // BST_NODE_COPY_RECURSIVE
+
+#ifdef BST_NODE_CLONE_ITERATIVE1
+template <class T>
+void bst_node_copy_iterative(bst_node<T>* dst, const bst_node<T>* src) {
+    if (dst == NULL)
+        return;
+
+start:
+    if (src != NULL) {
+        dst->value_ = src->value_;
+
+        if (src->left() != NULL) {
+            dst->left() = std::allocator<bst_node<T> >().allocate(1);
+            bst_node_copy_iterative(dst->left(), src->left());
+        }
+        else
+            dst->left() = NULL;
+
+        if (src->right() != NULL) {
+            dst->right() = std::allocator<bst_node<T> >().allocate(1);
+            dst = dst->right();
+            src = src->right();
+            goto start;
+        }
+        else
+            dst->right() = NULL;
+    }
+}
+#endif  // BST_NODE_CLONE_ITERATIVE1
+
+#ifdef BST_NODE_CLONE_ITERATIVE2
+template <class T>
+void bst_node_copy_iterative(bst_node<T>* dst, const bst_node<T>* src) {
+    if (dst == NULL)
+        return;
+
+    while (src != NULL) {
+        dst->value_ = src->value_;
+
+        if (src->left() != NULL) {
+            dst->left() = std::allocator<bst_node<T> >().allocate(1);
+            bst_node_copy_iterative(dst->left(), src->left());
+        }
+        else
+            dst->left() = NULL;
+
+        if (src->right() != NULL) {
+            dst->right() = std::allocator<bst_node<T> >().allocate(1);
+            dst = dst->right();
+            src = src->right();
+        }
+        else {
+            dst->right() = NULL;
+            break;
+        }
+    }
+}
+#endif  // BST_NODE_CLONE_ITERATIVE2
+
+#ifdef BST_NODE_CLONE_ITERATIVE3
+template <class T>
+void bst_node_copy_iterative(bst_node<T>* dst, const bst_node<T>* src) {
+    if (dst == NULL)
+        return;
+
+    bst_node<T>* dst_stack[bst_node<T>::MAX_HEIGHT];
+    const bst_node<T>* src_stack[bst_node<T>::MAX_HEIGHT];
+    std::size_t height = 0;
+
+start:
+    while (src != NULL) {
+        dst->value_ = src->value_;
+
+        if (src->left() != NULL) {
+            dst->left() = std::allocator<bst_node<T> >().allocate(1);
+            dst_stack[height] = dst;
+            src_stack[height] = src;
+            ++height;
+            dst = dst->left();
+            src = src->left();
+            goto start;
+        }
+        else
+            dst->left() = NULL;
+resume:
+        if (src->right() != NULL) {
+            dst->right() = std::allocator<bst_node<T> >().allocate(1);
+            dst = dst->right();
+            src = src->right();
+        }
+        else {
+            dst->right() = NULL;
+            break;
+        }
+    }
+    if (height > 0) {
+        --height;
+        dst = dst_stack[height];
+        src = src_stack[height];
+        goto resume;
+    }
+}
+#endif  // BST_NODE_CLONE_ITERATIVE3
+
+#ifdef BST_NODE_CLONE_ITERATIVE4
+template <class T>
+void bst_node_copy_iterative(bst_node<T>* dst, const bst_node<T>* src) {
+    if (dst == NULL)
+        return;
+
+    bst_node<T>* dst_stack[bst_node<T>::MAX_HEIGHT];
+    const bst_node<T>* src_stack[bst_node<T>::MAX_HEIGHT];
+    std::size_t height = 0;
+
+start:
+    while (src != NULL) {
+        dst->value_ = src->value_;
+
+        if (src->left() != NULL) {
+            dst->left() = std::allocator<bst_node<T> >().allocate(1);
+            dst_stack[height] = dst;
+            src_stack[height] = src;
+            ++height;
+            dst = dst->left();
+            src = src->left();
+            goto start;
+        }
+        else {
+            dst->left() = NULL;
+            goto middle;
+        }
+    }
+endwhile:
+    if (height > 0) {
+        --height;
+        dst = dst_stack[height];
+        src = src_stack[height];
+middle:
+        if (src->right() != NULL) {
+            dst->right() = std::allocator<bst_node<T> >().allocate(1);
+            dst = dst->right();
+            src = src->right();
+            goto start;
+        }
+        else {
+            dst->right() = NULL;
+            goto endwhile;
+        }
+    }
+}
+#endif  // BST_NODE_CLONE_ITERATIVE4
 
 template <class T>
 void makeLinkToChild(bst_node<T>* currentNode, typename bst_node<T>::Direction directionToChild, bst_node<T>* childNode) {
@@ -397,14 +611,14 @@ public:
         return value_ptr;
     }
 
-    T* prev_item() {
+    T* previous_item() {
         if (node_ == NULL) {
             node_ = this->get_value_node();
             if (node_ == NULL)
                 return NULL;
         }
         else {
-            if (node_->parent() == NULL)
+            if (node_ == root_)
                 return NULL;
             node_ = node_->parent();
         }
@@ -415,11 +629,11 @@ public:
             stack_[height_++] = node_;
             node_ = node_->left()->max()->right();
         }
-        else if (node_->parent() == NULL) {
+        else if (node_ == root_) {
             return NULL;
         }
         else {
-            while (height_ > 0 && node_->parent() == stack_[height_ - 1])
+            while (height_ > 0 && stack_[height_ - 1]->left() == node_)
                 node_ = stack_[--height_];
         }
 
@@ -478,6 +692,8 @@ public:
     , value_compare_(compare)
     , node_count_() {
     }
+
+    const node_type* getRoot() const { return this->root_; }
 
     node_type* search(const T& value) {
         node_type* searchingNode = this->root_;
