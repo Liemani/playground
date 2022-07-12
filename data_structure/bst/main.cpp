@@ -1,6 +1,6 @@
 #define TRAVERSE_ITERATIVE5
 #define BST_NODE_COPY_RECURSIVE
-#define BST_NODE_CLONE_ITERATIVE4
+#define BST_NODE_COPY_ITERATIVE4
 
 #include <iostream>
 #include "LMI.hpp"
@@ -19,7 +19,55 @@ int main(void) {
 
 */
 
-#define GROUND011
+#define GROUND013
+#ifdef GROUND013
+int main(void) {
+    cout << "[rebalence() test]" << endl;
+
+    ft::bst<int> bst;
+
+    bst.insert(5);
+    bst.insert(2);
+    bst.insert(1);
+    bst.insert(3);
+    bst.insert(4);
+    bst.insert(9);
+    bst.insert(8);
+    bst.insert(6);
+    bst.insert(7);
+
+    LMI::JSONDescriber::describe(cout, LMI::debugDescription(bst));
+    bst.rebalence();
+    LMI::JSONDescriber::describe(cout, LMI::debugDescription(bst));
+
+    return 0;
+}
+#endif
+
+#ifdef GROUND012
+int main(void) {
+    cout << "[transformTreeToVine() test]" << endl;
+
+    ft::bst<int> bst;
+
+    bst.insert(5);
+    bst.insert(2);
+    bst.insert(1);
+    bst.insert(3);
+    bst.insert(4);
+    bst.insert(9);
+    bst.insert(8);
+    bst.insert(6);
+    bst.insert(7);
+
+    LMI::JSONDescriber::describe(cout, LMI::debugDescription(bst));
+    bst.transformTreeToVine();
+    LMI::JSONDescriber::describe(cout, LMI::debugDescription(bst));
+
+    return 0;
+}
+#endif
+
 #ifdef GROUND011
 int main(void) {
     cout << "[bst_node_copy_iterative() test]" << endl;

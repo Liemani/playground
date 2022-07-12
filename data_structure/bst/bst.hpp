@@ -211,7 +211,7 @@ void bst_node_copy_recursive(bst_node<T>& dst, const bst_node<T>& src) {
 }
 #endif  // BST_NODE_COPY_RECURSIVE
 
-#ifdef BST_NODE_CLONE_ITERATIVE1
+#ifdef BST_NODE_COPY_ITERATIVE1
 template <class T>
 void bst_node_copy_iterative(bst_node<T>* dst, const bst_node<T>* src) {
     if (dst == NULL)
@@ -238,9 +238,9 @@ start:
             dst->right() = NULL;
     }
 }
-#endif  // BST_NODE_CLONE_ITERATIVE1
+#endif  // BST_NODE_COPY_ITERATIVE1
 
-#ifdef BST_NODE_CLONE_ITERATIVE2
+#ifdef BST_NODE_COPY_ITERATIVE2
 template <class T>
 void bst_node_copy_iterative(bst_node<T>* dst, const bst_node<T>* src) {
     if (dst == NULL)
@@ -267,9 +267,9 @@ void bst_node_copy_iterative(bst_node<T>* dst, const bst_node<T>* src) {
         }
     }
 }
-#endif  // BST_NODE_CLONE_ITERATIVE2
+#endif  // BST_NODE_COPY_ITERATIVE2
 
-#ifdef BST_NODE_CLONE_ITERATIVE3
+#ifdef BST_NODE_COPY_ITERATIVE3
 template <class T>
 void bst_node_copy_iterative(bst_node<T>* dst, const bst_node<T>* src) {
     if (dst == NULL)
@@ -312,9 +312,9 @@ resume:
         goto resume;
     }
 }
-#endif  // BST_NODE_CLONE_ITERATIVE3
+#endif  // BST_NODE_COPY_ITERATIVE3
 
-#ifdef BST_NODE_CLONE_ITERATIVE4
+#ifdef BST_NODE_COPY_ITERATIVE4
 template <class T>
 void bst_node_copy_iterative(bst_node<T>* dst, const bst_node<T>* src) {
     if (dst == NULL)
@@ -360,7 +360,7 @@ middle:
         }
     }
 }
-#endif  // BST_NODE_CLONE_ITERATIVE4
+#endif  // BST_NODE_COPY_ITERATIVE4
 
 template <class T>
 void makeLinkToChild(bst_node<T>* currentNode, typename bst_node<T>::Direction directionToChild, bst_node<T>* childNode) {
@@ -446,7 +446,7 @@ start:
         goto start;
     }
 }
-#endif  // TRAVERSE_ITERATIVE3
+#endif  // TRAVERSE_ITERATIVE4
 
 #ifdef TRAVERSE_ITERATIVE5
 //  eliminate label resume:
@@ -467,7 +467,7 @@ void traverse_iterative(bst_node<T>* node, UnaryFunction action) {
         node = node->right();
     }
 }
-#endif  // TRAVERSE_ITERATIVE3
+#endif  // TRAVERSE_ITERATIVE5
 
 //  #ifdef TRAVERSE_ITERATIVE6
 //  //  eliminate label resume:
@@ -858,6 +858,54 @@ public:
             return;
 
         traverse_iterative(root_, action);
+    }
+
+    void transformTreeToVine() {
+        if (root_ == NULL)
+            return;
+
+        node_type* node = root_;
+        while (true) {
+            while (node->right() != NULL) {
+                node = node->right();
+                node->transform_up();
+            }
+            if (node->left() != NULL)
+                node = node->left();
+            else
+                break;
+        }
+
+        while (node->parent() != NULL)
+            node = node->parent();
+        root_ = node;
+    }
+
+    void rebalence() {
+        if (root_ == NULL)
+            return;
+
+        this->transformTreeToVine();
+        std::size_t vineNodeCount = node_count_;
+
+        std::size_t blackNodeCount = vineNodeCount;
+        std::size_t rotatedBlackNodeCount = 0;
+
+        while (blackNodeCount >= 3) {
+            node_type* node = root_;
+            node = node->left();
+            node->transform_up();
+            root_ = node;
+
+            blackNodeCount /= 2;
+            rotatedBlackNodeCount = 1;
+
+            while (rotatedBlackNodeCount < blackNodeCount) {
+                node = node->left()->left();
+                node->transform_up();
+                ++rotatedBlackNodeCount;
+            }
+        }
     }
 
     std::string debugDescription(void) const {
