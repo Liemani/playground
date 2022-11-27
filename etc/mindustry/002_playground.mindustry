@@ -1,3 +1,608 @@
+2022-11-21
+# impact reactor
+remove burningTime by waiting each loop that time
+
+```c like modify
+void main(void) {
+    while (true) {
+        if (switch.isEnabled) {
+            for ((index, reactor) in ::link.enumerated()) {
+                if (reactor.isEnabled) {
+                    if (netPower <= 0)
+                        reactor.isEnabled = false;
+                } else {
+                    if (netPower > 2000) {
+                        reactor.isEnabled = true;
+                        break;
+                    }
+                }
+            }
+        } else {
+            for (reactor in ::link)
+                reactor.isEnabled = false;
+        }
+
+        ::wait(10.0);
+    }
+}
+```
+
+start:
+set linkIndex 0
+
+mainLoop:
+set linkIndex 0
+sensor switchIsEnabled switch1 @enabled
+jump switchIsNotEnabled notEqual switchIsEnabled true
+
+switchIsEnabled:
+getlink reactor linkIndex
+sensor type reactor @type
+jump updateIterateSwitchIsEnabled notEqual type @impact-reactor
+sensor reactorIsEnabled reactor @enabled
+jump isNotEnable notEqual reactorIsEnabled true
+
+isEnabled:
+sensor powerNetIn reactor @powerNetIn
+sensor powerNetOut reactor @powerNetOut
+op sub netPower powerNetIn powerNetOut
+jump turnOff lessThanEq netPower 0
+jump updateIterateSwitchIsEnabled always x false
+
+turnOff:
+control enabled reactor 0 0 0 0
+jump updateIterateSwitchIsEnabled always x false
+
+isNotEnable:
+sensor powerNetIn reactor @powerNetIn
+sensor powerNetOut reactor @powerNetOut
+op sub netPower powerNetIn powerNetOut
+jump updateIterateSwitchIsEnabled lessThanEq netPower 2000
+
+turnOn:
+control enabled reactor 1 0 0 0
+jump afterIterate always x false
+
+updateIterateSwitchIsEnabled:
+op add linkIndex linkIndex 1
+jump switchIsEnabled lessThan linkIndex @links
+jump afterIterate always x false
+
+switchIsNotEnabled:
+getlink reactor linkIndex
+sensor type reactor @type
+jump updateIterateSwitchIsNotEnabled notEqual type @impact-reactor
+control enabled reactor 0 0 0 0
+
+updateIterateSwitchIsNotEnabled:
+op add linkIndex linkIndex 1
+jump switchIsNotEnabled lessThan linkIndex @links
+
+afterIterate:
+wait 10.0
+jump mainLoop always x false
+
+# thorium reactor
+start:
+mainLoop:
+sensor switchIsEnabled switch1 @enabled
+jump shutDown notEqual switchIsEnabled true
+
+controlThoriumReactor:
+sensor result reactor1 @cryofluid
+op greaterThan result result 25
+control enabled reactor1 result 0 0 0
+sensor result reactor2 @cryofluid
+op greaterThan result result 25
+control enabled reactor2 result 0 0 0
+jump updateLoop always x false
+
+shutDown:
+control enabled reactor1 false 0 0 0
+control enabled reactor2 false 0 0 0
+
+updateLoop:
+wait 10.0
+jump start always
+
+# impact reactor
+removed cryofluid check(confirmed: impact reactor do not explode when cryofluid is not enough)
+```c like modify
+void main(void) {
+    burningTime = 0;
+
+    while (true) {
+        if (switch.isEnabled) {
+            for ((index, reactor) in ::link.enumerated()) {
+                if (reactor.isEnabled) {
+                    if (netPower <= 0) {
+                        reactor.isEnabled = false;
+                    }
+                } else {
+                    if (::time >= burningTime
+                            && netPower > 2000) {
+                        reactor.isEnabled = true;
+                        targetTime = @time + 5000;
+                    }
+                }
+            }
+        } else {
+            for (reactor in ::link) {
+                reactor.isEnabled = false;
+            }
+        }
+
+        ::wait(1.0);
+    }
+}
+```
+
+start:
+set burningTime 0
+set linkIndex 0
+
+getSwitch:
+getlink switch linkIndex
+sensor type switch @type
+jump mainLoop equal type @switch
+op add linkIndex linkIndex 1
+jump getSwitch notEqual linkIndex @links
+
+mainLoop:
+set linkIndex 0
+sensor switchIsEnabled switch @enabled
+jump switchIsNotEnabled notEqual switchIsEnabled true
+
+switchIsEnabled:
+getlink reactor linkIndex
+sensor type reactor @type
+jump updateIterateSwitchIsEnabled  notEqual type @impact-reactor
+sensor reactorIsEnabled reactor @enabled
+jump isNotEnable notEqual reactorIsEnabled true
+
+isEnabled:
+sensor powerNetIn reactor @powerNetIn
+sensor powerNetOut reactor @powerNetOut
+op sub netPower powerNetIn powerNetOut
+jump turnOff lessThanEq netPower 0
+jump updateIterateSwitchIsEnabled always x false
+
+turnOff:
+control enabled reactor 0 0 0 0
+jump updateIterateSwitchIsEnabled always x false
+
+isNotEnable:
+jump updateIterateSwitchIsEnabled lessThan @time burningTime
+sensor powerNetIn reactor @powerNetIn
+sensor powerNetOut reactor @powerNetOut
+op sub netPower powerNetIn powerNetOut
+jump updateIterateSwitchIsEnabled lessThanEq netPower 2000
+
+turnOn:
+control enabled reactor 1 0 0 0
+op add burningTime @time 5000
+jump updateIterateSwitchIsEnabled always x false
+
+updateIterateSwitchIsEnabled:
+op add linkIndex linkIndex 1
+jump switchIsEnabled lessThan linkIndex @links
+jump afterIterate always x false
+
+switchIsNotEnabled:
+getlink reactor linkIndex
+sensor type reactor @type
+jump updateIterateSwitchIsNotEnabled notEqual type @impact-reactor
+control enabled reactor 0 0 0 0
+
+updateIterateSwitchIsNotEnabled:
+op add linkIndex linkIndex 1
+jump switchIsNotEnabled lessThan linkIndex @links
+
+afterIterate:
+wait 1.0
+jump mainLoop always x false
+
+# test
+start:
+getlink first 0
+getlink second 1
+getlink third 2
+
+main:
+
+printFirst:
+sensor result first @type
+jump firstIsNotReactor notEqual result @impact-reactor
+
+firstIsReactor:
+print "first is reactor"
+printflush message1
+wait 1.0
+jump printSecond always x false
+
+firstIsNotReactor:
+print "first is not reactor"
+printflush message1
+wait 1.0
+
+printSecond:
+sensor result second @type
+jump secondIsNotMessage notEqual result @message
+
+secondIsMessage:
+print "second is message"
+printflush message1
+wait 1.0
+jump again always x false
+
+secondIsNotMessage:
+print "second is not message"
+printflush message1
+wait 1.0
+
+again:
+jump main always x false
+
+inline call:
+op sub bp bp 1
+op add temp @counter 2
+write temp cell1 bp
+set @counter <function>
+
+# impact reactor
+start:
+bp = 64
+jump main always x false
+
+return:
+read pc cell1 bp
+op sub bp bp 1
+set @counter pc
+
+main:
+
+```c like modify
+void main(void) {
+    burningTime = 0;
+
+    while (true) {
+        if (switch.isEnabled) {
+            for ((index, reactor) in ::link.enumerated()) {
+                if (reactor.isEnabled) {
+                    if (reactor.cryofluid <= 15
+                            || netPower <= 0) {
+                        reactor.isEnabled = false;
+                    }
+                } else {
+                    if (::time >= burningTime
+                            && netPower > 2000
+                            && reactor.cryofluid > 15) {
+                        reactor.isEnabled = true;
+                        targetTime = @time + 5000;
+                    }
+                }
+            }
+        } else {
+            for (reactor in ::link) {
+                reactor.isEnabled = false;
+            }
+        }
+
+        ::wait(1.0);
+    }
+}
+```
+
+start:
+set burningTime 0
+set linkIndex 0
+
+getSwitch:
+getlink switch linkIndex
+sensor type switch @type
+jump mainLoop equal type @switch
+op add linkIndex linkIndex 1
+jump getSwitch notEqual linkIndex @links
+
+mainLoop:
+set linkIndex 0
+sensor switchIsEnabled switch @enabled
+jump switchIsNotEnabled notEqual switchIsEnabled true
+
+switchIsEnabled:
+getlink reactor linkIndex
+sensor type reactor @type
+jump updateIterateSwitchIsEnabled  notEqual type @impact-reactor
+sensor reactorIsEnabled reactor @enabled
+jump isNotEnable notEqual reactorIsEnabled true
+
+isEnabled:
+sensor cryofluid reactor @cryofluid
+jump turnOff lessThanEq cryofluid 15
+sensor powerNetIn reactor @powerNetIn
+sensor powerNetOut reactor @powerNetOut
+op sub netPower powerNetIn powerNetOut
+jump turnOff lessThanEq netPower 0
+jump updateIterateSwitchIsEnabled always x false
+
+turnOff:
+control enabled reactor 0 0 0 0
+jump updateIterateSwitchIsEnabled always x false
+
+isNotEnable:
+jump updateIterateSwitchIsEnabled lessThan @time burningTime
+sensor powerNetIn reactor @powerNetIn
+sensor powerNetOut reactor @powerNetOut
+op sub netPower powerNetIn powerNetOut
+jump updateIterateSwitchIsEnabled lessThanEq netPower 2000
+sensor cryofluid reactor @cryofluid
+jump updateIterateSwitchIsEnabled lessThanEq cryofluid 15
+
+turnOn:
+control enabled reactor 1 0 0 0
+op add burningTime @time 5000
+jump updateIterateSwitchIsEnabled always x false
+
+updateIterateSwitchIsEnabled:
+op add linkIndex linkIndex 1
+jump switchIsEnabled lessThan linkIndex @links
+jump afterIterate always x false
+
+switchIsNotEnabled:
+getlink reactor linkIndex
+sensor type reactor @type
+jump updateIterateSwitchIsNotEnabled notEqual type @impact-reactor
+control enabled reactor 0 0 0 0
+
+updateIterateSwitchIsNotEnabled:
+op add linkIndex linkIndex 1
+jump switchIsNotEnabled lessThan linkIndex @links
+
+afterIterate:
+wait 1.0
+jump mainLoop always x false
+
+2022-11-20
+# impact reactor
+set activeCount 0
+set targetTime @time
+set index 0
+getlink reactor index
+sensor cryofluid reactor @cryofluid
+jump 14 lessThanEq cryofluid 15
+sensor powerNetIn reactor @powerNetIn
+sensor powerNetOut reactor @powerNetOut
+op sub current powerNetIn powerNetOut
+jump 14 lessThanEq current 0
+jump 21 lessThan index activeCount
+jump 21 lessThan current 2000
+jump 17 equal index activeCount
+jump 15 always x false
+set activeCount 0
+control enabled reactor false 0 0 0
+jump 21 always x false
+jump 21 lessThan @time targetTime
+op add activeCount activeCount 1
+control enabled reactor true 0 0 0
+op add targetTime @time 5000
+op add index index 1
+jump 3 lessThan index @links
+jump 2 always x false
+
+```c like
+void main(void) {
+    activeCount = 0;
+    targetTime = 0;
+
+    for (index = 0; true; index = (index + 1) % link.count) {
+        reactor = link.get(index);
+
+        if (reactor.cryofluid <= 15) {
+            activeCount = 0;
+            reactor.enabled = false;
+            continue;
+        }
+
+        current = reactor.powerNetIn - reactor.powerNetOut;
+        if (current <= 0) {
+            activeCount = 0;
+            reactor.enabled = false;
+            continue;
+        }
+
+        if (index < activeCount)
+            continue;
+
+        if (current < 2000)
+            continue;
+
+        if (index == activeCount) {
+            turnOn();
+            continue;
+        }
+
+        reactor.enabled = false;
+    }
+}
+
+void turnOn(void) {
+    if (@time < targetTime)
+        return;
+
+    ++activeCount;
+    reactor.enabled = true;
+    targetTime = @time + 5000;
+}
+```
+
+# impact reactor
+set activeCount 0
+set targetTime 0
+set index 0
+getlink reactor index
+sensor cryofluid reactor @cryofluid
+jump 14 lessThanEq cryofluid 15
+sensor powerNetIn reactor @powerNetIn
+sensor powerNetOut reactor @powerNetOut
+op sub current powerNetIn powerNetOut
+jump 14 lessThanEq current 0
+jump 17 lessThan index activeCount
+jump 21 lessThan current 2000
+jump 17 equal index activeCount
+jump 15 always x false
+set activeCount 0
+control enabled reactor false 0 0 0
+jump 21 always x false
+jump 21 lessThan @time targetTime
+op add activeCount activeCount 1
+control enabled reactor true 0 0 0
+op add targetTime @time 5000
+op add index index 1
+jump 3 lessThan index @links
+jump 2 always x false
+
+```seudo
+main() {
+    activeCount = 0;
+    targetTime = 0;
+
+reset:
+    index = 0;
+
+loop:
+    reactor = link.get(index);
+    cryofluid = reactor.sensor(@cryofluid);
+    if (cryofluid <= 15) goto switchOff;
+    powerNetIn = reactor.sensor(@powerNetIn);
+    powerNetOut = reactor.sensor(@powerNetOut);
+    current = powerNetIn - powerNetOut;
+    if (current <= 0) goto switchOff;
+    if (index < activeCount) goto turnOn;
+    if (current < 2000) goto nextLoop;
+    if (index == activeCount) goto turnOn;
+    goto turnOff;
+
+switchOff:
+    activeCount = 0;
+turnOff:
+    reactor.enabled = false;
+    goto nextLoop;
+
+turnOn:
+    if (@time < targetTime) goto nextLoop;
+    ++activeCount;
+    reactor.enabled = true;
+    targetTime = @time + 5000;
+nextLoop:
+    ++index;
+    if (index < link.count) goto loop;
+    goto reset;
+}
+```
+
+```c like
+void main(void) {
+    activeCount = 0;
+    targetTime = 0;
+    index = 0;
+
+    for (; true; index = (index + 1) % link.count) {
+        reactor = link.get(index);
+
+        cryofluid = reactor.sensor(@cryofluid);
+        if (cryofluid <= 15) {
+            activeCount = 0;
+            turnOff();
+            continue;
+        }
+
+        current = reactor.powerNetIn - reactor.powerNetOut;
+        if (current <= 0) {
+            activeCount = 0;
+            turnOff();
+            continue;
+        }
+
+        if (index < activeCount) {
+            turnOn();
+            continue;
+        }
+
+        if (current < 2000)
+            continue;
+
+        if (index == activeCount) {
+            turnOn();
+            continue;
+        }
+
+        turnOff();
+    }
+}
+
+void turnOff(void) {
+    reactor.enabled = false;
+    goto nextLoop;
+}
+
+void turnOn(void) {
+    if (@time < targetTime)
+        return;
+
+    ++activeCount;
+    reactor.enabled = true;
+    targetTime = @time + 5000;
+}
+```
+
+```c like clean
+void main(void) {
+    activeCount = 0;
+    targetTime = 0;
+
+    for (index = 0; true; index = (index + 1) % link.count) {
+        reactor = link.get(index);
+
+        if (reactor.cryofluid <= 15) {
+            activeCount = 0;
+            reactor.enabled = false;
+            continue;
+        }
+
+        current = reactor.powerNetIn - reactor.powerNetOut;
+        if (current <= 0) {
+            activeCount = 0;
+            reactor.enabled = false;
+            continue;
+        }
+
+        if (index < activeCount) {
+            turnOn();
+            continue;
+        }
+
+        if (current < 2000)
+            continue;
+
+        if (index == activeCount) {
+            turnOn();
+            continue;
+        }
+
+        reactor.enabled = false;
+    }
+}
+
+void turnOn(void) {
+    if (@time < targetTime)
+        return;
+
+    ++activeCount;
+    reactor.enabled = true;
+    targetTime = @time + 5000;
+}
+```
+
 //	reactor control 2
 sensor result reactor1 @cryofluid
 op greaterThan result result 15
@@ -104,3 +709,35 @@ bXNjaAF4nCWP0Y7CIBBFL1CorlkTX/wLPoqUsSGpTDPSGj9+4w7KyzmTe8lkcMTRYqjpTjjcufLKywun
 bXNjaAF4nCWLQQ6EMAhFv1I1jc5R5kym6bBoMlJTdePpBVmQx/t8EBF7BEkbI9z3mjD/+Mit7GepAvSIucqZinDDkmvjr1z5z9cB4KOjDTIEx2jodKFOo+CFyUI7k/VeG9xGt0lfXpBjAD39XxFe
 //	vault
 bXNjaAF4nCWLWwrDIBRET3wUxWylayrW+iGkGoz2I6uv4lyY4VxmcDiByv4bUff9euM+8Qo1nS2VDBL98/1o2FBy8ynHyh5Kjc/cwxH7BTgQbKM6TCG3EY9JAosU6HFDelX0fIJZZBbZtTNz9wc64ROh
+
+# system variable usage
+## useful link: https://mindustrygame.github.io/wiki/logic/3-variables/#processor-variables-and-constants
+
+## counter
+set @counter address
+
+# backup
+set activeCount 0
+set targetTime @time
+set index 0
+getlink reactor index
+sensor cryofluid reactor @cryofluid
+jump 14 lessThanEq cryofluid 15
+sensor powerNetIn reactor @powerNetIn
+sensor powerNetOut reactor @powerNetOut
+op sub current powerNetIn powerNetOut
+jump 14 lessThanEq current 0
+jump 21 lessThan index activeCount
+jump 21 lessThan current 2000
+jump 17 equal index activeCount
+jump 15 always x false
+set activeCount 0
+control enabled reactor false 0 0 0
+jump 21 always x false
+jump 21 lessThan @time targetTime
+op add activeCount activeCount 1
+control enabled reactor true 0 0 0
+op add targetTime @time 5000
+op add index index 1
+jump 3 lessThan index @links
+jump 2 always x false
