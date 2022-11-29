@@ -1,0 +1,37 @@
+start:
+
+init:
+set UNIT_TYPE @flare
+set UNIT_SPEED 20.25
+
+getUnit:
+ubind UNIT_TYPE
+set firstUnit @unit
+sensor isControlled @unit @controlled
+
+initCore:
+ulocate building core 0 @copper coreX coreY found core
+
+takeItem:
+ucontrol move coreX coreY 0 0 0
+sensor unitX @unit @x
+sensor unitY @unit @y
+op sub dx unitX coreX
+op sub dy unitY coreY
+op len distance dx dy
+op div waitTime distance UNIT_SPEED
+wait waitTime
+ucontrol itemTake core @copper 10 0 0
+
+dropItem:
+ucontrol move @thisx @thisy 0 0 0
+sensor unitX @unit @x
+sensor unitY @unit @y
+op sub dx unitX @thisx
+op sub dy unitY @thisy
+op len distance dx dy
+op div waitTime distance UNIT_SPEED
+wait waitTime
+ucontrol itemDrop container1 10 0 0 0
+
+jump takeItem always x false

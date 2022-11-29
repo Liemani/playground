@@ -1,0 +1,164 @@
+2022-11-30
+# overdrive dome
+maximum range is 250 with flare
+
+```c like pseudo code
+main() {
+    unit = getUnit();
+
+    while (true) {
+        carryItem(phase);
+        carryItem(silicon);
+    }
+}
+
+carryItem() {
+    unit.itemTake(core, item, 10);
+    unit.itemDrop(dome1, 10);
+}
+
+getUnit() {
+    while (true) {
+        for (unit in units)
+            if (!unit.isControlled())
+                return unit;
+        wait(10.0);
+    }
+}
+```
+
+start:
+initUnit:
+set UNIT_TYPE @flare
+set UNIT_SPEED 20.25
+
+
+getUnit:
+ubind UNIT_TYPE
+set firstUnit @unit
+sensor isControlled @unit @controlled
+jump initCore equal isControlled false
+
+getUnitLoop:
+ubind UNIT_TYPE
+jump repeatGetUnit strictEqual @unit firstUnit
+sensor isControlled @unit @controlled
+jump initCore equal isControlled false
+jump getUnitLoop always x false
+
+repeatGetUnit:
+wait 10.0
+jump getUnit always x false
+
+
+initCore:
+ulocate building core 0 @copper coreX coreY found core
+
+
+mainLoop:
+set itemToCarry @phase-fabric
+set ebp2 @counter
+jump carryItem_itemToCarry always x false
+
+set itemToCarry @silicon
+set ebp2 @counter
+jump carryItem_itemToCarry always x false
+
+jump mainLoop always x false
+
+
+carryItem_itemToCarry:
+itemTake:
+set targetX coreX
+set targetY coreY
+set ebp @counter
+jump moveWait_targetX_targetY always x false
+set ebp @counter
+jump replaceItem_itemToCarry always x false
+
+itemDrop:
+set targetX @thisx
+set targetY @thisy
+set ebp @counter
+jump moveWait_targetX_targetY always x false
+ucontrol itemDrop dome1 10 0 0 0
+
+returnCarryItem:
+op add ebp2 ebp2 1
+set @counter ebp2
+
+
+moveWait_targetX_targetY:
+ucontrol move targetX targetY 0 0 0
+sensor unitX @unit @x
+sensor unitY @unit @y
+op sub dx unitX targetX
+op sub dy unitY targetY
+op len distance dx dy
+op div waitTime distance UNIT_SPEED
+wait waitTime
+
+returnMoveWait_targetX_targetY:
+op add ebp ebp 1
+set @counter ebp
+
+
+replaceItem_itemToCarry:
+ucontrol itemDrop core 10 0 0 0
+ucontrol move 0 0 0 0 0
+wait 1.0
+ucontrol move coreX coreY 0 0 0
+wait 1.0
+ucontrol itemTake core itemToCarry 10 0 0
+
+returnReplaceItem_itemToCarry:
+op add ebp ebp 1
+set @counter ebp
+
+
+2022-11-29
+# carry
+carry item from core to storage
+
+```c like pseudo code
+enum unit status {
+    WAITING,
+    ON_DUTY,
+};
+
+void main(void) {
+    // set constant
+    set UNIT_TYPE @flare;
+
+    // init
+    get core();
+
+    // loop
+    main loop();
+}
+
+main loop() {
+    while (true) {
+        get waiting unit();
+        wait(10000);
+    }
+}
+
+get core() {
+    ulocate building core 0 @copper coreX coreY found core;
+}
+
+get waiting unit() {
+    while (true) {
+        if (@unit is waiting)
+            break;
+        ubind UNIT_TYPE;
+    }
+}
+```
+
+start:
+set UNIT_TYPE @flare
+
+get
+ubind UNIT_TYPE
