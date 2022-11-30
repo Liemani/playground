@@ -1,8 +1,13 @@
 2022-11-30
 # overdrive dome
-maximum range is 230 with flare
 
-```c like pseudo code
+## description
+maximum range is 230 with flare
+compatible in local
+compatible in server
+
+## c like pseudo code
+```
 main() {
     unit = getUnit();
 
@@ -27,6 +32,7 @@ getUnit() {
 }
 ```
 
+## code
 main:
 defineConstant:
     set UNIT_TYPE @flare
@@ -52,11 +58,11 @@ init:
 mainLoop:
     carryPhaseFabric:
         set itemToCarry @phase-fabric
-        set ebp1 @counter
+        set bp1 @counter
         jump carryItem_itemToCarry always x false
     carrySilicon:
         set itemToCarry @silicon
-        set ebp1 @counter
+        set bp1 @counter
         jump carryItem_itemToCarry always x false
     repeatMainLoop:
         jump mainLoop always x false
@@ -65,19 +71,19 @@ carryItem_itemToCarry:
 carryItemTake:
     set targetX coreX
     set targetY coreY
-    set ebp0 @counter
+    set bp0 @counter
     jump moveWait always x false
-    set ebp0 @counter
+    set bp0 @counter
     jump replaceItem always x false
 carryItemDrop:
     set targetX @thisx
     set targetY @thisy
-    set ebp0 @counter
+    set bp0 @counter
     jump moveWait always x false
     ucontrol itemDrop dome1 10 0 0 0
 returnCarryItem:
-    op add ebp1 ebp1 1
-    set @counter ebp1
+    op add bp1 bp1 1
+    set @counter bp1
 
 moveWait_targetX_targetY:
 moveWait:
@@ -90,8 +96,8 @@ moveWait:
     op div waitTime distance UNIT_SPEED
     wait waitTime
 returnMoveWait:
-    op add ebp0 ebp0 1
-    set @counter ebp0
+    op add bp0 bp0 1
+    set @counter bp0
 
 replaceItem_itemToCarry:
 replaceItem:
@@ -103,15 +109,18 @@ replaceItem:
     wait 1.0
     ucontrol itemTake core itemToCarry 10 0 0
 returnReplaceItem:
-    op add ebp0 ebp0 1
-    set @counter ebp0
-
+    op add bp0 bp0 1
+    set @counter bp0
 
 2022-11-29
 # carry
-carry item from core to storage
 
-```c like pseudo code
+## description
+carry item from core to storage
+not work
+
+## c like pseudo code
+```
 enum unit status {
     WAITING,
     ON_DUTY,
@@ -148,6 +157,7 @@ get waiting unit() {
 }
 ```
 
+## code
 start:
 set UNIT_TYPE @flare
 
