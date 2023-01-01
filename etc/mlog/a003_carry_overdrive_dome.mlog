@@ -76,6 +76,10 @@ carryItemTake:
     set bp0 @counter
     jump replaceItem always x false
 carryItemDrop:
+    ucontrol itemDrop core 10 0 0 0
+    ucontrol itemDrop @air 10 0 0 0
+    ucontrol move 0 0 0 0 0
+    wait 1.0
     set targetX @thisx
     set targetY @thisy
     set bp0 @counter
