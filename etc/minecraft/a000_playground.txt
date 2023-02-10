@@ -1,0 +1,55 @@
+0 64 0
+31 95 31
+
+/fill 0 64 0 31 95 31 planks 2
+/fill 1 65 1 30 94 30 air
+
+/fill 15 64 -1 16 95 -32 air
+
+/fill 0 80 0 31 95 31 air
+/fill 0 79 0 31 79 31 planks 2
+
+/fill 1 79 1 30 79 30 glass
+
+/fill 1 65 1 30 78 30 air
+
+/fill -1 64 -1 -16 71 -16 planks 2
+/fill -2 65 -2 -15 71 -15 air
+/fill -2 71 -2 -15 71 -15 glass
+
+/clone 0 64 0 31 79 31 32 63 0
+/fill 0 64 0 31 79 31 air
+/clone -1 64 -1 -16 71 -16 0 63 0 replace move
+/fill 7 63 -1 8 71 -30 air
+
+# backup template
+/clone 0 63 0 15 70 15 0 55 0
+/clone 32 63 0 63 78 31 32 47 0
+
+# make squre cylinder
+/fill 0 63 0 15 70 15 planks 2 hollow
+
+# replace all planks 2(birch plank) with planks 1(oak plank) in area
+/fill 0 63 0 15 70 15 planks 1 replace planks 2
+
+# replace all planks 1(oak plank) with stripped birch log in area
+/fill 0 63 0 15 70 15 stripped_birch_log 1 replace planks 1
+
+# replace all stripped birch log directing the x direction to y
+/fill 0 63 0 15 70 15 stripped_birch_log 3 replace stripped_birch_log 1
+
+# replace all stripped birch log with oak log
+/fill 0 63 0 15 70 15 log 3 replace stripped_birch_log 3
+
+/fill 0 63 -1 15 71 -30 air
+/fill -30 63 -1 15 71 -40 air
+/fill 0 67 0 15 70 15 leaves 0 replace log 3
+/fill -40 62 -2 14 62 -30 water
+
+# make 8 * 8 * 8 room
+/fill 16 63 0 23 66 7 log 3 hollow
+/fill 16 67 0 23 70 7 leaves 0 hollow
+/fill 17 70 1 22 70 6 glass
+
+# stop spawning all creature
+/gamerule doMobSpawning false
