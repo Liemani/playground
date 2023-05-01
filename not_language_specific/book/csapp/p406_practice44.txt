@@ -1,0 +1,40 @@
+long rproduct(long *start, long count) {
+    if (count <= 1)
+        return 1;
+    return *start * rproduct(start+1, count-1);
+}
+
+_rproduct:
+    pushq   %rbx
+    pushq   %r8
+    pushq   %r9
+
+    irmovq  $0x8, %r8
+    irmovq  $0x1, %r9
+    subq    %r9, %rsi
+    jle     recursive_call
+    rrmovq  %r9, %rax
+    jmp     return
+
+recursive_call:
+    mrmovq  (%rdi), %rbx
+    addq    %r8, %rdi
+    call    _rproduct
+
+    rrmovq  %rax, %r11
+    jmp     test
+
+product:
+    addq    %r11, %rax
+
+test:
+    subq    %r9, %rbx
+    jg      product
+
+return:
+
+    popq    %r9
+    popq    %r8
+    popq    %rbx
+
+    ret

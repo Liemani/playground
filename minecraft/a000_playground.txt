@@ -51,5 +51,5 @@
 /fill 16 67 0 23 70 7 leaves 0 hollow
 /fill 17 70 1 22 70 6 glass
 
-# stop spawning all creature
-/gamerule doMobSpawning false
+# pour
+/gamerule doMobSpawning false: stop spawning all creature

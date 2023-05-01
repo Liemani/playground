@@ -1,0 +1,70 @@
+
+a019_will_setting_zero_generate_xor.o:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+0000000000000000 <_main>:
+       0: 55                           	pushq	%rbp
+       1: 48 89 e5                     	movq	%rsp, %rbp
+       4: 53                           	pushq	%rbx
+       5: 50                           	pushq	%rax
+       6: 48 8d 1d 24 00 00 00         	leaq	36(%rip), %rbx          ## 0x31 <_main+0x31>
+       d: 48 89 df                     	movq	%rbx, %rdi
+      10: be 01 00 00 00               	movl	$1, %esi
+      15: 31 c0                        	xorl	%eax, %eax
+      17: e8 00 00 00 00               	callq	0x1c <_main+0x1c>
+      1c: 48 89 df                     	movq	%rbx, %rdi
+      1f: 31 f6                        	xorl	%esi, %esi
+      21: 31 c0                        	xorl	%eax, %eax
+      23: e8 00 00 00 00               	callq	0x28 <_main+0x28>
+      28: 31 c0                        	xorl	%eax, %eax
+      2a: 48 83 c4 08                  	addq	$8, %rsp
+      2e: 5b                           	popq	%rbx
+      2f: 5d                           	popq	%rbp
+      30: c3                           	retq
+
+Disassembly of section __TEXT,__cstring:
+
+0000000000000031 <__cstring>:
+      31: 25                           	<unknown>
+      32: 64 0a 00                     	orb	%fs:(%rax), %al
+
+Disassembly of section __LD,__compact_unwind:
+
+0000000000000038 <__compact_unwind>:
+		...
+      40: 31 00                        	xorl	%eax, (%rax)
+      42: 00 00                        	addb	%al, (%rax)
+      44: 01 00                        	addl	%eax, (%rax)
+      46: 01 01                        	addl	%eax, (%rcx)
+		...
+
+Disassembly of section __TEXT,__eh_frame:
+
+0000000000000058 <__eh_frame>:
+      58: 14 00                        	adcb	$0, %al
+      5a: 00 00                        	addb	%al, (%rax)
+      5c: 00 00                        	addb	%al, (%rax)
+      5e: 00 00                        	addb	%al, (%rax)
+      60: 01 7a 52                     	addl	%edi, 82(%rdx)
+      63: 00 01                        	addb	%al, (%rcx)
+      65: 78 10                        	js	0x77 <__eh_frame+0x1f>
+      67: 01 10                        	addl	%edx, (%rax)
+      69: 0c 07                        	orb	$7, %al
+      6b: 08 90 01 00 00 24            	orb	%dl, 603979777(%rax)
+      71: 00 00                        	addb	%al, (%rax)
+      73: 00 1c 00                     	addb	%bl, (%rax,%rax)
+      76: 00 00                        	addb	%al, (%rax)
+      78: 88 ff                        	movb	%bh, %bh
+      7a: ff ff                        	<unknown>
+      7c: ff ff                        	<unknown>
+      7e: ff ff                        	<unknown>
+      80: 31 00                        	xorl	%eax, (%rax)
+      82: 00 00                        	addb	%al, (%rax)
+      84: 00 00                        	addb	%al, (%rax)
+      86: 00 00                        	addb	%al, (%rax)
+      88: 00 41 0e                     	addb	%al, 14(%rcx)
+      8b: 10 86 02 43 0d 06            	adcb	%al, 101532418(%rsi)
+      91: 42 83 03 00                  	addl	$0, (%rbx)
+      95: 00 00                        	addb	%al, (%rax)
+      97: 00                           	<unknown>

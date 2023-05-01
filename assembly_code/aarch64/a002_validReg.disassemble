@@ -1,0 +1,31 @@
+libunwind.dylib`libunwind::UnwindCursor<libunwind::LocalAddressSpace, libunwind::Registers_arm64>::validReg(int)
+
+    0x19c9bb628 <+0>:  mov    w8, #0x1              ; w8 = 1
+    0x19c9bb62c <+4>:  mov    w9, #0x1              ; w9 = 1
+    0x19c9bb630 <+8>:  sub    w10, w1, #0x40        ; w10 = w1 - 0x40
+    0x19c9bb634 <+12>: cmn    w10, #0x1f            ; nzcv = w10 - (-0x1f)
+    0x19c9bb638 <+16>: cset   w10, lo               ; w10 = nzcv < 0
+    0x19c9bb63c <+20>: cmp    w1, #0x22             ; nzcv = w1 - 0x22
+    0x19c9bb640 <+24>: csel   w9, w9, w10, eq       ; w9 = nzcv == 0 ? w9 : w10
+    0x19c9bb644 <+28>: cmp    w1, #0x5f             ; nzcv = w1 - 0x5f
+    0x19c9bb648 <+32>: csel   w9, wzr, w9, hi       ; w9 = nzcv > 0 ? wzr : w9
+    0x19c9bb64c <+36>: cmn    w1, #0x3              ; nzcv = w1 - (-0x3)
+    0x19c9bb650 <+40>: csel   w0, w8, w9, hi        ; w0 = nzcv > 0 ? w8 : w9
+    0x19c9bb654 <+44>: ret                          ; return w0
+
+w8  = 1
+w9  = 1
+w10 = w1 l- 0x40 l< -0x1f
+w9  = w1 == 0x22 ? w9 : w10
+w9  = w1 l> 0x5f ? wzr : w9
+w0  = w1 l> -0x3 ? w8 : w9
+
+w1                  w0
+----------------------------------------
+[0x0, 0x20]         1
+[0x21]              0
+[0x22]              1
+[0x23, 0x3f]        0
+[0x40, 0x5f]        1
+[0x60, 0xfffffffd]  0
+[0xfffffffe, $]     1
