@@ -1,0 +1,57 @@
+java.awt.event.KeyEvent[
+  KEY_PRESSED,
+  keyCode=17,
+  keyText=⌃,
+  keyChar=UndefinedkeyChar,
+  modifiers=⌃,
+  extModifiers=⌃,
+  keyLocation=KEY_LOCATION_LEFT,
+  rawCode=0,
+  primaryLevelUnicode=0,
+  scancode=0,
+  extendedKeyCode=0x0
+]onframe0
+java.awt.event.MouseEvent[
+  MOUSE_PRESSED,
+  (100,
+  100),
+  absolute(100,
+  100),
+  button=1,
+  modifiers=⌃+Button1,
+  extModifiers=⌃+Button1,
+  clickCount=1
+]onframe0
+java.awt.event.MouseEvent[
+  MOUSE_RELEASED,
+  (100,
+  100),
+  absolute(100,
+  100),
+  button=1,
+  modifiers=⌃+Button1,
+  extModifiers=⌃,
+  clickCount=1
+]onframe0
+java.awt.event.MouseEvent[
+  MOUSE_CLICKED,
+  (100,
+  100),
+  absolute(100,
+  100),
+  button=1,
+  modifiers=⌃+Button1,
+  extModifiers=⌃,
+  clickCount=1
+]onframe0
+java.awt.event.KeyEvent[
+  KEY_RELEASED,
+  keyCode=17,
+  keyText=⌃,
+  keyChar=UndefinedkeyChar,
+  keyLocation=KEY_LOCATION_LEFT,
+  rawCode=0,
+  primaryLevelUnicode=0,
+  scancode=0,
+  extendedKeyCode=0x0
+]onframe0

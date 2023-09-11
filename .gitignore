@@ -1,0 +1,9 @@
+#gitignore/
+#first
+test.txt
+!fourth.txt
+#first/
+#/first
+#!test.txt
+#gitignore
+#!test.txt
