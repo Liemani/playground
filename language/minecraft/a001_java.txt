@@ -1,0 +1,131 @@
+0 63 0
+15 70 15
+
+# replace all planks 2(birch plank) with planks 1(oak plank) in area
+/fill 0 63 0 15 70 15 planks 1 replace planks 2
+
+# replace all planks 1(oak plank) with stripped birch log in area
+/fill 0 63 0 15 70 15 stripped_birch_log 1 replace planks 1
+
+# replace all stripped birch log directing the x direction to y
+/fill 0 63 0 15 70 15 stripped_birch_log 3 replace stripped_birch_log 1
+
+# replace all stripped birch log with oak log
+/fill 0 63 0 15 70 15 log 3 replace stripped_birch_log 3
+
+/fill 0 67 0 15 70 15 leaves 0 replace log 3
+
+# make 8 * 8 * 8 room
+/fill 16 63 0 23 66 7 log 3 hollow
+/fill 16 67 0 23 70 7 leaves 0 hollow
+/fill 17 70 1 22 70 6 glass
+
+# make spawn hall
+/fill 0 62 0 15 69 15 minecraft:birch_planks hollow
+/fill 1 69 1 14 69 14 minecraft:air
+/fill 0 70 0 15 197 15 minecraft:air
+/setworldspawn 7 63 7
+/fill 7 63 0 8 64 15 minecraft:air
+/fill 0 63 7 15 64 8 minecraft:air
+
+# make my ground room
+/fill ~001 ~-01 ~001 ~016 ~006 ~016 minecraft:spruce_planks hollow
+/fill ~002 ~006 ~002 ~015 ~006 ~015 minecraft:glass
+/fill ~008 ~000 ~001 ~009 ~001 ~016 minecraft:air
+/fill ~001 ~000 ~008 ~016 ~001 ~009 minecraft:air
+
+# make default room
+/fill ~001 ~-01 ~001 ~016 ~006 ~016 minecraft:spruce_planks hollow
+/fill ~001 ~000 ~008 ~016 ~001 ~009 minecraft:air
+/fill ~008 ~000 ~001 ~009 ~001 ~016 minecraft:air
+
+# overworld exp farm
+// 20((1 + 8 + 1) * 2) x 36(1 + 1 + 1 + 22 + 2 - 1 + (2 + 1) * 3 + 1) x 20(== x)
+/fill ~006 ~-01 ~006 ~015 ~-01 ~015 minecraft:cobbled_deepslate
+
+/fill ~009 ~002 ~009 ~012 ~023 ~012 minecraft:cobbled_deepslate hollow
+/fill ~010 ~002 ~010 ~011 ~023 ~011 minecraft:air
+
+/fill ~001 ~023 ~009 ~020 ~025 ~012 minecraft:cobbled_deepslate hollow
+/fill ~009 ~023 ~001 ~012 ~025 ~020 minecraft:cobbled_deepslate hollow
+/fill ~010 ~023 ~010 ~011 ~023 ~011 minecraft:air
+/fill ~002 ~024 ~010 ~002 ~024 ~011 minecraft:water
+/fill ~010 ~024 ~002 ~011 ~024 ~002 minecraft:water
+/fill ~010 ~024 ~019 ~011 ~024 ~019 minecraft:water
+/fill ~019 ~024 ~010 ~019 ~024 ~011 minecraft:water
+/fill ~009 ~024 ~010 ~012 ~025 ~011 minecraft:air
+/fill ~010 ~024 ~009 ~011 ~025 ~012 minecraft:air
+
+/fill ~001 ~025 ~001 ~020 ~034 ~020 minecraft:cobbled_deepslate hollow
+/fill ~002 ~025 ~010 ~019 ~025 ~010 minecraft:spruce_trapdoor[facing=south,open=true,half=top]
+/fill ~002 ~025 ~011 ~019 ~025 ~011 minecraft:spruce_trapdoor[facing=north,open=true,half=top]
+/fill ~010 ~025 ~002 ~010 ~025 ~019 minecraft:spruce_trapdoor[facing=east,open=true,half=top]
+/fill ~011 ~025 ~002 ~011 ~025 ~019 minecraft:spruce_trapdoor[facing=west,open=true,half=top]
+/fill ~010 ~025 ~010 ~011 ~025 ~011 minecraft:air
+/clone ~002 ~025 ~002 ~019 ~025 ~019 ~002 ~028 ~002
+/clone ~002 ~025 ~002 ~019 ~025 ~019 ~002 ~031 ~002
+
+# preference
+/gamerule doImmediateRespawn true
+/gamerule playersSleepingPercentage 50
+/gamerule spawnRadius 0
+/gamerule announceAdvancements false
+
+# useful command
+/clone <sourceBegin coordinate> <sourceEnd coordinate> <destinationBegin coordination> [replace] [move]
+/deop
+/fill <from: coordinate> <to: coordinate> <block> [fill type]
+fill type
+    hollow: fill inner blocks with air
+    outine: does not replace the inner blocks
+/fillbiome
+/gamerule announceAdvancements false
+/gamerule doImmediateRespawn true
+/gamerule doMobSpawning false: stop spawning all creature
+/gamerule keepInventory true
+/gamerule playersSleepingPercentage 50
+/gamerule spawnRadius 0
+/give <target> <item> [count]
+/locate biome minecraft:river
+/op
+/place
+/publish true survival 50912
+/setblock
+/setworldspawn <coordinate>
+/spawnpoint <target> <coordinate>
+/summon
+/team add main
+/team join main Liemani
+/teleport <coordinate>
+/teleport <target> <coordinate>
+/time
+
+# log
+/fill 0 63 0 15 70 15 minecraft:birch_planks hollow
+/fill 0 63 0 15 70 15 minecraft:air
+/fill 0 70 0 15 70 15 minecraft:glass
+/fill 1 70 1 14 70 14 minecraft:air
+/setworldspawn 7 64 7
+/fill 7 64 0 8 65 15 minecraft:air
+/fill 0 64 7 15 65 8 minecraft:air
+/fill -76 62 146 -75 -58 146 minecraft:water
+/fill -76 62 147 -76 -58 147 minecraft:birch_trapdoor[facing=east,open=true,half=top]
+/fill -75 62 147 -75 -58 147 minecraft:birch_trapdoor[facing=west,open=true,half=top]
+/fill -76 62 147 -75 -58 147 minecraft:spruce_trapdoor replace minecraft:birch_trapdoor
+/fill -76 62 147 -76 -58 147 minecraft:spruce_trapdoor[facing=east,open=true,half=top]
+/fill -75 62 147 -75 -58 147 minecraft:spruce_trapdoor[facing=west,open=true,half=top]
+/fill ~001 ~-01 ~001 ~016 ~006 ~016 minecraft:spruce_planks replace minecraft:birch_planks
+/fill ~001 ~-01 ~001 ~005 ~-04 ~005 minecraft:air
+/fill ~001 ~-01 ~001 ~016 ~006 ~016 minecraft:spruce_planks hollow
+/fill ~001 ~007 ~001 ~016 ~007 ~016 minecraft:grass_block
+/fill ~006 ~-01 ~006 ~015 ~-01 ~015 minecraft:cobbled_deepslate_slab[type=bottom]
+/fill ~010 ~031 ~010 ~011 ~031 ~011 minecraft:air
+/clone ~001 ~025 ~001 ~020 ~025 ~020 ~001 ~028 ~001
+/clone ~001 ~025 ~001 ~020 ~025 ~020 ~001 ~031 ~001
+/fill ~ ~ ~ ~-13 ~6 ~13 minecraft:air
+/clone ~ ~1 ~ ~3 ~5 ~ ~ ~1 ~1
+/clone ~000 ~000 ~000 ~015 ~031 ~015 ~000 ~000 ~031
+/clone ~000 ~001 ~000 ~015 ~031 ~015 ~000 ~002 ~031
+
+/res message sea enter %player 님, 여기는 %owner 의 %residence 입니다!
+/res message sea leave %residence 를 떠납니다
