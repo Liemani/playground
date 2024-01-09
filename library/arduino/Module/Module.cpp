@@ -1,4 +1,5 @@
 #include <Arduino.h>
+
 #include "Module.h"
 
 //Module::Module(uint8_t pinNumber)

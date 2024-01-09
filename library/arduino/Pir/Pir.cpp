@@ -1,13 +1,12 @@
-#include <Arduino.h>  // digitalRead, INPUT_PULLUP
+#include <Arduino.h>  // byte, INPUT_PULLUP, digitalPinToInterrupt(), attachInterrupt(), CHANGE, digitalRead()
+
 #include "Pir.h"
 
-Pir::Pir(uint8_t pinNumber, void (*interruptHandler)())
-  : Module(pinNumber, INPUT_PULLUP)
+Pir::Pir(byte pinNumber, void (*interruptHandler)())
 {
-}
-
-Pir::setup() {
-  const uint8_t interruptPinNumber = digitalPinToInterrupt(this->pinNumber);
+  this->pinNumber = pinNumber;
+  pinMode(this->pinNumber, INPUT_PULLUP);
+  const byte interruptPinNumber = digitalPinToInterrupt(this->pinNumber);
   attachInterrupt(interruptPinNumber, interruptHandler, CHANGE);
 }
 
