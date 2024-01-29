@@ -1,6 +1,6 @@
 //  ifstream
 //  rdbuf
-#include <iostream>
+//#include <iostream>
 //	#include <algorithm>
 //	#include <iomanip>
 //	#include <fstream>
@@ -30,6 +30,7 @@
 //  #include <sys/stat.h>
 //  #include <time.h>
 //  #include <iterator>
+#include <utility>
 
 int	main()
 {
