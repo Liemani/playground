@@ -1,19 +1,21 @@
-SRCS  = FileManager.cpp ErrorHandler.cpp IOSDescriber.cpp test.cpp
+SRCS  = FileManager.cpp ErrorHandler.cpp IOSDescriber.cpp
 
 OBJS  = ${SRCS:.cpp=.o}
 
-NAME  = test
+TEST_SRCS = test.cpp
 
-CPP   = clang++
+TEST_OBJS = ${TEST_SRCS:.cpp=.o}
+
+TEST_NAME = test
+
+CPP = clang++
 
 .PHONY : all run
-all : ${NAME}
+test : ${TEST_NAME}
+	./${TEST_NAME}
 
-run : all
-	./${NAME}
-
-${NAME} : ${OBJS}
-	${CPP} -o ${NAME} ${OBJS}
+${TEST_NAME} : ${TEST_OBJS} ${OBJS}
+	${CPP} -o ${TEST_NAME} ${TEST_OBJS} ${OBJS}
 
 %.o : %.cpp
 	$(CPP) -o $@ -c $< -std=c++11
@@ -22,4 +24,4 @@ ${NAME} : ${OBJS}
 clean :
 	rm -f ${OBJS}
 
-rerun : clean run
+retest : clean test
