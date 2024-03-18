@@ -1,3 +1,4 @@
+// 회로도 : https://www.npmjs.com/package/node-dht-sensor
 // 5초마다 값을 특정 주소의 서버로 전송하는 프로그램
 
 //const dhtSensor = require("node-dht-sensor");
@@ -6,7 +7,8 @@ const net = require("net");
 const dhtSensorType = 11;
 const dhtDataPinNumber = 2;
 
-const remoteServerIpAddress = "192.168.0.42";
+//const remoteServerIpAddress = "192.168.0.42";
+const remoteServerIpAddress = "localhost";
 const remoteServerPortNumber = 3231;
 
 const dhtLoopInterval = 1000;
@@ -99,8 +101,10 @@ class Client {
         this.remoteServerPortNumber, this.remoteServerIpAddress);
   }
 
+  // format : "data object as json" + '\n'
   writeDataToRemoteServer() {
-    const dataToWrite = JSON.stringify(this.data);
+    const stringData = JSON.stringify(this.data);
+    const dataToWrite = stringData + '\n';
     this.socket.write(dataToWrite);
   }
 
@@ -120,7 +124,7 @@ const dht = new Dht(dhtDataPinNumber);
 setInterval(dhtLoop, dhtLoopInterval);
 
 const client = new Client(remoteServerIpAddress, remoteServerPortNumber);
-client.data = dht;
+client.data = dht.data;
 setInterval(remoteServerSocketLoop, remoteServerSocketLoopInterval);
 
 function dhtLoop() {
