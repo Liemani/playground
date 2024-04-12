@@ -1,4 +1,4 @@
-myObject = {};
+const myObject = {};
 
 myObject.first = 1;
 myObject.second = 2;

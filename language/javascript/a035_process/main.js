@@ -1,1 +1,3 @@
-console.log(process);
+//console.log(process);
+
+process.stdout.write("process.stdout.write()\n");
