@@ -10,6 +10,11 @@ serial을 통해 읽은 값을 5초마다 특정 주소의 서버로 전송하�
 
 0. 선행 준비
   - 모비우스 플랫폼을 준비한다
-  - 아두이노에 코드 업로드
-1. list_ports.js를 실행하여 아두이노의 포트 경로를 출력한다.
+  - 아두이노에 코드 업로드 및 실행 및 시리얼 연결
+  - dht_protocol.js 붙여넣기
+1. list_ports.js를 실행하여 출력되는 아두이노의 포트 경로로 dht_serial_client.js:7을 수정한다.
   - node list_ports
+2. 실행
+  - node dht_serial_client
+3. 결과 확인
+  - tas

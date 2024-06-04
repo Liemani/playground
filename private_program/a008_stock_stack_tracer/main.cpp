@@ -32,6 +32,23 @@ using std::less;
 
 
 
+#ifdef NDEBUG
+#define LOG(message) // Do nothing when DEBUG is not defined
+#else
+#define LOG(message) \
+  std::ofstream logfile("log.txt", std::ios::app); \
+    if (logfile.is_open()) \
+    { \
+      logfile << message << std::endl; \
+      logfile.close(); \
+    } \
+    else { \
+      std::cerr << "Error: Failed to open log file!" << std::endl; \
+    }
+#endif
+
+
+
 typedef float DataPoint;
 typedef vector<DataPoint> Record;
 typedef vector<Record> Table;
@@ -94,7 +111,8 @@ void writeToCSV(const string& filename, const vector<vector<float> >& data)
 
   for (size_t i = 0; i < data.size(); ++i) {
     for (size_t j = 0; j < data[i].size(); ++j) {
-      file << convertFloatToString(data[i][j]);
+      if (data[i][j] != 0.0)
+        file << convertFloatToString(data[i][j]);
       if (j < data[i].size() - 1) {
         file << ",";
       }
@@ -247,7 +265,9 @@ DoubleVector<DataPoint> simulate(const Table& inputTable)
         {
           doubleVector.popSecond();
         }
+#ifdef SORT
         doubleVector.sortFirst();
+#endif
       }
     }
     else
@@ -256,7 +276,9 @@ DoubleVector<DataPoint> simulate(const Table& inputTable)
       {
         doubleVector.pushSecond(record[1]);
         doubleVector.popFirst();
+#ifdef SORT
         doubleVector.sortSecond();
+#endif
       }
     }
   }
