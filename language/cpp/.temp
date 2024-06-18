@@ -1,0 +1,109 @@
+a023_chrono.cpp:6:13: error: invalid operands to binary expression ('ostream' (aka 'basic_ostream<char>') and 'std::chrono::time_point<std::chrono::system_clock>')
+  std::cout << now << std::endl;
+  ~~~~~~~~~ ^  ~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:800:1: note: candidate function template not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'char' for 2nd argument
+operator<<(basic_ostream<_CharT, _Traits>& __os, char __cn)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:833:1: note: candidate function template not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'char' for 2nd argument
+operator<<(basic_ostream<char, _Traits>& __os, char __c)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:840:1: note: candidate function template not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'signed char' for 2nd argument
+operator<<(basic_ostream<char, _Traits>& __os, signed char __c)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:847:1: note: candidate function template not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'unsigned char' for 2nd argument
+operator<<(basic_ostream<char, _Traits>& __os, unsigned char __c)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:861:1: note: candidate function template not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'const char *' for 2nd argument
+operator<<(basic_ostream<_CharT, _Traits>& __os, const char* __strn)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:907:1: note: candidate function template not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'const char *' for 2nd argument
+operator<<(basic_ostream<char, _Traits>& __os, const char* __str)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:914:1: note: candidate function template not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'const signed char *' for 2nd argument
+operator<<(basic_ostream<char, _Traits>& __os, const signed char* __str)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:922:1: note: candidate function template not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'const unsigned char *' for 2nd argument
+operator<<(basic_ostream<char, _Traits>& __os, const unsigned char* __str)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:1107:1: note: candidate function template not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'const error_code' for 2nd argument
+operator<<(basic_ostream<_CharT, _Traits>& __os, const error_code& __ec)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:793:1: note: candidate template ignored: deduced conflicting types for parameter '_CharT' ('char' vs. 'std::chrono::time_point<std::chrono::system_clock>')
+operator<<(basic_ostream<_CharT, _Traits>& __os, _CharT __c)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__random/uniform_int_distribution.h:261:1: note: candidate template ignored: could not match 'uniform_int_distribution' against 'time_point'
+operator<<(basic_ostream<_CharT, _Traits>& __os,
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:854:1: note: candidate template ignored: could not match 'const _CharT *' against 'std::chrono::time_point<std::chrono::system_clock>'
+operator<<(basic_ostream<_CharT, _Traits>& __os, const _CharT* __str)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:1090:1: note: candidate template ignored: could not match 'basic_string' against 'time_point'
+operator<<(basic_ostream<_CharT, _Traits>& __os,
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:1098:1: note: candidate template ignored: could not match 'basic_string_view' against 'time_point'
+operator<<(basic_ostream<_CharT, _Traits>& __os,
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:1115:1: note: candidate template ignored: could not match 'shared_ptr' against 'time_point'
+operator<<(basic_ostream<_CharT, _Traits>& __os, shared_ptr<_Yp> const& __p)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:1134:1: note: candidate template ignored: could not match 'bitset' against 'time_point'
+operator<<(basic_ostream<_CharT, _Traits>& __os, const bitset<_Size>& __x)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:1082:11: note: candidate template ignored: requirement 'integral_constant<bool, false>::value' was not satisfied [with _Stream = std::ostream &, _Tp = std::chrono::time_point<std::chrono::system_clock>]
+_Stream&& operator<<(_Stream&& __os, const _Tp& __x)
+          ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:1127:1: note: candidate template ignored: could not match 'unique_ptr' against 'time_point'
+operator<<(basic_ostream<_CharT, _Traits>& __os, unique_ptr<_Yp, _Dp> const& __p)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:229:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'ostream &(*)(ostream &)' for 1st argument
+    basic_ostream& operator<<(basic_ostream& (*__pf)(basic_ostream&))
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:233:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'basic_ios<char_type, traits_type> &(*)(basic_ios<char_type, traits_type> &)' (aka 'basic_ios<char, std::char_traits<char> > &(*)(basic_ios<char, std::char_traits<char> > &)') for 1st argument
+    basic_ostream& operator<<(basic_ios<char_type, traits_type>&
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:238:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'ios_base &(*)(ios_base &)' for 1st argument
+    basic_ostream& operator<<(ios_base& (*__pf)(ios_base&))
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:241:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'bool' for 1st argument
+    basic_ostream& operator<<(bool __n);
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:242:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'short' for 1st argument
+    basic_ostream& operator<<(short __n);
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:243:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'unsigned short' for 1st argument
+    basic_ostream& operator<<(unsigned short __n);
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:244:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'int' for 1st argument
+    basic_ostream& operator<<(int __n);
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:245:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'unsigned int' for 1st argument
+    basic_ostream& operator<<(unsigned int __n);
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:246:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'long' for 1st argument
+    basic_ostream& operator<<(long __n);
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:247:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'unsigned long' for 1st argument
+    basic_ostream& operator<<(unsigned long __n);
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:248:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'long long' for 1st argument
+    basic_ostream& operator<<(long long __n);
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:249:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'unsigned long long' for 1st argument
+    basic_ostream& operator<<(unsigned long long __n);
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:250:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'float' for 1st argument
+    basic_ostream& operator<<(float __f);
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:251:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'double' for 1st argument
+    basic_ostream& operator<<(double __f);
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:252:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'long double' for 1st argument
+    basic_ostream& operator<<(long double __f);
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:253:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'const void *' for 1st argument; take the address of the argument with &
+    basic_ostream& operator<<(const void* __p);
+                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream:262:20: note: candidate function not viable: no known conversion from 'std::chrono::time_point<std::chrono::system_clock>' to 'basic_streambuf<char_type, traits_type> *' (aka 'basic_streambuf<char, std::char_traits<char> > *') for 1st argument
+    basic_ostream& operator<<(basic_streambuf<char_type, traits_type>* __sb);
+                   ^
+1 error generated.
