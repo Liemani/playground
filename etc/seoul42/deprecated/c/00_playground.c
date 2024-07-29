@@ -205,6 +205,10 @@ int	a081()
 
 
 
+//  typedef unsigned long   tcflag_t;
+//  typedef unsigned char   cc_t;
+//  typedef unsigned long   speed_t;
+//
 //	struct termios {
 //	    tcflag_t        c_iflag;        // input flags
 //	    tcflag_t        c_oflag;        // output flags

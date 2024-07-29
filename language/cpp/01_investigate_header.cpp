@@ -22,7 +22,7 @@
 //#include <time.h>
 //#include <map>
 //#include <stack>
-//#include <string>
+#include <string>
 //dirent
 //Dir
 //#include <sstream>
@@ -31,10 +31,10 @@
 //#include <time.h>
 //#include <iterator>
 //#include <utility>
-#include <algorithm>
+//#include <algorithm>
+//#include <vector>
 
 int	main()
 {
-  sort
 	return (0);
 }

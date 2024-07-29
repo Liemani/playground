@@ -11,9 +11,6 @@ TEST_NAME = test
 CPP = clang++
 
 .PHONY : all run
-test : ${TEST_NAME}
-	./${TEST_NAME}
-
 ${TEST_NAME} : ${TEST_OBJS} ${OBJS}
 	${CPP} -o ${TEST_NAME} ${TEST_OBJS} ${OBJS}
 
