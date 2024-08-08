@@ -1,7 +1,8 @@
 #ifndef APPLICATION_HPP
 #define APPLICATION_HPP
 
-#include <map>  // map
+#include <map>
+#include <stack>
 
 // example
 //  MethodProvider methodProvider = MethodProvider();
@@ -23,6 +24,8 @@ private :
   typedef std::map<Command, BuiltinMethod> CommandBuiltinMethodDictionary;
 
   MethodProvider& methodProvider;
+
+  std::stack<ViewController> viewControllerStack;
 
   int invoke(const Command& command);
 

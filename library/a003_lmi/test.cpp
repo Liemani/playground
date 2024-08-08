@@ -1,3 +1,5 @@
+#define a006
+
 #include <functional>
 #include <iostream>
 #include <fstream>
@@ -5,16 +7,29 @@
 
 #include "lmi.hpp"
 
-//template
-//#ifdef GROUND000
-//int main() {
-//	return 0;
-//}
-//#endif
+/*
+// template
+#ifdef a000
+int main() {
+	return 0;
+}
+#endif
+*/
 
-#define GROUND006
 
-#ifdef GROUND006
+
+// template
+#ifdef a007
+int main() {
+  Application application = Application();
+
+	return 0;
+}
+#endif
+
+
+
+#ifdef a006
 class IpConnection {
 };
 
@@ -54,7 +69,7 @@ int main() {
 }
 #endif
 
-#ifdef GROUND005
+#ifdef a005
 class MethodProvider {
 
 public :
@@ -81,7 +96,7 @@ int main() {
 }
 #endif
 
-#ifdef GROUND004
+#ifdef a004
 int main() {
   Application application;
   application.debugDescribe();
@@ -95,7 +110,7 @@ int main() {
 }
 #endif
 
-#ifdef GROUND003
+#ifdef a003
 int main() {
   std::string path = "lmi.hpp";
 

@@ -1,3 +1,4 @@
+// std::queue doesn't have data() unlike std::vector
 #include <cstdio>
 #include <queue>
 

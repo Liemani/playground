@@ -22,7 +22,7 @@
 //#include <time.h>
 //#include <map>
 //#include <stack>
-#include <string>
+//#include <string>
 //dirent
 //Dir
 //#include <sstream>
@@ -33,6 +33,7 @@
 //#include <utility>
 //#include <algorithm>
 //#include <vector>
+#include <signal.h>
 
 int	main()
 {
