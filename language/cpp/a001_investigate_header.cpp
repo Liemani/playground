@@ -33,7 +33,8 @@
 //#include <utility>
 //#include <algorithm>
 //#include <vector>
-#include <signal.h>
+//#include <signal.h>
+#include <termios.h>
 
 int	main()
 {
