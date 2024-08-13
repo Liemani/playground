@@ -1,24 +1,16 @@
 #define a006
 
-#include <functional>
-#include <iostream>
-#include <fstream>
-#include <string>
 
-#include "lmi.hpp"
 
-/*
-// template
 #ifdef a000
+// test code template
 int main() {
 	return 0;
 }
 #endif
-*/
 
 
 
-// template
 #ifdef a007
 int main() {
   Application application = Application();
@@ -69,6 +61,8 @@ int main() {
 }
 #endif
 
+
+
 #ifdef a005
 class MethodProvider {
 
@@ -96,6 +90,8 @@ int main() {
 }
 #endif
 
+
+
 #ifdef a004
 int main() {
   Application application;
@@ -109,6 +105,8 @@ int main() {
   return 0;
 }
 #endif
+
+
 
 #ifdef a003
 int main() {

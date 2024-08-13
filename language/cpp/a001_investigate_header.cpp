@@ -34,7 +34,8 @@
 //#include <algorithm>
 //#include <vector>
 //#include <signal.h>
-#include <termios.h>
+//#include <termios.h>
+#include <sys/time.h>
 
 int	main()
 {
