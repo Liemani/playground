@@ -29,10 +29,10 @@ public :
 private :
   int _fd;
 
-  unsigned char* _readBuffer;
+  std::string _readBuffer;
 
-//  unsigned char* _writeBuffer;
-//  unsigned int _writeCount;
+  std::string _writeBuffer;
+  unsigned int _writeCount;
 
 };
 

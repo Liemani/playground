@@ -35,7 +35,7 @@
 //#include <vector>
 //#include <signal.h>
 //#include <termios.h>
-#include <sys/time.h>
+#include <time.h>
 
 int	main()
 {

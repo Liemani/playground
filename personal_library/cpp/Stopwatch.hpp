@@ -1,9 +1,7 @@
 #ifndef STOPWATCH_HPP
 #define STOPWATCH_HPP
 
-#include <sys/time.h> // struct timeval
-#include <stddef.h> // NULL
-#include <string>
+#include <time.h> // struct timespec
 
 class Stopwatch {
 
@@ -12,9 +10,9 @@ public :
   const char* lap();
 
 private :
-  struct timeval _startTime;
-  struct timeval _lappedTime;
-  char _string[42];
+  struct timespec _startTime;
+
+  char _lap[42];
 
 };
 

@@ -1,38 +1,27 @@
 #include "Stopwatch.hpp"
 
-#include <sys/time.h> // gettimeofday()
-#include <stddef.h> // NULL
-#include <cstdio> // printf()
+#include <time.h> // clock_gettime()
+#include <cstdio> // sprintf()
 #include <cassert>
-#include <string>
-#include <cstring>
+
+#include "Timespec.hpp"
 
 void Stopwatch::start() {
-  assert(gettimeofday(&_startTime, NULL) != -1);
-  _lappedTime = _startTime;
+  assert(clock_gettime(CLOCK_MONOTONIC, &_startTime) != -1);
 }
 
 const char* Stopwatch::lap() {
-  struct timeval interval;
+  struct timespec timeInterval;
 
-  assert(gettimeofday(&_lappedTime, NULL) != -1);
+  assert(clock_gettime(CLOCK_MONOTONIC, &timeInterval) != -1);
+  timeInterval -= _startTime;
 
-  interval.tv_sec = _lappedTime.tv_sec - _startTime.tv_sec;
-  interval.tv_usec = _lappedTime.tv_usec - _startTime.tv_usec;
-  if (interval.tv_usec < 0) {
-    --interval.tv_sec;
-    interval.tv_usec += 1000000;
+  sprintf(_lap, "%20ld.%09ld", timeInterval.tv_sec, timeInterval.tv_nsec);
+
+  char* lapString = _lap;
+  while (*lapString == ' ') {
+    ++lapString;
   }
 
-  char buffer[42];
-  sprintf(buffer, "%20ld.%06ld", interval.tv_sec, interval.tv_usec);
-
-  char* start = buffer;
-  while (*start == ' ') {
-    ++start;
-  }
-
-  memcpy(_string, start, strlen(start) + 1);
-
-  return _string;
+  return lapString;
 }

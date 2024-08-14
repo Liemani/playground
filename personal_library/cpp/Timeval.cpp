@@ -2,9 +2,9 @@
 
 #include <sys/time.h>
 
-void add(struct timeval& timeval, int usec) {
+void add(struct timeval& timeval, long usec) {
   timeval.tv_usec += usec;
-  if (timeval.tv_usec >=1000000) {
+  if (timeval.tv_usec >= 1000000) {
     timeval.tv_usec -= 1000000;
     ++timeval.tv_sec;
   }
