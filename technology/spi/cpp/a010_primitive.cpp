@@ -7,8 +7,8 @@
 #include <cstdio>
 
 const char* spiPath = "/dev/spidev0.0";
-const int readCount = 1000;
-const int spiSpeed = 1000000 * 16;
+const int readCount = 20000;
+const int spiSpeed = 16000000;
 const int spiBufferSize = 2;
 
 int _fd;

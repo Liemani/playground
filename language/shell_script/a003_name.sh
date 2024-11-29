@@ -2,10 +2,10 @@
 
 dirname=$(dirname $0)
 basename=$(basename $0)
-filename=${basename%.*}
+fileName=${basename%.*}
 extension=${basename##*.}
 
-echo $dirname
-echo $basename
-echo $filename
-echo $extension
+echo dirname = $dirname
+echo basename = $basename
+echo fileName = $fileName
+echo extension = $extension

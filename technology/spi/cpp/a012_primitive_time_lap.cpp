@@ -10,8 +10,8 @@
 
 const char* spiPath = "/dev/spidev0.0";
 const int readCount = 20000;
-const int spiSpeed = 25000000;
-const int spiBufferSize = 2;
+const int spiSpeed = 16000000;
+const int spiBufferSize = 2;  // max value is 4096 in jetson orin nano
 
 int _fd;
 uint8_t _tx[spiBufferSize];
@@ -41,7 +41,7 @@ int readAD(int fd) {
     tr.delay_usecs = 0;
     tr.bits_per_word = 8;
 
-    assert(ioctl(_fd, SPI_IOC_MESSAGE(1), &tr) >= 1);
+    assert(ioctl(_fd, SPI_IOC_MESSAGE(1), &tr) != -1);
 
     int result = ((_rx[0] & 0x0F) << 8) | _rx[1];
     return result;
@@ -55,7 +55,6 @@ int main() {
   for (int i = 0; i < readCount; ++i) {
     readAD(_fd);
     int result = ((_rx[0] & 0x0F) << 8) | _rx[1];
-    printf("%d\n", result);
   }
 
   printf("elapsed time : %s\n", stopwatch.lap());

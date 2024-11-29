@@ -3,7 +3,11 @@
 #include <termios.h>
 #include <unistd.h>
 
+const int baudRate = 9600;
+
 int main() {
+  fprintf(stderr, "%d\n", __LINE__);
+
   // Replace "/dev/tty.usbmodem1101" with the correct port on your system
   const char* port = "/dev/tty.usbmodem1101";
   int fd = open(port, O_RDWR | O_NOCTTY | O_SYNC);
@@ -11,6 +15,8 @@ int main() {
     perror("open");
     return 1;
   }
+
+  fprintf(stderr, "%d\n", __LINE__);
 
   struct termios tty;
   if (tcgetattr(fd, &tty) < 0) {
@@ -28,8 +34,10 @@ int main() {
   tty.c_oflag &= ~OPOST; // Raw output
 
   // Set baud rate
-  cfsetispeed(&tty, 2000000);
-  cfsetospeed(&tty, 2000000);
+  cfsetispeed(&tty, baudRate);
+  cfsetospeed(&tty, baudRate);
+
+  fprintf(stderr, "%d\n", __LINE__);
 
   // Apply changes
   if (tcsetattr(fd, TCSANOW, &tty) < 0) {
@@ -37,16 +45,14 @@ int main() {
     return 1;
   }
 
-  char buffer[3];
+  char buffer[513];
   int n;
 
-  int count = 0;
-
   while (true) {
-    if (count == 20000) break;
+    printf("start\n");
     n = read(fd, buffer, 3);
-    printf("%hd\n", *(short*)&buffer);
-    ++count;
+    buffer[n] = '\0';
+    printf("[%s]", buffer);
   }
 
   close(fd);
