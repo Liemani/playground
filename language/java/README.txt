@@ -1,3 +1,9 @@
+[compile]
+// compile name.java to name.class
+javac name.java
+// run name.class
+java name
+
 # 이해하지 못한 것
 
 ## access modifier

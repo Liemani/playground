@@ -1,0 +1,17 @@
+darknet detector train data/kbDatas.data cfg/yolov4-tiny-custom.cfg yolov4-tiny.conv.29 -dont_show -map l tee train.log
+
+darknet detector train data/obj.data yolo-obj.cfg
+
+
+darknet.exe detector train data/trafficlight.data cfg/yolov4-tiny-custom.cfg
+
+# main
+./darknet detector train data/trafficlight.data cfg/yolov4-tiny-custom.cfg yolov4-tiny.conv.29 -dont_show -map l tee train.log
+
+cfg/yolov4-tiny-custom.cfg
+data/images/*.jpeg
+data/images/*.txt
+data/list/trafficlight.txt
+data/classes.txt
+data/ClassNames.names
+data/trafficlight.data
