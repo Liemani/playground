@@ -14,26 +14,26 @@ public class Member {
   }
 
   public Long getId() {
-    return id;
+    return this.id;
   }
 
-  public void setId() {
+  public void setId(Long id) {
     this.id = id;
   }
 
-  public Long getName() {
-    return id;
+  public String getName() {
+    return this.name;
   }
 
-  public void setName() {
-    this.id = id;
+  public void setName(String name) {
+    this.name = name;
   }
 
-  public Long getGrade() {
-    return id;
+  public Grade getGrade() {
+    return this.grade;
   }
 
-  public void setGrade() {
-    this.id = id;
+  public void setGrade(Grade grade) {
+    this.grade = grade;
   }
 }
