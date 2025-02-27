@@ -1,22 +1,113 @@
-#include <iostream>
-#include "LMI.hpp"
+//#include "LMI.hpp"
+//
+//using std::cout;
+//using std::endl;
 
-using std::cout;
-using std::endl;
-
-//  다이아몬드 상속에서 base class는 value로 저장될까 address로 저장될까?
+//  다이아몬드 상속에서 base class는 value로 저장될까 reference로 저장될까?
 
 /*  template
-#ifdef GROUND139
+#ifdef playground163
+#include <iostream>
+
 int main(void) {
 
-    return 0;
+  return 0;
 }
 #endif
 
 */
 
-#define GROUND161
+#define playground165
+
+#ifdef playground165
+// char -1 to unsigned int
+#include <iostream>
+
+int main(void) {
+  char a = -1;
+  std::cout << "(int)(unsigned char)a : " << (int)(unsigned char)a << std::endl;
+
+  return 0;
+}
+#endif
+
+#ifdef playground164
+// use enum
+#include <iostream>
+
+enum My_enum
+{
+  red,
+  green,
+  blue,
+  count,
+};
+
+int main(void) {
+  My_enum my_enum = My_enum::red;
+
+  std::cout << "My_enum::red : " << My_enum::red << std::endl;
+  std::cout << "My_enum::green : " << My_enum::green << std::endl;
+  std::cout << "My_enum::blue : " << My_enum::blue << std::endl;
+  std::cout << "My_enum::count : " << My_enum::count << std::endl;
+
+  std::cout << "red : " << red << std::endl;
+
+  return 0;
+}
+#endif
+
+#ifdef playground163
+// get array size
+#include <iostream>
+
+int my_array[4];
+
+int main(void) {
+  int my_array[4];
+
+  std::cout << "sizeof(my_array) : " << sizeof(my_array) << std::endl;
+
+  return 0;
+}
+#endif
+
+#ifdef playground162
+// check the syntax of member initializer list
+#include <iostream>
+
+class My_class
+{
+public :
+  int variable1;
+  int variable2;
+  int variable3;
+  int variable4;
+
+public :
+  My_class(void)
+  : variable1(4)
+  , variable2(3)
+  , variable3(2)
+  , variable4(1)
+  { };
+};
+
+int main(void)
+{
+  My_class my_class = My_class();
+
+  std::cout << "start" << std::endl;
+  std::cout << my_class.variable1 << std::endl;
+  std::cout << my_class.variable2 << std::endl;
+  std::cout << my_class.variable3 << std::endl;
+  std::cout << my_class.variable4 << std::endl;
+  std::cout << "end" << std::endl;
+
+  return 0;
+}
+#endif
+
 #ifdef GROUND161
 template <typename T>
 class Test {

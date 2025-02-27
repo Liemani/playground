@@ -1,0 +1,83 @@
+/Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/repository/MemberRepositoryV0.java:59: error: cannot find symbol
+        throw new NoSuchElementException("member not found memberId=" + memberId);
+                  ^
+  symbol:   class NoSuchElementException
+  location: class MemberRepositoryV0
+/Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/repository/MemberRepositoryV0.java:63: error: cannot find symbol
+      trhow e;
+      ^
+  symbol:   class trhow
+  location: class MemberRepositoryV0
+/Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/repository/MemberRepositoryV0.java:63: error: variable e is already defined in method findById(String)
+      trhow e;
+            ^
+/Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/repository/MemberRepositoryV0.java:77: error: cannot find symbol
+      preparedStatement = connection.prepareStatement(query);
+                                                      ^
+  symbol:   variable query
+  location: class MemberRepositoryV0
+/Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/repository/MemberRepositoryV0.java:82: error: cannot find symbol
+      if (resultSet.next()) {
+          ^
+  symbol:   variable resultSet
+  location: class MemberRepositoryV0
+/Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/repository/MemberRepositoryV0.java:84: error: cannot find symbol
+        member.setMemberId(resultSet.getString("member_id"));
+                           ^
+  symbol:   variable resultSet
+  location: class MemberRepositoryV0
+/Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/repository/MemberRepositoryV0.java:85: error: cannot find symbol
+        member.setMoney(resultSet.getInt("money"));
+                        ^
+  symbol:   variable resultSet
+  location: class MemberRepositoryV0
+/Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/repository/MemberRepositoryV0.java:86: error: incompatible types: unexpected return value
+        return member;
+               ^
+/Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/repository/MemberRepositoryV0.java:88: error: cannot find symbol
+        throw new NoSuchElementException("member not found memberId=" + memberId);
+                  ^
+  symbol:   class NoSuchElementException
+  location: class MemberRepositoryV0
+/Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/repository/MemberRepositoryV0.java:92: error: cannot find symbol
+      trhow e;
+      ^
+  symbol:   class trhow
+  location: class MemberRepositoryV0
+/Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/repository/MemberRepositoryV0.java:92: error: variable e is already defined in method update(String,int)
+      trhow e;
+            ^
+/Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/repository/MemberRepositoryV0.java:124: error: cannot find symbol
+    return DBConnectionUtil.getConnection();
+           ^
+  symbol:   variable DBConnectionUtil
+  location: class MemberRepositoryV0
+/Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/connection/DBConnectionUtil.java:14: error: cannot find symbol
+      Connection connection = DriverManagr.getConnection(URL, USERNAME, PASSWORD);
+                              ^
+  symbol:   variable DriverManagr
+  location: class DBConnectionUtil
+/Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/connection/DBConnectionUtil.java:17: error: cannot find symbol
+    } catch (SQLException e) {
+             ^
+  symbol:   class SQLException
+  location: class DBConnectionUtil
+14 errors
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileJava'.
+> Compilation failed; see the compiler output below.
+  /Volumes/main/home/remote/personal/playground/language/java/a027_jdbc/app/src/main/java/org/jdbc/repository/MemberRepositoryV0.java:59: error: cannot find symbol
+          throw new NoSuchElementException("member not found memberId=" + memberId);
+                    ^
+    symbol:   class NoSuchElementException
+    location: class MemberRepositoryV0
+  14 errors
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to get full insights.
+
+BUILD FAILED in 439ms

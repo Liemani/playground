@@ -1,0 +1,20 @@
+Icon
+
+Item
+ graphite
+ sand
+ silicon
+ thorium
+ beryllium
+ tungsten
+ oxide
+ carbide
+
+Liquid
+ water
+ hydrogen
+ arkycite
+
+Unit
+ avert
+ disrupt

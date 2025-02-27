@@ -18,7 +18,7 @@
 //timeval
 //pollfd
 //#include <sys/socket.h>
-//#include <netinet/in.h>
+#include <netinet/in.h>
 //#include <time.h>
 //#include <map>
 //#include <stack>
@@ -35,7 +35,7 @@
 //#include <vector>
 //#include <signal.h>
 //#include <termios.h>
-#include <time.h>
+//#include <time.h>
 
 int	main()
 {

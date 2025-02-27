@@ -6,14 +6,17 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <cstddef>
+
+#include "hex_dump.h"
 
 using std::cin;
 using std::cout;
 using std::endl;
 
 static void getline(std::istream& istream, std::string& line);
-static void print16Bytes(const std::string& bytes);
 static void sockaddr_in_describe(struct sockaddr_in& socketAddress);
+static void describe_socket(int fd);
 
 const int BUF_SIZE = 8192;
 
@@ -23,126 +26,142 @@ struct Pair {
   U method;
 };
 
-class Program {
+class Program
+{
 private:
-  typedef void* (Program::*Method)(void);
+  typedef void* (Program::*Method)();
   typedef Pair<const char*, Method> MethodPair;
 
-  uint16_t portNumber;
-  int serverSocketFD;
-  int clientSocketFD;
+  enum Sockets_offset
+  {
+    server,
+    connection,
+    client,
+    count,
+  };
 
-  int remoteServerSocketFD;
-  struct sockaddr_in remoteServerSocketAddress;
+  const char* sockets_offset_to_string[3] = {
+    "server",
+    "connection",
+    "client",
+  };
 
-  static void describeMethodCommand(void);
+  int sockets[Sockets_offset::count];
 
-  void* describe(void);
-  void* setPort(void);
-  void* listen(void);
-  void* acceptClient(void);
-  void* describeSocketOption(void);
-  void* sendBigString(void);
-  void* closeServerSocket(void);
-  void* closeClientSocket(void);
-  void* close(void);
-  void* recv(void);
-  void* send(void);
-  void* connectRemote(void);
-  void* sendRemote(void);
-  void* recvRemote(void);
-  void* closeRemote(void);
-  void* reconnectRemote(void);
+  int& server_socket;
+  int& connection_socket;
+  int& client_socket;
+
+  static void describeMethodCommand();
+  uint16_t read_port_number();
+  void close_socket(int sockets_offset);
+
+  void* describe();
+  void* listen();
+  void* accept();
+  void* describeSocketOption();
+  void* connection_send_big_string();
+  void* close_server_socket();
+  void* close_connection_socket();
+  void* close_client_socket();
+  void* close_all_sockets();
+  void* connection_receive();
+  void* connection_send();
+  void* connect();
+  void* client_send();
+  void* client_receive();
+//  void* reconnectRemote();
 
   static const MethodPair methodDictionary[];
 
 public:
-  Program(void)
-    : portNumber(0)
-    , serverSocketFD(-1)
-    , clientSocketFD(-1)
-    , remoteServerSocketFD(-1)
-    , remoteServerSocketAddress()
-  { };
+  Program();
 
-  void mainLoop(void);
+  void mainLoop();
 };
 
 const Program::MethodPair Program::methodDictionary[] = {
   { "describe", &Program::describe },
-  { "set port", &Program::setPort },
   { "listen", &Program::listen },
-  { "accept", &Program::acceptClient },
+  { "accept", &Program::accept },
   { "describe socket", &Program::describeSocketOption },
-  { "send big string", &Program::sendBigString },
-  { "close server socket", &Program::closeServerSocket },
-  { "close client socket", &Program::closeClientSocket },
-  { "close", &Program::close },
-  { "recv", &Program::recv },
-  { "send", &Program::send },
-  { "connect remote", &Program::connectRemote },
-  { "send remote", &Program::sendRemote },
-  { "recv remote", &Program::recvRemote },
-  { "close remote", &Program::closeRemote },
-  { "reconnect remote", &Program::reconnectRemote },
+  { "connection send big string", &Program::connection_send_big_string },
+  { "close server socket", &Program::close_server_socket },
+  { "close connection socket", &Program::close_connection_socket },
+  { "close client socket", &Program::close_client_socket },
+  { "close all sockets", &Program::close_all_sockets },
+  { "connection recv", &Program::connection_receive },
+  { "connection send", &Program::connection_send },
+  { "connect", &Program::connect },
+  { "client send", &Program::client_send },
+  { "client recv", &Program::client_receive },
+//  { "reconnect remote", &Program::reconnectRemote },
 };
 
-void* Program::describe(void) {
-  cout << "port number: " << this->portNumber << endl;
-  cout << "server socket fd: " << this->serverSocketFD << endl;
-  cout << "client socket fd: " << this->clientSocketFD << endl;
-  cout << endl;
-  cout << "this->remoteServerSocketFD: "<< this->remoteServerSocketFD << endl;
-  sockaddr_in_describe(this->remoteServerSocketAddress);
+void* Program::describe() {
+  for (int i = 0; i < Sockets_offset::count; ++i)
+  {
+    const int socket = this->sockets[i];
+
+//    if (socket == -1)
+//    {
+//      continue;
+//    }
+
+    cout << sockets_offset_to_string[i] << " : " << endl;
+    describe_socket(socket);
+    cout << endl;
+  }
 
   return NULL;
 }
 
-void* Program::setPort(void) {
-  cout << "current port number: " << this->portNumber << endl;
-  cout << "enter new port number: ";
+uint16_t Program::read_port_number() {
+  uint16_t port_number;
+
+  cout << "enter port number : ";
   std::string line;
   getline(cin, line);
   std::istringstream inputStringStream(line);
-  inputStringStream >> this->portNumber;
+  inputStringStream >> port_number;
   if (!inputStringStream)
     throw "fail getting port number";
   else
-    cout << "port number: " << this->portNumber << endl;
+    cout << "port number : " << port_number << endl;
 
-  return NULL;
+  return port_number;
 }
 
-void* Program::listen(void) {
-  this->setPort();
+void* Program::listen() {
+  const uint16_t port_number = this->read_port_number();
 
-  this->serverSocketFD = socket(PF_INET, SOCK_STREAM, 0);
-  fcntl(this->serverSocketFD, F_SETFL, O_NONBLOCK);
+  this->server_socket = socket(PF_INET, SOCK_STREAM, 0);
+  fcntl(this->server_socket, F_SETFL, O_NONBLOCK);
 
   struct sockaddr_in serverSocketAddress;
   memset(&serverSocketAddress, 0, sizeof(serverSocketAddress));
   serverSocketAddress.sin_family = AF_INET;
-  serverSocketAddress.sin_port = htons(this->portNumber);
+  serverSocketAddress.sin_port = htons(port_number);
   serverSocketAddress.sin_addr.s_addr = htonl(INADDR_ANY);
 
-  if (bind(this->serverSocketFD, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress)) == -1)
+  if (bind(this->server_socket, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress)) == -1)
     throw "failed binding";
 
-  ::listen(this->serverSocketFD, 5);
+  ::listen(this->server_socket, 5);
 
-  cout << "listening " << this->portNumber << endl;
+  cout << "listening " << port_number << endl;
 
   return NULL;
 }
 
-void* Program::acceptClient(void) {
-  if (this->clientSocketFD != -1)
+void* Program::accept() {
+  if (this->connection_socket != -1)
     throw "No sit, sorry";
 
   struct sockaddr clientSocketAddress;
   socklen_t clientSocketAddressSize = sizeof(clientSocketAddress);
-  this->clientSocketFD = accept(this->serverSocketFD, &clientSocketAddress, &clientSocketAddressSize);
-  if (this->clientSocketFD == -1)
+  this->connection_socket = ::accept(this->server_socket, &clientSocketAddress, &clientSocketAddressSize);
+  if (this->connection_socket == -1)
     cout << "fail accept" << endl;
   else
     cout << "success accept" << endl;
@@ -150,20 +169,20 @@ void* Program::acceptClient(void) {
   return NULL;
 }
 
-void* Program::describeSocketOption(void) {
+void* Program::describeSocketOption() {
   int optionValue;
   socklen_t optionLength = sizeof(optionValue);
 
-  getsockopt(this->clientSocketFD, SOL_SOCKET, SO_SNDBUF, &optionValue, &optionLength);
+  getsockopt(this->connection_socket, SOL_SOCKET, SO_SNDBUF, &optionValue, &optionLength);
 
-  cout << "SO_SNDBUF: " << optionValue << ", size: " << optionLength << endl;
+  cout << "SO_SNDBUF : " << optionValue << ", size : " << optionLength << endl;
 
   return NULL;
 }
 
-void* Program::sendBigString(void) {
+void* Program::connection_send_big_string() {
   std::string bigString = std::string(10, '1');
-  ssize_t sendSize = ::send(this->clientSocketFD, bigString.c_str(), 10, 0);
+  ssize_t sendSize = ::send(this->connection_socket, bigString.c_str(), 10, 0);
   if (sendSize == -1)
     cout << "send error has occured" << endl;
   else
@@ -172,34 +191,44 @@ void* Program::sendBigString(void) {
   return NULL;
 }
 
-void* Program::closeServerSocket(void) {
-  ::close(this->serverSocketFD);
-  this->serverSocketFD = -1;
-
-  cout << "closed server socket" << endl;
+void* Program::close_server_socket() {
+  this->close_socket(Sockets_offset::connection);
+  this->close_socket(Sockets_offset::server);
 
   return NULL;
 }
 
-void* Program::closeClientSocket(void) {
-  ::close(this->clientSocketFD);
-  this->clientSocketFD = -1;
-
-  cout << "closed client socket" << endl;
+void* Program::close_connection_socket() {
+  this->close_socket(Sockets_offset::connection);
 
   return NULL;
 }
 
-void* Program::close(void) {
-  this->closeClientSocket();
-  this->closeServerSocket();
+void* Program::close_client_socket() {
+  this->close_socket(Sockets_offset::client);
 
   return NULL;
 }
 
-void* Program::recv(void) {
+void Program::close_socket(int sockets_offset)
+{
+  int& socket = this->sockets[sockets_offset];
+  ::close(socket);
+  socket = -1;
+
+  cout << sockets_offset_to_string[sockets_offset] << " socket is closed" << endl;
+}
+
+void* Program::close_all_sockets() {
+  this->close_server_socket();
+  this->close_client_socket();
+
+  return NULL;
+}
+
+void* Program::connection_receive() {
   char buf[BUF_SIZE + 1];
-  ssize_t recvSize = ::recv(this->clientSocketFD, buf, BUF_SIZE, 0);
+  ssize_t recvSize = ::recv(this->connection_socket, buf, BUF_SIZE, 0);
   if (recvSize == -1)
     throw "recv error has occured";
   else if (recvSize == 0)
@@ -207,20 +236,18 @@ void* Program::recv(void) {
 
   buf[recvSize] = '\0';
 
-  cout << "received size: " << recvSize << endl;
-  for (int index = 0; index < recvSize; index += 16) {
-    print16Bytes(std::string(buf + index, buf + index + 16));
-  }
+  cout << "received size : " << recvSize << endl;
+  hex_dump(reinterpret_cast<unsigned char*>(buf), recvSize);
 
   return NULL;
 }
 
-void* Program::send(void) {
-  cout << "enter line to send: ";
+void* Program::connection_send() {
+  cout << "enter line to send : ";
   std::string line;
   getline(cin, line);
   line += "\r\n";
-  ssize_t result = ::send(this->clientSocketFD, line.c_str(), line.length(), 0);
+  ssize_t result = ::send(this->connection_socket, line.c_str(), line.length(), 0);
   if (result <= 0)
     throw "result of send <= 0";
   cout << "succeeded send" << endl;
@@ -228,8 +255,7 @@ void* Program::send(void) {
   return NULL;
 }
 
-void* Program::connectRemote(void) {
-  int serverSocketFD;
+void* Program::connect() {
   struct sockaddr_in serverSocketAddress;
   std::string serverInetAddressString;
   unsigned long serverInetAddress;
@@ -237,15 +263,15 @@ void* Program::connectRemote(void) {
   uint16_t serverPortNumber;
   int result;
 
-  serverSocketFD = socket(PF_INET, SOCK_STREAM, 0);
-  if (serverSocketFD == -1)
+  this->client_socket = socket(PF_INET, SOCK_STREAM, 0);
+  if (this->client_socket == -1)
     throw "fail socket()";
 
-  cout << "enter inet address of server: ";
+  cout << "enter inet address of server : ";
   getline(cin, serverInetAddressString);
   serverInetAddress = inet_addr(serverInetAddressString.c_str());
 
-  cout << "enter port number of server: ";
+  cout << "enter port number of server : ";
   getline(cin, serverPortNumberString);
   serverPortNumber = htons(atoi(serverPortNumberString.c_str()));
 
@@ -254,21 +280,18 @@ void* Program::connectRemote(void) {
   serverSocketAddress.sin_addr.s_addr = serverInetAddress;
   serverSocketAddress.sin_port = serverPortNumber;
 
-  result = connect(serverSocketFD, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress));
-  fcntl(serverSocketFD, F_SETFL, O_NONBLOCK); // connect 전에 non-blocking으로 만들면 connect 에러가 발생한다 ㅎㅎ
+  result = ::connect(this->client_socket, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress));
+  fcntl(this->client_socket, F_SETFL, O_NONBLOCK); // connect 전에 non-blocking으로 만들면 connect 에러가 발생한다 ㅎㅎ
   if (result == -1)
     throw "fail connect()";
 
   cout << "success connect()" << endl;
 
-  this->remoteServerSocketFD = serverSocketFD;
-  this->remoteServerSocketAddress = serverSocketAddress;
-
   return NULL;
 }
 
-void* Program::sendRemote(void) {
-  cout << "enter line to send[exit: q]:" << endl;
+void* Program::client_send() {
+  cout << "enter line to send[exit : q]:" << endl;
   std::string requestMessage;
   while (true) {
     std::string line;
@@ -278,7 +301,7 @@ void* Program::sendRemote(void) {
     requestMessage += line + "\r\n";
   }
 
-  ssize_t result = ::send(this->remoteServerSocketFD, requestMessage.c_str(), requestMessage.length(), 0);
+  ssize_t result = ::send(this->client_socket, requestMessage.c_str(), requestMessage.length(), 0);
   if (result <= 0)
     throw "result of send <= 0";
   cout << "succeeded send" << endl;
@@ -286,9 +309,9 @@ void* Program::sendRemote(void) {
   return NULL;
 }
 
-void* Program::recvRemote(void) {
+void* Program::client_receive() {
   char buf[BUF_SIZE + 1];
-  ssize_t recvSize = ::recv(this->remoteServerSocketFD, buf, BUF_SIZE, 0);
+  ssize_t recvSize = ::recv(this->client_socket, buf, BUF_SIZE, 0);
   if (recvSize == -1)
     throw "recv error has occured";
   else if (recvSize == 0)
@@ -296,68 +319,65 @@ void* Program::recvRemote(void) {
 
   buf[recvSize] = '\0';
 
-  cout << "received size: " << recvSize << endl;
-  for (int index = 0; index < recvSize; index += 16) {
-    print16Bytes(std::string(buf + index, buf + index + 16));
-  }
+  cout << "received size : " << recvSize << endl;
+  hex_dump(reinterpret_cast<unsigned char*>(buf), recvSize);
 
   return NULL;
 }
 
-void* Program::closeRemote(void) {
-  if (this->remoteServerSocketFD == -1)
-    throw "no remote server socket to close";
-  ::close(this->remoteServerSocketFD);
-  this->remoteServerSocketFD = -1;
-  this->remoteServerSocketAddress = sockaddr_in();
-
-  cout << "closed remote server socket" << endl;
-
-  return NULL;
-}
-
-void* Program::reconnectRemote(void) {
-  int serverSocketFD;
-  struct sockaddr_in serverSocketAddress;
-  std::string serverInetAddressString;
-  std::string serverPortNumberString;
-  int result;
-
-  if (this->remoteServerSocketFD == -1)
-    return this->connectRemote();
-
-  serverSocketAddress = this->remoteServerSocketAddress;
-
-  this->closeRemote();
-
-  serverSocketFD = socket(PF_INET, SOCK_STREAM, 0);
-  if (serverSocketFD == -1)
-    throw "fail socket()";
-
-  result = connect(serverSocketFD, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress));
-  fcntl(serverSocketFD, F_SETFL, O_NONBLOCK); // connect 전에 non-blocking으로 만들면 connect 에러가 발생한다 ㅎㅎ
-  if (result == -1)
-    throw "fail connect()";
-
-  cout << "success reconnect()" << endl;
-
-  this->remoteServerSocketFD = serverSocketFD;
-  this->remoteServerSocketAddress = serverSocketAddress;
-
-  return NULL;
-}
+//void* Program::reconnectRemote() {
+//  int serverSocketFD;
+//  struct sockaddr_in serverSocketAddress;
+//  std::string serverInetAddressString;
+//  std::string serverPortNumberString;
+//  int result;
+//
+//  if (this->client_socket == -1)
+//    return this->connect();
+//
+//  serverSocketAddress = this->remoteServerSocketAddress;
+//
+//  this->close_client_socket();
+//
+//  serverSocketFD = socket(PF_INET, SOCK_STREAM, 0);
+//  if (serverSocketFD == -1)
+//    throw "fail socket()";
+//
+//  result = connect(serverSocketFD, (struct sockaddr*)&serverSocketAddress, sizeof(serverSocketAddress));
+//  fcntl(serverSocketFD, F_SETFL, O_NONBLOCK); // connect 전에 non-blocking으로 만들면 connect 에러가 발생한다 ㅎㅎ
+//  if (result == -1)
+//    throw "fail connect()";
+//
+//  cout << "success reconnect()" << endl;
+//
+//  this->client_socket = serverSocketFD;
+//  this->remoteServerSocketAddress = serverSocketAddress;
+//
+//  return NULL;
+//}
 
 
 
 // MARK: - program
-void Program::mainLoop(void) {
+Program::Program()
+  : server_socket(this->sockets[Sockets_offset::server])
+  , connection_socket(this->sockets[Sockets_offset::connection])
+  , client_socket(this->sockets[Sockets_offset::client])
+{
+  for (int i = 0; i < Sockets_offset::count; ++i)
+  {
+    this->sockets[i] = -1;
+  }
+}
+
+void Program::mainLoop() {
   std::string line;
 
   while (true) {
     cout << endl << "enable command list:" << endl;
     Program::describeMethodCommand();
     cout << "--------------" << endl;
-    cout << "enter command: ";
+    cout << "enter command : ";
 
     getline(cin, line);
 
@@ -369,14 +389,14 @@ void Program::mainLoop(void) {
         break;
     }
     if (i == sizeof(methodDictionary) / sizeof(MethodPair)) {
-      cout << "not found: [" << line << "]" << endl;
+      cout << "not found : [" << line << "]" << endl;
       continue;
     }
     try {
       const MethodPair* pair = &methodDictionary[i];
       (this->*(pair->method))();
     } catch(const char* string) {
-      cout << line << ": " << string << endl;
+      cout << line << " : " << string << endl;
     }
   }
 }
@@ -384,7 +404,7 @@ void Program::mainLoop(void) {
 
 
 // MARK: - static
-void Program::describeMethodCommand(void) {
+void Program::describeMethodCommand() {
   for (unsigned long i = 0; i < sizeof(methodDictionary) / sizeof(MethodPair); ++i) {
     const MethodPair& pair = methodDictionary[i];
 
@@ -398,38 +418,44 @@ static void getline(std::istream& istream, std::string& line) {
     throw "failed getline";
 }
 
-static void print16Bytes(const std::string& bytes) {
-  for (int i = 0; i < 16; ++i) {
-    if (i % 8 == 0)
-      cout << "  ";
-    else if (i % 2 == 0)
-      cout << " ";
-    cout << std::hex << std::setfill('0') << std::setw(2) << (int)(unsigned char)bytes[i];
-  }
-
-  cout << "   ";
-  for (int i = 0; i < 16; ++i) {
-    const char ch = bytes[i];
-    cout << (std::isprint(ch) ? ch : '.');
-  }
-
-  cout << endl;
+static void sockaddr_in_describe(struct sockaddr_in& socket_address) {
+  cout << "socket_address.sin_len : " << static_cast<int>(socket_address.sin_len) << endl;
+  cout << "socket_address.sin_family : "
+    << std::hex << std::setfill('0') << std::setw(2)
+    << static_cast<int>(static_cast<unsigned char>(socket_address.sin_family))
+    << std::dec << endl;
+  cout << "socket_address.sin_port : " << ntohs(socket_address.sin_port) << endl;
+  cout << "socket_address.sin_addr : " << inet_ntoa(socket_address.sin_addr) << endl;
+  cout << "socket_address.sin_zero : " << endl;
+  hex_dump(reinterpret_cast<unsigned char*>(socket_address.sin_zero), sizeof(socket_address.sin_zero));
 }
 
-static void sockaddr_in_describe(struct sockaddr_in& socketAddress) {
-  cout << "socketAddress.sin_len: " << socketAddress.sin_len << endl;
-  cout << "socketAddress.sin_family: " << std::hex << std::setfill('0') << std::setw(2) << (int)(unsigned char)socketAddress.sin_family << endl;
-  cout << "socketAddress.sin_port: " << socketAddress.sin_port << endl;
-  cout << "socketAddress.sin_addr: " << socketAddress.sin_addr.s_addr << endl;
-  std::string sin_zero = std::string(socketAddress.sin_zero, socketAddress.sin_zero + 7);
-  cout << "socketAddress.sin_zero: " << sin_zero << endl;
-  print16Bytes(sin_zero);
+static void describe_socket(int fd)
+{
+  struct sockaddr_in socket_address;
+  socklen_t socket_address_size;
+
+  cout << "fd : " << fd << endl;
+
+  socket_address_size = sizeof(socket_address);
+  if (getsockname(fd, reinterpret_cast<struct sockaddr*>(&socket_address), &socket_address_size) == 0)
+  {
+    cout << "socket address :" << endl;
+    sockaddr_in_describe(socket_address);
+  }
+
+  socket_address_size = sizeof(socket_address);
+  if (getpeername(fd, reinterpret_cast<struct sockaddr*>(&socket_address), &socket_address_size) == 0)
+  {
+    cout << "peer address :" << endl;
+    sockaddr_in_describe(socket_address);
+  }
 }
 
 
 
 // MARK: - main
-int main(void) {
+int main() {
   Program program;
 
   program.mainLoop();
