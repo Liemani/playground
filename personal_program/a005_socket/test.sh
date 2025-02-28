@@ -1,1 +1,1 @@
-clang++ -std=c++17 playground.cpp hex_dump.cpp && ./a.out
+clang++ -std=c++17 test.cpp hex_dump.cpp && ./a.out

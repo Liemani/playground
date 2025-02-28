@@ -9,14 +9,16 @@
 #include <cstring>  // memset()
 #include <cstddef>  // std::size_t
 
-void hex_dump_line(const unsigned char* address, std::size_t length);
-void decimal_to_hexadecimal(char* destination, unsigned int decimal, std::size_t decimal_size);
-
 const char* printable_ascii = "................................ !\"#$%&\'()*+,-./0123456789:;<=>\?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~.................................................................................................................................";
 
-class Line {
+// Line
+class Line
+{
+public :
+  static const std::size_t content_size = 76;
+
 private :
-  char content[68];
+  char content[content_size];
   const char new_line;
   const char terminator;
 
@@ -42,70 +44,80 @@ char* Line::operator&()
   return (char*)this;
 }
 
-Line line;
+// function prototype
+void hex_dump_line(Line& line, const unsigned char* address, std::size_t length);
+void decimal_to_hexadecimal(char* destination, uint64_t decimal, std::size_t decimal_size);
 
-// hex_dump
+// hex_dump()
 void hex_dump(const unsigned char* address, std::size_t length)
 {
-  while (true)
+  Line line;
+
+  while (0 < length)
   {
-    hex_dump_line(address, length);
+    const std::size_t line_length = std::min((std::size_t)16, length);
+
+    hex_dump_line(line, address, line_length);
     std::cout << &line;
 
-    if (length <= 16)
-    {
-      break;
-    }
-
-    address += 16;
-    length -= 16;
+    address += line_length;
+    length -= line_length;
   }
 }
 
-// hex_dump_line
-// length != 0
-// if length > 16, process 16 length
-void hex_dump_line(const unsigned char* address, std::size_t length)
+// hex_dump_line()
+// must
+// length [1,16]
+void hex_dump_line(Line& line, const unsigned char* address, std::size_t length)
 {
-  if (length == 0)
-  {
-    return;
-  }
+  memset(&line, ' ', Line::content_size);
 
-  length = std::min((std::size_t)16, length);
-
-  memset(&line, ' ', 68);
-
-  decimal_to_hexadecimal(&line, (unsigned int)(std::uintptr_t)address, 4);
-  line[9] = ':';
+  decimal_to_hexadecimal(&line, (uint64_t)address, 8);
+  line[16] = ' ';
+  line[17] = ':';
 
   for (int i = 0; i < length; ++i)
   {
-    decimal_to_hexadecimal(&line + 11 + 5 * (i / 2) + (i % 2) * 2, *(unsigned short*)(address + 2 * (i / 2) + (i % 2)), 1);
+    const int destination_offset = 19 + 5 * (i / 2) + (i % 2) * 2;
+    const int source_offset = 2 * (i / 2) + (i % 2);
+    decimal_to_hexadecimal(&line + destination_offset, *(address + source_offset), 1);
+    line[destination_offset + 2] = ' ';
 
-    line[52 + i] = printable_ascii[*(address + i)];
+    line[60 + i] = printable_ascii[*(address + i)];
+  }
 
-    if (length <= i)
-    {
-      break;
-    }
+  if (length != 16)
+  {
+    line[60 + length] = '\n';
+    line[60 + length + 1] = '\0';
   }
 }
 
 // decimal_to_hexadecimal
-// suppose destination != null
-// suppose decimal_size (0,4]
-// suppose destination size [decimal_size * 2 + 1,)
-unsigned int decimal_size_mask[5] = { 0x00000000, 0x000000ff, 0x0000ffff, 0x00ffffff, 0xffffffff };
+// must
+// destination != null
+// destination size [decimal_size * 2 + 1,)
+// decimal_size [0,4]
+uint64_t decimal_size_mask[9] = {
+  0x0000000000000000,
+  0x00000000000000ff,
+  0x000000000000ffff,
+  0x0000000000ffffff,
+  0x00000000ffffffff,
+  0x000000ffffffffff,
+  0x0000ffffffffffff,
+  0x00ffffffffffffff,
+  0xffffffffffffffff,
+};
 
-void decimal_to_hexadecimal(char* destination, unsigned int decimal, std::size_t decimal_size)
+void decimal_to_hexadecimal(char* destination, uint64_t decimal, std::size_t decimal_size)
 {
   decimal &= decimal_size_mask[decimal_size];
   const std::size_t destination_length = decimal_size * 2;
 
-  // goal : %08x(%0nx)
-  char format_string[5] = "%0nx";
-  format_string[2] = '0' + destination_length;
+  // goal : %08llx(%0nllx)
+  // goal : %016llx(%0nnllx)
+  char format_string[32];
+  snprintf(format_string, 32, "%%0%zullx", destination_length);
   snprintf(destination, destination_length + 1, format_string, decimal);
-  destination[destination_length] = ' ';
 }

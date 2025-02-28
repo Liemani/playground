@@ -1,4 +1,4 @@
-#define playground005
+#define playground006
 
 /*
 #ifdef playground000
@@ -12,6 +12,20 @@ int main()
 #endif
 
 */
+
+#ifdef playground006
+// check the size of address value
+#include <iostream>
+
+int main()
+{
+  int a = 1;
+
+  printf("&a [%016llx], sizeof(&a) [%lu]\n", (uint64_t)&a, sizeof(&a));
+
+  return 0;
+}
+#endif
 
 #ifdef playground005
 // initializer list this test
